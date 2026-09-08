@@ -1,0 +1,76 @@
+CRM (Customer Relationship Management)
+Key	English	বাংলা
+========================
+অবশ্যই থাকা উচিত (Core Modules)
+=======================
+Lead Management (লিড ব্যবস্থাপনা)
+Lead Source (লিডের উৎস)
+Lead Status (লিডের অবস্থা)
+Customer Management (গ্রাহক ব্যবস্থাপনা)
+Contact Management (যোগাযোগ ব্যবস্থাপনা)
+Follow Up (ফলো-আপ)
+Task Management (কাজের ব্যবস্থাপনা)
+Opportunity Management (বিক্রয় সুযোগ ব্যবস্থাপনা)
+Quotation (মূল্য প্রস্তাব)
+CRM Dashboard (সিআরএম ড্যাশবোর্ড)
+CRM Reports (সিআরএম প্রতিবেদন)
+===============
+গুরুত্বপূর্ণ (Recommended)
+=====================
+Call Log (কল লগ)
+Meeting Schedule (মিটিং সময়সূচি)
+Customer Activity (গ্রাহকের কার্যক্রম)
+Customer Notes (গ্রাহক নোট)
+Sales Pipeline (বিক্রয় পাইপলাইন)
+======================
+পরবর্তীতে যোগ করা যাবে (Advanced Features)
+================================
+Customer Feedback (গ্রাহকের মতামত)
+Support Ticket (সাপোর্ট টিকিট)
+Complaint Management (অভিযোগ ব্যবস্থাপনা)
+Campaign Management (ক্যাম্পেইন ব্যবস্থাপনা)
+Email Campaign (ইমেইল ক্যাম্পেইন)
+SMS Campaign (এসএমএস ক্যাম্পেইন)
+===============================
+
+Core HRM & Payroll
+=========================
+অবশ্যই থাকা উচিত (Core Modules)
+==============================
+Employee Management (কর্মচারী ব্যবস্থাপনা)
+Department (বিভাগ)
+Designation (পদবি)
+Employee Attendance (কর্মচারীর উপস্থিতি)
+Leave Management (ছুটি ব্যবস্থাপনা)
+Holiday Setup (ছুটির তালিকা)
+Shift Management (শিফট ব্যবস্থাপনা)
+Payroll Management (বেতন ব্যবস্থাপনা)
+Salary Structure (বেতন কাঠামো)
+Generate Salary (বেতন তৈরি)
+Salary Payment (বেতন পরিশোধ)
+Payslip (বেতন স্লিপ)
+HR Dashboard (এইচআর ড্যাশবোর্ড)
+HR Reports (এইচআর প্রতিবেদন)
+Payroll Reports (বেতন প্রতিবেদন)
+===========================
+গুরুত্বপূর্ণ (Recommended)
+===========================
+Leave Application (ছুটির আবেদন)
+Bonus Management (বোনাস ব্যবস্থাপনা)
+Increment Management (ইনক্রিমেন্ট ব্যবস্থাপনা)
+Overtime Management (ওভারটাইম ব্যবস্থাপনা)
+Employee Documents (কর্মচারীর ডকুমেন্ট)
+Advance Salary (অগ্রিম বেতন)
+Loan Management (ঋণ ব্যবস্থাপনা)
+====================================
+Advanced Features (পরে যোগ করা যাবে)
+====================================
+Roster Management (রোস্টার ব্যবস্থাপনা)
+Expense Claim (ব্যয় দাবি)
+Recruitment (নিয়োগ)
+Interview (সাক্ষাৎকার)
+Job Posting (চাকরির বিজ্ঞপ্তি)
+Performance Appraisal (কর্মদক্ষতা মূল্যায়ন)
+Training Management (প্রশিক্ষণ ব্যবস্থাপনা)
+Resignation (পদত্যাগ)
+Termination (চাকরি সমাপ্তি)
