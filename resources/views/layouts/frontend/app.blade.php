@@ -467,7 +467,7 @@
 
                         <br>
 
-                        Customer Relationship Management System
+                        Employee & Payroll Management System
 
                     </div>
 

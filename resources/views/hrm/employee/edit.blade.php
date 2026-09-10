@@ -6,7 +6,7 @@
             <div class="col-lg-4 col-sm-6">
                 <label for="company_id" class="form-label"><b>Company Name <span class="text-danger">*</span></b></label>
                 <select name="company_id" id="company_id" class="select form-select" data-placeholder="Select Company" required>
-                    <option value=""></option>
+                    
                     @foreach ($companies as $company)
                         <option value="{{ $company->id }}" {{ $data->company_id == $company->id ? 'selected' : '' }}>
                             {{ $company->name }}
@@ -18,7 +18,7 @@
         <div class="col-lg-4 col-sm-6">
             <label for="branch_id" class="form-label"><b>Branch Name <span class="text-danger">*</span></b></label>
             <select name="branch_id" id="branch_id" class="select form-select" data-placeholder="Select Branch" required>
-                <option value=""></option>
+                
                 @foreach ($branches as $branch)
                     <option value="{{ $branch->id }}" {{ $data->branch_id == $branch->id ? 'selected' : '' }}>
                         {{ $branch->name }}</option>
@@ -97,9 +97,9 @@
                 value="{{ $data->email }}" placeholder="Email">
         </div>
         <div class="col-lg-4 col-sm-6">
-            <label for="phone" class="form-label"><b>Phone No.</b></label>
+            <label for="phone" class="form-label"><b>Phone No. <span class="text-danger">*</span></b></label>
             <input type="text" class="form-control" id="phone" name="phone"
-                value="{{ $data->phone }}" placeholder="Phone">
+                value="{{ $data->phone }}" placeholder="Phone" required>
         </div>
         <div class="col-lg-4 col-sm-6">
             <label for="national_id" class="form-label"><b>National ID</b></label>
@@ -196,7 +196,7 @@
                     success: function(response) {
                         if (response.status == 'success') {
                             $('#branch_id option').remove();
-                            $('#branch_id').append('<option value=""></option>');
+                            $('#branch_id').append('');
                             $.each(response.branches, function(key, value) {
                                 var html = '<option value="' + value.id + '">' + value
                                     .name + '</option>';

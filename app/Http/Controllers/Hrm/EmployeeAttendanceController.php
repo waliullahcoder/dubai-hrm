@@ -10,6 +10,7 @@ use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeAttendanceController extends Controller
@@ -118,10 +119,74 @@ class EmployeeAttendanceController extends Controller
         ]);
 
        
+            $checkIn = Carbon::parse($request->check_in);
+            $checkOut = Carbon::parse($request->check_out);
+
+            // Office time
+            $officeStart = Carbon::parse($request->attendance_date . ' 09:00:00');
+            $officeEnd   = Carbon::parse($request->attendance_date . ' 18:00:00');
+
+
+            // =====================================
+            // LATE MINUTES
+            // =====================================
+
+            $lateMinutes = 0;
+
+            if ($checkIn->greaterThan($officeStart)) {
+
+                $lateMinutes = $officeStart->diffInMinutes($checkIn);
+
+            }
+
+
+            // =====================================
+            // WORKED MINUTES
+            // =====================================
+
+            $workedMinutes = $checkIn->diffInMinutes($checkOut);
+
+            $workedHours = floor($workedMinutes / 60);
+
+            $workedMinutesRemaining = $workedMinutes % 60;
+
+            $workedHoursFormatted = sprintf(
+                '%02d:%02d',
+                $workedHours,
+                $workedMinutesRemaining
+            );
+
+
+            // =====================================
+            // OVERTIME MINUTES
+            // =====================================
+
+            $overtimeMinutes = 0;
+
+            if ($checkOut->greaterThan($officeEnd)) {
+
+                $overtimeMinutes = $officeEnd->diffInMinutes($checkOut);
+
+            }
 
         if(isset($request->employee_id) && count($request->employee_id)>0){
               $attendexist= DB::table('hrm_employee_attendances')->where('attendance_date',$request->attendance_date)->whereIn('employee_id',$request->employee_id)->count();
               if($attendexist){
+
+              $todayAttendance = DB::table('hrm_employee_attendances')->where('employee_id', $request->employee_id ?? null)->whereDate('attendance_date', today())->first();
+
+            if ($todayAttendance && $todayAttendance->check_out == null) {
+                    DB::table('hrm_employee_attendances')
+                        ->where('id', $todayAttendance->id)
+                        ->update([
+                            'check_out' => now()->format('H:i:s'),
+                        ]);
+
+                    return redirect()
+                        ->route('admin.employee-attendance.index')
+                        ->with('success', 'Attendance Check Out successfully.');
+                }
+
                  return redirect()->back()->withErrors('Already Exist attendance!');
               }
              
@@ -131,9 +196,9 @@ class EmployeeAttendanceController extends Controller
                     'attendance_date'   => $request->attendance_date,
                     'check_in'          => $request->check_in,
                     'check_out'         => $request->check_out,
-                    'late_minutes'      => $request->late_minutes,
-                    'overtime_minutes'  => $request->overtime_minutes,
-                    'worked_hours'      => $request->worked_hours,
+                    'late_minutes'      => Auth::user()->role_status==4 ? $lateMinutes : $request->late_minutes,
+                    'overtime_minutes'  => Auth::user()->role_status==4 ? $overtimeMinutes : $request->overtime_minutes,
+                    'worked_hours'      => Auth::user()->role_status==4 ? $workedHours : $request->worked_hours,
                     'attendance_status' => $request->attendance_status,
                     'remarks'           => $request->remarks,
                     'created_by'        => auth()->id(),
@@ -143,7 +208,7 @@ class EmployeeAttendanceController extends Controller
                 
     return redirect()
         ->route('admin.employee-attendance.index')
-        ->with('success', 'Attendance saved successfully.');
+        ->with('success', 'Attendance Check In successfully.');
             }else{
                 return redirect()
                 ->route('admin.employee-attendance.create')

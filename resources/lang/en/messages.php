@@ -4,6 +4,7 @@ return [
 
     'dashboard' => 'Dashboard',
     'customer' => 'Customer',
+    'employee' => 'Employee',
     'total_sale' => 'Total Sale',
     'cash_in' => 'Cash In',
     'due' => 'Due',

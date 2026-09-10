@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Staff;
+use App\Models\User;
+use App\Models\Role;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class EmployeeController extends Controller
@@ -108,9 +111,30 @@ class EmployeeController extends Controller
             'joining_date' => 'required',
         ]);
 
-        Staff::create([
+         if (!is_null($request->phone)) {
+            $request->validate([
+                'phone' => 'unique:users,phone',
+            ]);
+        }
+
+        DB::transaction(function () use ($request) {
+            $user = User::create([
+                'company_id' => $request->company_id ?? Auth::user()->company_id,
+                'role' => 1,
+                'role_status' => 4,
+                'name' => $request->name,
+                'user_name' => $request->phone,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'status' => 1,
+                'password' => Hash::make($request->phone),
+                'created_by' => Auth::user()->id,
+            ]);
+
+            Staff::create([
             'company_id' => $request->company_id ?? Auth::user()->company_id,
             'branch_id' => $request->branch_id,
+            'user_id' => $user->id,
             'code' => $request->code,
             'name' => $request->name,
             'short_name' => $request->short_name,
@@ -132,7 +156,11 @@ class EmployeeController extends Controller
             'total_salary' => $request->total_salary,
             'type' => $request->type,
             'created_by' => Auth::user()->id,
-        ]);
+            ]);
+
+             $role = Role::findByName('staff');
+            $user->assignRole($role);
+        });
 
         return redirect()->route('admin.employee.index')->withSuccessMessage('Created Successfully!');
     }
@@ -181,33 +209,61 @@ class EmployeeController extends Controller
             'name' => 'required',
             'joining_date' => 'required',
         ]);
+        DB::transaction(function () use ($request,$id) {
+             $data = Staff::findOrFail($id);
 
-        $data = Staff::findOrFail($id);
-        $data->update([
-            'company_id' => $request->company_id ?? Auth::user()->company_id,
-            'branch_id' => $request->branch_id,
-            'code' => $request->code,
-            'name' => $request->name,
-            'short_name' => $request->short_name,
-            'designation' => $request->designation,
-            'joining_date' => date('Y-m-d', strtotime($request->joining_date)),
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'national_id' => $request->national_id,
-            'ac_no' => $request->ac_no,
-            'ac_branch' => $request->ac_branch,
-            'address' => $request->address,
-            'basic_salary' => $request->basic_salary,
-            'house_rent' => $request->house_rent,
-            'medical_allowance' => $request->medical_allowance,
-            'others' => $request->others,
-            'deducted' => $request->deducted,
-            'increment_percent' => $request->increment_percent,
-            'increment_amount' => $request->increment_amount,
-            'total_salary' => $request->total_salary,
-            'type' => $request->type,
-            'updated_by' => Auth::user()->id,
-        ]);
+            $user = User::where('phone',$request->phone)->first();
+            if($user){
+               $userid = $user->id;
+            }else{
+            $user = User::create([
+                            'company_id' => $request->company_id ?? Auth::user()->company_id,
+                            'role' => 1,
+                            'name' => $request->name,
+                            'user_name' => $request->phone,
+                            'email' => $request->email,
+                            'phone' => $request->phone,
+                            'status' => 1,
+                            'password' => Hash::make($request->phone),
+                            'created_by' => Auth::user()->id,
+                        ]); 
+               $userid = $user->id;         
+            }
+           
+              $role = Role::findByName('staff');
+            $user->assignRole($role);
+
+            $data->update([
+                'company_id' => $request->company_id ?? Auth::user()->company_id,
+                'branch_id' => $request->branch_id,
+                'user_id' => $userid,
+                'role_status' => 4,
+                'code' => $request->code,
+                'name' => $request->name,
+                'short_name' => $request->short_name,
+                'designation' => $request->designation,
+                'joining_date' => date('Y-m-d', strtotime($request->joining_date)),
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'national_id' => $request->national_id,
+                'ac_no' => $request->ac_no,
+                'ac_branch' => $request->ac_branch,
+                'address' => $request->address,
+                'basic_salary' => $request->basic_salary,
+                'house_rent' => $request->house_rent,
+                'medical_allowance' => $request->medical_allowance,
+                'others' => $request->others,
+                'deducted' => $request->deducted,
+                'increment_percent' => $request->increment_percent,
+                'increment_amount' => $request->increment_amount,
+                'total_salary' => $request->total_salary,
+                'type' => $request->type,
+                'updated_by' => Auth::user()->id,
+            ]);
+
+        });
+
+       
         return redirect()->route('admin.employee.index')->withSuccessMessage('Updated Successfully!');
     }
 

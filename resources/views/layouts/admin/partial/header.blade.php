@@ -149,7 +149,7 @@
             
             <!-- CREATE LINKS (Horizontally Visible) -->
             <div class="create-item-group d-flex align-items-center gap-2">
-           <div class="language-switch">
+           <!-- <div class="language-switch">
                 <a href="{{ route('admin.language','en') }}"
                 class="lang-btn {{ app()->getLocale() == 'en' ? 'active' : '' }}"
                 title="English">
@@ -161,37 +161,40 @@
                 title="বাংলা">
                    <img src="{{ asset('backend/images/bn.webp') }}" alt="বাংলা">
                 </a>
-            </div>
+            </div> -->
                  
-                @can('admin.product.create')
-                <a href="{{url('/admin/product/create')}}" class="quick-link-btn" title="Create Product">
-                    <i class="fad fa-plus text-primary"></i><span>{{__('messages.product')}}</span>
+                @can('admin.employee.create')
+                <a href="{{url('/admin/employee/create')}}" class="quick-link-btn" title="Create Product">
+                    <i class="fad fa-plus text-primary"></i><span>{{__('messages.employee')}}</span>
                 </a>
                 @endcan
-                @can('admin.client.create')
-                <a href="{{url('/admin/client/create')}}" class="quick-link-btn" title="Create Client">
-                    <i class="fad fa-plus text-success"></i><span>{{__('messages.customer')}}</span>
-                </a>
-                @endcan
-                @can('admin.running-sales.create')
-                <a href="{{url('/admin/running-sales/create')}}" class="quick-link-btn" title="Create POS">
-                    <i class="fad fa-plus text-warning"></i><span>{{__('messages.pos')}}</span>
-                </a>
-                @endcan
-                @can('admin.sales.create')
-                <a href="{{url('/admin/sales/create')}}" class="quick-link-btn" title="Create Invoice">
-                    <i class="fad fa-plus text-info"></i><span>{{__('messages.invoice')}}</span>
-                </a>
-                @endcan
-                @can('admin.collection.create')
-                <a href="{{url('/admin/collection/create')}}" class="quick-link-btn" title="Create Collection">
-                    <i class="fad fa-plus text-danger"></i><span>{{__('messages.collection')}}</span>
+
+                 @can('admin.employee-attendance.create')
+                <a href="{{url('/admin/employee-attendance/create')}}" class="quick-link-btn" title="Create POS">
+                    <i class="fad fa-plus text-warning"></i><span>Attendance</span>
                 </a>
                 @endcan
                
-                @can('admin.lifting.create')
-                <a href="{{url('/admin/lifting/create')}}" class="quick-link-btn" title="Create Purchase">
-                    <i class="fad fa-plus text-secondary"></i><span>{{__('messages.purchase')}}</span>
+                @can('admin.payroll.create')
+                <a href="{{url('/admin/payroll/create')}}" class="quick-link-btn" title="Create Client">
+                    <i class="fad fa-plus text-success"></i><span>Payroll</span>
+                </a>
+                @endcan
+               
+                @can('admin.expense.create')
+                <a href="{{url('/admin/expense/create')}}" class="quick-link-btn" title="Create Invoice">
+                    <i class="fad fa-plus text-info"></i><span>Expense</span>
+                </a>
+                @endcan
+                @can('admin.salary.generate')
+                <a href="{{url('/admin/salary-generate')}}" class="quick-link-btn" title="Create Collection">
+                    <i class="fad fa-plus text-danger"></i><span>Generate Salary</span>
+                </a>
+                @endcan
+               
+                @can('admin.pay.slip')
+                <a href="{{url('/admin/payslip')}}" class="quick-link-btn" title="Create Purchase">
+                    <i class="fad fa-plus text-secondary"></i><span>Payslip</span>
                 </a>
                 @endcan
             </div>
@@ -207,34 +210,34 @@
                 <div class="dropdown-menu custom-dropdown-menu shadow-lg border-0 rounded-3 mt-2">
                     <h6 class="dropdown-header fs-11 text-uppercase fw-bold text-muted px-3 pt-2 mb-1">{{__('messages.data_record')}}</h6>
                 
-                    @can('admin.product.create')
-                    <a class="dropdown-item" href="{{url('/admin/product')}}">
-                        <i class="fad fa-box-open text-primary"></i> <span>{{__('messages.product_list')}}</span>
+                    @can('admin.employee.index')
+                    <a class="dropdown-item" href="{{url('/admin/employee')}}">
+                        <i class="fad fa-user-tie text-primary"></i> <span>Employee List</span>
                     </a>
                     @endcan
-                    @can('admin.client.create')
-                    <a class="dropdown-item" href="{{url('/admin/client')}}">
-                        <i class="fad fa-users text-success"></i> <span>{{__('messages.customer_list')}}</span>
+                     @can('admin.payroll.index')
+                    <a class="dropdown-item" href="{{url('/admin/payroll')}}">
+                        <i class="fad fa-users text-success"></i> <span>Payroll</span>
                     </a>
                     @endcan
-                    @can('admin.running-sales.index')
-                    <a class="dropdown-item" href="{{url('/admin/running-sales')}}">
-                        <i class="fad fa-cash-register text-warning"></i> <span>{{__('messages.pos_sales')}}</span>
+                     @can('admin.employee-attendance.index')
+                    <a class="dropdown-item" href="{{url('/admin/employee-attendance')}}">
+                        <i class="fad fa-cash-register text-warning"></i> <span>Attendance List</span>
                     </a>
                     @endcan
-                    @can('admin.sales.index')
-                    <a class="dropdown-item" href="{{url('/admin/sales')}}">
-                        <i class="fad fa-file-invoice-dollar text-info"></i> <span>{{__('messages.invoice_list')}}</span>
+                    @can('admin.expense.index')
+                    <a class="dropdown-item" href="{{url('/admin/expense')}}">
+                        <i class="fad fa-file-invoice-dollar text-info"></i> <span>Expense List</span>
                     </a>
                     @endcan
-                    @can('admin.collection.index')
-                    <a class="dropdown-item" href="{{url('/admin/collection')}}">
-                        <i class="fad fa-money-bill-wave text-danger"></i> <span>{{__('messages.collection_list')}}</span>
+                     @can('admin.salary.generate')
+                    <a class="dropdown-item" href="{{url('/admin/salary-generate')}}">
+                        <i class="fad fa-money-bill-wave text-danger"></i> <span>Salary List</span>
                     </a>
                     @endcan
-                    @can('admin.lifting.index')
-                    <a class="dropdown-item" href="{{url('/admin/lifting')}}">
-                        <i class="fad fa-cart-plus text-secondary"></i> <span>{{__('messages.purchase_list')}}</span>
+                    @can('admin.pay.slip')
+                    <a class="dropdown-item" href="{{url('/admin/payslip')}}">
+                        <i class="fad fa-cart-plus text-secondary"></i> <span>Payslip</span>
                     </a>
                     @endcan
                 </div>

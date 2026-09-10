@@ -58,7 +58,10 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-     
+
+        if( Auth::user()->role_status==4){
+           return view('hrm.dashboard.staff-dashboard');
+        }else{
         $total_employee = DB::table('staff')->count();
         $total_salary = DB::table('staff')->sum('total_salary');
         $total_disbursed = DB::table('hrm_employee_payrolls')->where('payment_status','Paid')->sum('net_salary');
@@ -78,6 +81,8 @@ class AdminController extends Controller
             'total_resignation',
             'total_termination'
             ));
+        }
+        
     }
 
     /**

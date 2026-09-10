@@ -1,7 +1,273 @@
 @extends('layouts.admin.app')
 
-@section('content')
 
+@if(auth()->user()->role_status==4)
+@section('content')
+@php
+    $staff = \App\Models\Staff::where('user_id', auth()->user()->id)->first();
+@endphp
+
+@php
+    $todayAttendance = DB::table('hrm_employee_attendances')->where('employee_id', $staff->id ?? null)
+        ->whereDate('attendance_date', today())
+        ->first();
+    
+@endphp
+<div class="row">
+
+    <div class="col-lg-12">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h5 class="mb-0">
+                    <i class="fas fa-user-check text-success"></i>
+                    Employee Attendance
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+            @if(!$todayAttendance->check_out)
+
+                <form action="{{ route('admin.employee-attendance.store') }}" method="POST">
+
+                    @csrf
+
+                    <div class="row g-3">
+
+                        <div class="col-lg-4">
+                            <label><b>Employee</b></label>
+                             <select name="employee_id[]" id="employee_id" class="form-select">
+                              
+                                <option value="{{ $staff->id }}">
+                                    {{ $staff->id }} - {{ $staff->name }}
+                                </option>
+
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label><b>Attendance Date</b></label>
+
+                            <input type="date" name="attendance_date" class="form-control" value="{{ date('Y-m-d') }}"
+                                required readonly>
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <label><b>Status</b></label>
+
+                            <select name="attendance_status" class="form-control">
+                                <option value="Present">Present</option>
+                            </select>
+
+                        </div>
+
+                        <div class="col-lg-3">
+                            <label><b>Check In</b></label>
+                            <input type="time"
+                            name="check_in"
+                            id="check_in"
+                            class="form-control"
+                            step="1"
+                            value="{{ $todayAttendance->check_in ?? date('H:i:s') }}"
+                            >
+
+                        </div>
+
+                        <div class="col-lg-3">
+
+                            <label><b>Check Out</b></label>
+
+                            <input type="time" name="check_out" id="check_out" class="form-control"
+                             step="1"
+                            value="{{ $todayAttendance->check_in == null ? '' : ($todayAttendance->check_out == null ? date('H:i:s') : $todayAttendance->check_out) }}"
+                            >
+
+                        </div>
+
+                        <div class="row g-3">
+
+                            {{-- Check In Latitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check In Latitude</b></label>
+
+                                <input type="text"
+                                    name="check_in_latitude"
+                                    id="check_in_latitude"
+                                    class="form-control"
+                                    placeholder="Getting location..."
+                                    readonly>
+                            </div>
+
+                            {{-- Check In Longitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check In Longitude</b></label>
+
+                                <input type="text"
+                                    name="check_in_longitude"
+                                    id="check_in_longitude"
+                                    class="form-control"
+                                    placeholder="Getting location..."
+                                    readonly>
+                            </div>
+
+                            {{-- Check Out Latitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check Out Latitude</b></label>
+
+                                <input type="text"
+                                    name="check_out_latitude"
+                                    id="check_out_latitude"
+                                    class="form-control"
+                                    placeholder="Getting location..."
+                                    readonly>
+                            </div>
+
+                            {{-- Check Out Longitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check Out Longitude</b></label>
+
+                                <input type="text"
+                                    name="check_out_longitude"
+                                    id="check_out_longitude"
+                                    class="form-control"
+                                    placeholder="Getting location..."
+                                    readonly>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-12">
+
+                            <label><b>Remarks</b></label>
+
+                            <textarea name="remarks" class="form-control" rows="3"></textarea>
+
+                        </div>
+
+                        <div class="col-lg-12">
+                                @if($todayAttendance->check_in==null)
+                                 <button class="btn btn-success"><i class="fas fa-save"></i>Check In</button>
+                                @elseif($todayAttendance->check_out==null)
+                                 <button class="btn btn-success"><i class="fas fa-save"></i>Check Out</button>
+                                @endif 
+
+                            <a href="{{ route('admin.employee-attendance.index') }}" class="btn btn-secondary">
+
+                                Back
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </form>
+                @else
+                <h5 class="mb-0 text-danger">
+                    Already done attendance for today!!
+                </h5>
+                @endif
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+@endsection
+
+@push('js')
+
+<script>
+
+// user's device GPS coordinate auto display
+function getCurrentLocation() {
+
+    if (!navigator.geolocation) {
+
+        alert('GPS is not supported by your browser.');
+        return;
+
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+
+            document.getElementById('check_in_latitude').value =
+                latitude.toFixed(7);
+
+            document.getElementById('check_in_longitude').value =
+                longitude.toFixed(7);
+
+            // Checkout-এর জন্যও current location রাখা
+            document.getElementById('check_out_latitude').value =
+                latitude.toFixed(7);
+
+            document.getElementById('check_out_longitude').value =
+                longitude.toFixed(7);
+
+        },
+
+        function(error) {
+
+            if (error.code === error.PERMISSION_DENIED) {
+
+                alert('Please allow GPS/Location permission.');
+
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+
+                alert('Location information is unavailable.');
+
+            } else if (error.code === error.TIMEOUT) {
+
+                alert('Location request timed out.');
+
+            } else {
+
+                alert('Unable to get your location.');
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+
+// Page load হলে GPS নেওয়া হবে
+document.addEventListener('DOMContentLoaded', function () {
+
+    getCurrentLocation();
+
+});
+
+</script>
+
+@endpush
+
+
+@else
+
+@section('content')
 <div class="row">
 
     <div class="col-lg-12">
@@ -144,6 +410,8 @@
 
 </div>
 
+
+
 @endsection
 
 @push('js')
@@ -184,6 +452,9 @@ $(document).on('change', '#check_in, #check_out', function () {
     }
 
 });
+
 </script>
 
 @endpush
+
+@endif
