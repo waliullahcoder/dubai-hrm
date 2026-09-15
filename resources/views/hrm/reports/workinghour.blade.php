@@ -36,12 +36,7 @@
 
                         </label>
 
-                        <input
-                            type="date"
-                            id="from_date"
-                            class="form-control"
-                            value="{{ date('Y-m-01') }}"
-                        >
+                        <input type="date" id="from_date" class="form-control" value="{{ date('Y-m-01') }}">
 
                     </div>
 
@@ -56,12 +51,7 @@
 
                         </label>
 
-                        <input
-                            type="date"
-                            id="to_date"
-                            class="form-control"
-                            value="{{ date('Y-m-t') }}"
-                        >
+                        <input type="date" id="to_date" class="form-control" value="{{ date('Y-m-t') }}">
 
                     </div>
 
@@ -76,10 +66,7 @@
 
                         </label>
 
-                        <select
-                            id="employee_id"
-                            class="form-select"
-                        >
+                        <select id="employee_id" class="form-select">
 
                             <option value="">
                                 All Employee
@@ -87,12 +74,12 @@
 
                             @foreach($employees as $employee)
 
-                                <option value="{{ $employee->id }}">
+                            <option value="{{ $employee->id }}">
 
-                                    {{ $employee->code }} -
-                                    {{ $employee->name }}
+                                {{ $employee->code }} -
+                                {{ $employee->name }}
 
-                                </option>
+                            </option>
 
                             @endforeach
 
@@ -106,11 +93,7 @@
 
                         <div class="d-flex gap-2">
 
-                            <button
-                                type="button"
-                                id="btnFilter"
-                                class="btn btn-primary"
-                            >
+                            <button type="button" id="btnFilter" class="btn btn-primary">
 
                                 <i class="fas fa-search me-1"></i>
                                 Filter
@@ -118,11 +101,7 @@
                             </button>
 
 
-                            <button
-                                type="button"
-                                id="btnReset"
-                                class="btn btn-outline-secondary"
-                            >
+                            <button type="button" id="btnReset" class="btn btn-outline-secondary">
 
                                 <i class="fas fa-sync-alt me-1"></i>
                                 Reset
@@ -143,10 +122,7 @@
 
                 <div class="table-responsive">
 
-                    <table
-                        class="table table-bordered table-hover dataTable align-middle"
-                        style="width:100%"
-                    >
+                    <table class="table table-bordered table-hover dataTable align-middle" style="width:100%">
 
                         <thead class="table-dark text-nowrap">
 
@@ -189,12 +165,9 @@
                                     Page Total Working Hour :
 
                                 </th>
-                                
 
-                                <th
-                                    class="text-center"
-                                    id="total_working_hour"
-                                >
+
+                                <th class="text-center" id="total_working_hour">
                                     0:00
                                 </th>
 
@@ -222,8 +195,7 @@
 @push('js')
 
 <script>
-
-$(function () {
+$(function() {
 
     var table = $('.dataTable').DataTable({
 
@@ -247,14 +219,11 @@ $(function () {
             {
                 extend: 'excelHtml5',
 
-                text:
-                    '<i class="fas fa-file-excel me-1"></i> Excel',
+                text: '<i class="fas fa-file-excel me-1"></i> Excel',
 
-                className:
-                    'btn btn-success btn-sm',
+                className: 'btn btn-success btn-sm',
 
-                title:
-                    'Working Hour Report',
+                title: 'Working Hour Report',
 
                 exportOptions: {
 
@@ -282,7 +251,7 @@ $(function () {
 
             url: "{{ route('admin.workinghour.report') }}",
 
-            data: function (d) {
+            data: function(d) {
 
                 d.from_date =
                     $('#from_date').val();
@@ -353,11 +322,11 @@ $(function () {
                 data: 'remarks',
                 name: 'atd.remarks',
 
-                render: function (data) {
+                render: function(data) {
 
-                    return data
-                        ? data
-                        : '-';
+                    return data ?
+                        data :
+                        '-';
 
                 }
 
@@ -368,96 +337,55 @@ $(function () {
 
         // ================= FOOTER TOTAL =================
 
-        footerCallback: function (
-            row,
-            data,
-            start,
-            end,
-            display
-        ) {
+       footerCallback: function (row, data, start, end, display) {
 
-            var api = this.api();
+    var api = this.api();
 
+    var totalMinutes = 0;
 
-            function timeToMinutes(time) {
+    api.column(6, { page: 'current' }).data().each(function (value) {
 
-                if (!time) {
-                    return 0;
-                }
+        if (!value) {
+            return;
+        }
 
-                time = String(time).trim();
+        // HTML badge থাকলে HTML remove করবে
+        var text = $('<div>').html(value).text().trim();
 
+        // 08:30 / 8:30 / 08:30:00
+        if (text.indexOf(':') !== -1) {
 
-                // HH:MM
-                if (
-                    /^\d{1,3}:\d{2}$/.test(time)
-                ) {
+            var parts = text.split(':');
 
-                    var parts = time.split(':');
+            var hours = parseInt(parts[0]) || 0;
+            var minutes = parseInt(parts[1]) || 0;
 
-                    return (
-                        parseInt(parts[0]) * 60
-                    ) + parseInt(parts[1]);
+            totalMinutes += (hours * 60) + minutes;
 
-                }
+        }
 
+        // যদি 8.5 / 8.00 এর মতো decimal hour হয়
+        else if (!isNaN(parseFloat(text))) {
 
-                // HH:MM:SS
-                if (
-                    /^\d{1,3}:\d{2}:\d{2}$/.test(time)
-                ) {
-
-                    var parts = time.split(':');
-
-                    return (
-                        parseInt(parts[0]) * 60
-                    ) +
-                    parseInt(parts[1]);
-
-                }
-
-                return 0;
-
-            }
-
-
-            var totalMinutes =
-                api
-                    .column(6, {
-                        page: 'current'
-                    })
-                    .data()
-                    .reduce(function (total, value) {
-
-                        return total +
-                            timeToMinutes(
-                                value
-                            );
-
-                    }, 0);
-
-
-            var hours =
-                Math.floor(
-                    totalMinutes / 60
-                );
-
-            var minutes =
-                totalMinutes % 60;
-
-
-            $('#total_working_hour').html(
-
-                String(hours) +
-                ':' +
-                String(minutes).padStart(
-                    2,
-                    '0'
-                )
-
+            totalMinutes += Math.round(
+                parseFloat(text) * 60
             );
 
         }
+
+    });
+
+
+    var hours = Math.floor(totalMinutes / 60);
+
+    var minutes = totalMinutes % 60;
+
+
+    $('#total_working_hour').html(
+        hours + ':' + String(minutes).padStart(2, '0')
+    );
+
+}
 
     });
 
@@ -466,7 +394,7 @@ $(function () {
 
     $('#btnFilter').on(
         'click',
-        function () {
+        function() {
 
             table.ajax.reload();
 
@@ -479,7 +407,7 @@ $(function () {
     $('#from_date, #to_date, #employee_id')
         .on(
             'change',
-            function () {
+            function() {
 
                 table.ajax.reload();
 
@@ -491,7 +419,7 @@ $(function () {
 
     $('#btnReset').on(
         'click',
-        function () {
+        function() {
 
             $('#from_date').val('');
             $('#to_date').val('');
@@ -503,12 +431,10 @@ $(function () {
     );
 
 });
-
 </script>
 
 
 <style>
-
 /* ================= WORKING HOUR BADGE ================= */
 
 .working-hour-badge {
@@ -554,7 +480,6 @@ $(function () {
     line-height: 1.5;
 
 }
-
 </style>
 
 @endpush
