@@ -208,7 +208,7 @@
                     <span class="menu-title">Working Hours</span>
                 </a>
 
-                <a href="#" class="menu-card">
+                <a href="{{url('admin/expense/create')}}" class="menu-card">
                     <div class="menu-icon">
                         <i class="fas fa-bus"></i>
                     </div>
@@ -247,21 +247,8 @@
 
         </div>
 
-        <!-- Bottom Navigation -->
-        <div class="bottom-nav">
-            <a href="#" class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="far fa-clock"></i>
-                <span>History</span>
-            </a>
-            <a href="#" class="nav-item">
-                <i class="far fa-user"></i>
-                <span>Profile</span>
-            </a>
-        </div>
+         <!-- Bottom Navigation -->
+        @include('hrm.dashboard.bottom_navigation')
 
     </div>
 </div>
