@@ -137,6 +137,7 @@ class EmployeeController extends Controller
             'user_id' => $user->id,
             'code' => $request->code,
             'name' => $request->name,
+            'currency_code' => $request->currency_code,
             'short_name' => $request->short_name,
             'designation' => $request->designation,
             'joining_date' => date('Y-m-d', strtotime($request->joining_date)),
@@ -229,6 +230,12 @@ class EmployeeController extends Controller
                         ]); 
                $userid = $user->id;         
             }
+            $user->update([
+                'name' => $request->name,
+                'user_name' => $request->phone,
+                'email' => $request->email,
+                'phone' => $request->phone
+            ]);
            
               $role = Role::findByName('staff');
             $user->assignRole($role);
@@ -240,6 +247,7 @@ class EmployeeController extends Controller
                 'role_status' => 4,
                 'code' => $request->code,
                 'name' => $request->name,
+                'currency_code' => $request->currency_code,
                 'short_name' => $request->short_name,
                 'designation' => $request->designation,
                 'joining_date' => date('Y-m-d', strtotime($request->joining_date)),

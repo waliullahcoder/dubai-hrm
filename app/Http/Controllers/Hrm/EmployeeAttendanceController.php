@@ -169,33 +169,131 @@ class EmployeeAttendanceController extends Controller
 
             }
 
+
+            //Distance
+            // $officeLat = $request->check_in_latitude;
+            // $officeLng = $request->check_in_longitude;
+
+            $officeLat = 23.760570242255966;
+            $officeLng = 90.41916917806215;
+
+            $employeeLat = (float) $request->check_in_latitude;
+            $employeeLng = (float) $request->check_in_longitude;
+
+            $earthRadius = 200; // meters
+
+            $latFrom = deg2rad($officeLat);
+            $latTo   = deg2rad($employeeLat);
+
+            $latDelta = deg2rad($employeeLat - $officeLat);
+            $lngDelta = deg2rad($employeeLng - $officeLng);
+
+            $a = sin($latDelta / 2) ** 2
+                + cos($latFrom)
+                * cos($latTo)
+                * sin($lngDelta / 2) ** 2;
+
+            $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+            $distance = $earthRadius * $c;
+
+            // dd([
+            //     'employee_lat' => $employeeLat,
+            //     'employee_lng' => $employeeLng,
+            //     'distance_meter' => round($distance, 2),
+            // ]);
+             
+
         if(isset($request->employee_id) && count($request->employee_id)>0){
               $attendexist= DB::table('hrm_employee_attendances')->where('attendance_date',$request->attendance_date)->whereIn('employee_id',$request->employee_id)->count();
               if($attendexist){
+            $attendance= DB::table('hrm_employee_attendances')->where('attendance_date',$request->attendance_date)->whereIn('employee_id',$request->employee_id)->first();
+            $checkIn = Carbon::parse($attendance->check_in);
+            $checkOut = Carbon::parse($request->check_out);
+
+            // Office time
+            $officeStart = Carbon::parse($request->attendance_date . ' 09:00:00');
+            $officeEnd   = Carbon::parse($request->attendance_date . ' 18:00:00');
+
+
+            // =====================================
+            // LATE MINUTES
+            // =====================================
+
+            $lateMinutes = 0;
+
+            if ($checkIn->greaterThan($officeStart)) {
+
+                $lateMinutes = $officeStart->diffInMinutes($checkIn);
+
+            }
+
+
+            // =====================================
+            // WORKED MINUTES
+            // =====================================
+
+            $workedMinutes = $checkIn->diffInMinutes($checkOut);
+
+            $workedHours = floor($workedMinutes / 60);
+
+            $workedMinutesRemaining = $workedMinutes % 60;
+
+            $workedHoursFormatted = sprintf(
+                '%02d:%02d',
+                $workedHours,
+                $workedMinutesRemaining
+            );
+
+
+            // =====================================
+            // OVERTIME MINUTES
+            // =====================================
+
+            $overtimeMinutes = 0;
+
+            if ($checkOut->greaterThan($officeEnd)) {
+
+                $overtimeMinutes = $officeEnd->diffInMinutes($checkOut);
+
+            }
 
               $todayAttendance = DB::table('hrm_employee_attendances')->where('employee_id', $request->employee_id ?? null)->whereDate('attendance_date', today())->first();
 
-            if ($todayAttendance && $todayAttendance->check_out == null) {
+            if (Auth::user()->role_status==4 && $todayAttendance && $todayAttendance->check_in != null && $todayAttendance->check_out == null) {
                     DB::table('hrm_employee_attendances')
                         ->where('id', $todayAttendance->id)
                         ->update([
-                            'check_out' => now()->format('H:i:s'),
+                            'check_out'            => $request->check_out ?? now()->format('H:i:s'),
+                            'check_out_latitude'   => $request->check_out_latitude,
+                            'check_out_longitude'  => $request->check_out_longitude,
+                            'check_out_distance'   => $distance,
+                            'late_minutes'         => $lateMinutes,
+                            'overtime_minutes'     => $overtimeMinutes,
+                            'worked_hours'         => $workedHours,
                         ]);
 
-                    return redirect()
-                        ->route('admin.employee-attendance.index')
-                        ->with('success', 'Attendance Check Out successfully.');
+
+                   return redirect()->back()->withSuccessMessage('Attendance Check Out successfully.');
                 }
 
                  return redirect()->back()->withErrors('Already Exist attendance!');
               }
-             
+
+
+            
            foreach ($request->employee_id as $key => $employeeId) {
                 DB::table('hrm_employee_attendances')->insert([
                     'employee_id'       => $employeeId,
                     'attendance_date'   => $request->attendance_date,
                     'check_in'          => $request->check_in,
+                    'check_in_latitude'          => $request->check_in_latitude,
+                    'check_in_longitude'          => $request->check_in_longitude,
+                    'check_in_distance'          => $distance,
                     'check_out'         => $request->check_out,
+                    'check_out_latitude'          => $request->check_out_latitude,
+                    'check_out_longitude'          => $request->check_out_longitude,
+                    'check_out_distance'          => $distance,
                     'late_minutes'      => Auth::user()->role_status==4 ? $lateMinutes : $request->late_minutes,
                     'overtime_minutes'  => Auth::user()->role_status==4 ? $overtimeMinutes : $request->overtime_minutes,
                     'worked_hours'      => Auth::user()->role_status==4 ? $workedHours : $request->worked_hours,
@@ -204,6 +302,10 @@ class EmployeeAttendanceController extends Controller
                     'created_by'        => auth()->id(),
                     'created_at'        => now(),
                 ]);
+                }
+
+                if(Auth::user()->role_status==4){
+                      return redirect()->back()->withSuccessMessage('Attendance Check In successfully.');
                 }
                 
     return redirect()
@@ -240,6 +342,80 @@ class EmployeeAttendanceController extends Controller
             'attendance_status' => 'required',
         ]);
 
+        $checkIn = Carbon::parse($request->check_in);
+            $checkOut = Carbon::parse($request->check_out);
+
+            // Office time
+            $officeStart = Carbon::parse($request->attendance_date . ' 09:00:00');
+            $officeEnd   = Carbon::parse($request->attendance_date . ' 18:00:00');
+
+
+            // =====================================
+            // LATE MINUTES
+            // =====================================
+
+            $lateMinutes = 0;
+
+            if ($checkIn->greaterThan($officeStart)) {
+
+                $lateMinutes = $officeStart->diffInMinutes($checkIn);
+
+            }
+
+
+            // =====================================
+            // WORKED MINUTES
+            // =====================================
+
+            $workedMinutes = $checkIn->diffInMinutes($checkOut);
+
+            $workedHours = floor($workedMinutes / 60);
+
+            $workedMinutesRemaining = $workedMinutes % 60;
+
+            $workedHoursFormatted = sprintf(
+                '%02d:%02d',
+                $workedHours,
+                $workedMinutesRemaining
+            );
+
+
+            // =====================================
+            // OVERTIME MINUTES
+            // =====================================
+
+            $overtimeMinutes = 0;
+
+            if ($checkOut->greaterThan($officeEnd)) {
+
+                $overtimeMinutes = $officeEnd->diffInMinutes($checkOut);
+
+            }
+
+          $officeLat = 23.760570242255966;
+            $officeLng = 90.41916917806215;
+
+            $employeeLat = (float) $request->check_in_latitude;
+            $employeeLng = (float) $request->check_in_longitude;
+
+            $earthRadius = 200; // meters
+
+            $latFrom = deg2rad($officeLat);
+            $latTo   = deg2rad($employeeLat);
+
+            $latDelta = deg2rad($employeeLat - $officeLat);
+            $lngDelta = deg2rad($employeeLng - $officeLng);
+
+            $a = sin($latDelta / 2) ** 2
+                + cos($latFrom)
+                * cos($latTo)
+                * sin($lngDelta / 2) ** 2;
+
+            $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+            $distance = $earthRadius * $c;
+
+
         DB::table('hrm_employee_attendances')
             ->where('id', $id)
             ->update([
@@ -247,10 +423,16 @@ class EmployeeAttendanceController extends Controller
                 'employee_id'       => $request->employee_id,
                 'attendance_date'   => $request->attendance_date,
                 'check_in'          => $request->check_in,
+                'check_in_latitude'          => $request->check_in_latitude,
+                'check_in_longitude'          => $request->check_in_longitude,
+                'check_in_distance'          => $distance,
                 'check_out'         => $request->check_out,
-                'late_minutes'      => $request->late_minutes,
-                'overtime_minutes'  => $request->overtime_minutes,
-                'worked_hours'      => $request->worked_hours,
+                'check_out_latitude'          => $request->check_out_latitude,
+                'check_out_longitude'          => $request->check_out_longitude,
+                'check_out_distance'          => $distance,
+                'late_minutes'      => Auth::user()->role_status==4 ? $lateMinutes : $request->late_minutes,
+                'overtime_minutes'  => Auth::user()->role_status==4 ? $overtimeMinutes : $request->overtime_minutes,
+                'worked_hours'      => Auth::user()->role_status==4 ? $workedHours : $request->worked_hours,
                 'attendance_status' => $request->attendance_status,
                 'remarks'           => $request->remarks,
                 'updated_by'        => auth()->id(),

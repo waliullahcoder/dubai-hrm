@@ -77,9 +77,9 @@
                 value="{{ $data->name }}" placeholder="Staff Name">
         </div>
         <div class="col-lg-4 col-sm-6">
-            <label for="short_name" class="form-label"><b>Display Name <span class="text-danger">*</span></b></label>
+            <label for="short_name" class="form-label"><b><i class="fad fa-hotel"></i> Hotel Name <span class="text-danger">*</span></b></label>
             <input type="text" class="form-control" id="short_name" name="short_name" required
-                value="{{ $data->short_name }}" placeholder="Display Name">
+                value="{{ $data->short_name }}" placeholder="Hotel Name">
         </div>
         <div class="col-lg-4 col-sm-6">
             <label for="designation" class="form-label"><b>Designation</b></label>
@@ -106,6 +106,193 @@
             <input type="number" class="form-control" id="national_id" name="national_id"
                 value="{{ $data->national_id }}" placeholder="National ID">
         </div>
+          <div class="col-lg-4 col-sm-6">
+                            <label for="currency_code" class="form-label">
+                                <b>Currency <span class="text-danger">*</span></b>
+                            </label>
+
+                            <select name="currency_code" id="currency_code" class="select form-select" required>
+                                <option value="">Select Currency</option>
+
+                                <option value="AED" {{ old('currency_code', $data->currency_code) == 'AED' ? 'selected' : '' }}>
+                                    AED - United Arab Emirates Dirham
+                                </option>
+
+                                <option value="BDT" {{ old('currency_code', $data->currency_code) == 'BDT' ? 'selected' : '' }}>
+                                    BDT - Bangladeshi Taka
+                                </option>
+
+                                <option value="USD" {{ old('currency_code', $data->currency_code) == 'USD' ? 'selected' : '' }}>
+                                    USD - US Dollar
+                                </option>
+
+                                <option value="EUR" {{ old('currency_code', $data->currency_code) == 'EUR' ? 'selected' : '' }}>
+                                    EUR - Euro
+                                </option>
+
+                                <option value="GBP" {{ old('currency_code', $data->currency_code) == 'GBP' ? 'selected' : '' }}>
+                                    GBP - British Pound
+                                </option>
+
+                                <option value="SAR" {{ old('currency_code', $data->currency_code) == 'SAR' ? 'selected' : '' }}>
+                                    SAR - Saudi Riyal
+                                </option>
+
+                                <option value="QAR" {{ old('currency_code', $data->currency_code) == 'QAR' ? 'selected' : '' }}>
+                                    QAR - Qatari Riyal
+                                </option>
+
+                                <option value="KWD" {{ old('currency_code', $data->currency_code) == 'KWD' ? 'selected' : '' }}>
+                                    KWD - Kuwaiti Dinar
+                                </option>
+
+                                <option value="OMR" {{ old('currency_code', $data->currency_code) == 'OMR' ? 'selected' : '' }}>
+                                    OMR - Omani Rial
+                                </option>
+
+                                <option value="BHD" {{ old('currency_code', $data->currency_code) == 'BHD' ? 'selected' : '' }}>
+                                    BHD - Bahraini Dinar
+                                </option>
+
+                                <option value="INR" {{ old('currency_code', $data->currency_code) == 'INR' ? 'selected' : '' }}>
+                                    INR - Indian Rupee
+                                </option>
+
+                                <option value="PKR" {{ old('currency_code', $data->currency_code) == 'PKR' ? 'selected' : '' }}>
+                                    PKR - Pakistani Rupee
+                                </option>
+
+                                <option value="NPR" {{ old('currency_code', $data->currency_code) == 'NPR' ? 'selected' : '' }}>
+                                    NPR - Nepalese Rupee
+                                </option>
+
+                                <option value="LKR" {{ old('currency_code', $data->currency_code) == 'LKR' ? 'selected' : '' }}>
+                                    LKR - Sri Lankan Rupee
+                                </option>
+
+                                <option value="MYR" {{ old('currency_code', $data->currency_code) == 'MYR' ? 'selected' : '' }}>
+                                    MYR - Malaysian Ringgit
+                                </option>
+
+                                <option value="SGD" {{ old('currency_code', $data->currency_code) == 'SGD' ? 'selected' : '' }}>
+                                    SGD - Singapore Dollar
+                                </option>
+
+                                <option value="THB" {{ old('currency_code', $data->currency_code) == 'THB' ? 'selected' : '' }}>
+                                    THB - Thai Baht
+                                </option>
+
+                                <option value="CNY" {{ old('currency_code', $data->currency_code) == 'CNY' ? 'selected' : '' }}>
+                                    CNY - Chinese Yuan
+                                </option>
+
+                                <option value="JPY" {{ old('currency_code', $data->currency_code) == 'JPY' ? 'selected' : '' }}>
+                                    JPY - Japanese Yen
+                                </option>
+
+                                <option value="KRW" {{ old('currency_code', $data->currency_code) == 'KRW' ? 'selected' : '' }}>
+                                    KRW - South Korean Won
+                                </option>
+
+                                <option value="AUD" {{ old('currency_code', $data->currency_code) == 'AUD' ? 'selected' : '' }}>
+                                    AUD - Australian Dollar
+                                </option>
+
+                                <option value="CAD" {{ old('currency_code', $data->currency_code) == 'CAD' ? 'selected' : '' }}>
+                                    CAD - Canadian Dollar
+                                </option>
+
+                                <option value="NZD" {{ old('currency_code', $data->currency_code) == 'NZD' ? 'selected' : '' }}>
+                                    NZD - New Zealand Dollar
+                                </option>
+
+                                <option value="CHF" {{ old('currency_code', $data->currency_code) == 'CHF' ? 'selected' : '' }}>
+                                    CHF - Swiss Franc
+                                </option>
+
+                                <option value="RUB" {{ old('currency_code', $data->currency_code) == 'RUB' ? 'selected' : '' }}>
+                                    RUB - Russian Ruble
+                                </option>
+
+                                <option value="TRY" {{ old('currency_code', $data->currency_code) == 'TRY' ? 'selected' : '' }}>
+                                    TRY - Turkish Lira
+                                </option>
+
+                                <option value="ZAR" {{ old('currency_code', $data->currency_code) == 'ZAR' ? 'selected' : '' }}>
+                                    ZAR - South African Rand
+                                </option>
+
+                                <option value="BRL" {{ old('currency_code', $data->currency_code) == 'BRL' ? 'selected' : '' }}>
+                                    BRL - Brazilian Real
+                                </option>
+
+                                <option value="MXN" {{ old('currency_code', $data->currency_code) == 'MXN' ? 'selected' : '' }}>
+                                    MXN - Mexican Peso
+                                </option>
+
+                                <option value="IDR" {{ old('currency_code', $data->currency_code) == 'IDR' ? 'selected' : '' }}>
+                                    IDR - Indonesian Rupiah
+                                </option>
+
+                                <option value="VND" {{ old('currency_code', $data->currency_code) == 'VND' ? 'selected' : '' }}>
+                                    VND - Vietnamese Dong
+                                </option>
+
+                                <option value="PHP" {{ old('currency_code', $data->currency_code) == 'PHP' ? 'selected' : '' }}>
+                                    PHP - Philippine Peso
+                                </option>
+
+                                <option value="HKD" {{ old('currency_code', $data->currency_code) == 'HKD' ? 'selected' : '' }}>
+                                    HKD - Hong Kong Dollar
+                                </option>
+
+                                <option value="TWD" {{ old('currency_code', $data->currency_code) == 'TWD' ? 'selected' : '' }}>
+                                    TWD - New Taiwan Dollar
+                                </option>
+
+                                <option value="SEK" {{ old('currency_code', $data->currency_code) == 'SEK' ? 'selected' : '' }}>
+                                    SEK - Swedish Krona
+                                </option>
+
+                                <option value="NOK" {{ old('currency_code', $data->currency_code) == 'NOK' ? 'selected' : '' }}>
+                                    NOK - Norwegian Krone
+                                </option>
+
+                                <option value="DKK" {{ old('currency_code', $data->currency_code) == 'DKK' ? 'selected' : '' }}>
+                                    DKK - Danish Krone
+                                </option>
+
+                                <option value="PLN" {{ old('currency_code', $data->currency_code) == 'PLN' ? 'selected' : '' }}>
+                                    PLN - Polish Zloty
+                                </option>
+
+                                <option value="CZK" {{ old('currency_code', $data->currency_code) == 'CZK' ? 'selected' : '' }}>
+                                    CZK - Czech Koruna
+                                </option>
+
+                                <option value="ILS" {{ old('currency_code', $data->currency_code) == 'ILS' ? 'selected' : '' }}>
+                                    ILS - Israeli New Shekel
+                                </option>
+
+                                <option value="EGP" {{ old('currency_code', $data->currency_code) == 'EGP' ? 'selected' : '' }}>
+                                    EGP - Egyptian Pound
+                                </option>
+
+                                <option value="NGN" {{ old('currency_code', $data->currency_code) == 'NGN' ? 'selected' : '' }}>
+                                    NGN - Nigerian Naira
+                                </option>
+
+                                <option value="KES" {{ old('currency_code', $data->currency_code) == 'KES' ? 'selected' : '' }}>
+                                    KES - Kenyan Shilling
+                                </option>
+
+                                <option value="GHS" {{ old('currency_code', $data->currency_code) == 'GHS' ? 'selected' : '' }}>
+                                    GHS - Ghanaian Cedi
+                                </option>
+
+                            </select>
+                        </div>
+
         <div class="col-lg-4 col-sm-6">
             <label for="ac_no" class="form-label"><b>A/C No.</b></label>
             <input type="text" class="form-control" id="ac_no" name="ac_no"
@@ -123,7 +310,7 @@
         </div>
         <!-- Salary Structure -->
         <div class="col-lg-2 col-sm-3">
-            <label for="basic_salary" class="form-label"><b>Basic Salary</b></label>
+            <label for="basic_salary" class="form-label"><b>Basic Salary / Hour Rate</b></label>
             <input type="number" class="form-control" id="basic_salary" name="basic_salary"
                 value="{{ old('basic_salary', $data->basic_salary) }}">
         </div>

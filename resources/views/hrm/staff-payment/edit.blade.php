@@ -8,16 +8,16 @@
 
         <h5 class="mb-0">
             <i class="fas fa-edit text-warning"></i>
-            Edit Expense
+            Edit Payment
         </h5>
 
-        <a href="{{ route('admin.expense.index') }}" class="btn btn-secondary">
+        <a href="{{ route('admin.staff-payment.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back
         </a>
 
     </div>
 
-    <form action="{{ route('admin.expense.update',$expense->id) }}" method="POST">
+    <form action="{{ route('admin.staff-payment.update',$payment->id) }}" method="POST">
 
         @csrf
         @method('PUT')
@@ -28,17 +28,17 @@
 
                 <div class="col-md-3 mb-3">
                     <label class="form-label">
-                        Expense Type <span class="text-danger">*</span>
+                        Payment Type <span class="text-danger">*</span>
                     </label>
 
-                    <select name="expense_head_id" class="form-select select" required>
+                    <select name="payment_head_id" class="form-select select" required>
 
-                        <option value="">Select Expense Type</option>
+                        <option value="">Select Payment Type</option>
 
                         @foreach($coas as $coa)
 
                             <option value="{{ $coa->id }}"
-                                {{ $expense->expense_head_id == $coa->id ? 'selected' : '' }}>
+                                {{ $payment->payment_head_id == $coa->id ? 'selected' : '' }}>
 
                                 {{ $coa->id }} - {{ $coa->head_name }}
 
@@ -51,13 +51,12 @@
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="form-label">Work Location<span class="text-danger">*</span></label>
+                    <label class="form-label">Staff Name<span class="text-danger">*</span></label>
                     <select name="employee_id" class="form-select select" required>
-                        <option value="">Select Location</option>
-                        @foreach($hotels as $hotel)
-                            <option value="{{ $hotel->id }}"
-                             {{ $expense->employee_id == $hotel->id ? 'selected' : '' }}>
-                               {{ $hotel->short_name }} ({{ $hotel->address }})
+                        @foreach($staffs as $staff)
+                            <option value="{{ $staff->id }}"
+                             {{ $payment->employee_id == $staff->id ? 'selected' : '' }}>
+                               {{ $staff->name }} ({{ $staff->address }})
                             </option>
                         @endforeach
 
@@ -69,15 +68,15 @@
                 <div class="col-md-3 mb-3">
 
                     <label class="form-label">
-                        Expense Month <span class="text-danger">*</span>
+                        Payment Month <span class="text-danger">*</span>
                     </label>
 
-                    <select name="expense_month" class="form-select" required>
+                    <select name="payment_month" class="form-select" required>
 
                         @for($i=1;$i<=12;$i++)
 
                             <option value="{{ $i }}"
-                                {{ $expense->expense_month == $i ? 'selected' : '' }}>
+                                {{ $payment->payment_month == $i ? 'selected' : '' }}>
 
                                 {{ date('F', mktime(0,0,0,$i,1)) }}
 
@@ -91,14 +90,14 @@
 
                 <div class="col-md-3 mb-3">
 
-                    <label><b>Expense Year</b></label>
+                    <label><b>Payment Year</b></label>
 
-                    <select name="expense_year" class="form-control">
+                    <select name="payment_year" class="form-control">
 
                         @for($i=date('Y')-2;$i<=date('Y')+2;$i++)
 
                             <option value="{{ $i }}"
-                                {{ $expense->expense_year == $i ? 'selected' : '' }}>
+                                {{ $payment->payment_year == $i ? 'selected' : '' }}>
 
                                 {{ $i }}
 
@@ -113,15 +112,15 @@
                 <div class="col-md-3 mb-3">
 
                     <label class="form-label">
-                        Expense Amount <span class="text-danger">*</span>
+                        Payment Amount <span class="text-danger">*</span>
                     </label>
 
                     <input type="number"
-                           name="expense_amount"
+                           name="payment_amount"
                            class="form-control"
                            min="0"
                            step="0.01"
-                           value="{{ $expense->expense_amount }}"
+                           value="{{ $payment->payment_amount }}"
                            required>
 
                 </div>
@@ -130,13 +129,13 @@
                 <div class="col-md-3 mb-3">
 
                     <label class="form-label">
-                        Expense Date <span class="text-danger">*</span>
+                        Payment Date <span class="text-danger">*</span>
                     </label>
 
                     <input type="date"
-                           name="expense_date"
+                           name="payment_date"
                            class="form-control"
-                           value="{{ $expense->expense_date }}"
+                           value="{{ $payment->payment_date }}"
                            required>
 
                 </div>
@@ -147,19 +146,14 @@
 
                     <select name="status" class="form-select">
 
-                        <option value="Pending"
-                            {{ $expense->status=='Pending'?'selected':'' }}>
-                            Pending
+                        <option value="Payment"
+                            {{ $payment->status=='Payment'?'selected':'' }}>
+                            Payment
                         </option>
 
-                        <option value="Approved"
-                            {{ $expense->status=='Approved'?'selected':'' }}>
-                            Approved
-                        </option>
-
-                        <option value="Paid"
-                            {{ $expense->status=='Paid'?'selected':'' }}>
-                            Paid
+                        <option value="Advance"
+                            {{ $payment->status=='Advance'?'selected':'' }}>
+                            Advance
                         </option>
 
                     </select>
@@ -172,7 +166,7 @@
 
                     <textarea name="remarks"
                               rows="1"
-                              class="form-control">{{ $expense->remarks }}</textarea>
+                              class="form-control">{{ $payment->remarks }}</textarea>
 
                 </div>
 

@@ -17,7 +17,7 @@
                     <th>Branch Name</th>
                     <th>Name</th>
                     <th>Contact</th>
-                    <th>Type</th>
+                    <th><i class="fad fa-hotel"></i> Hotel</th>
                     <th>Email</th>
                     <th>Address</th>
                     <th>Status</th>
@@ -94,8 +94,8 @@
                         name: 'phone'
                     },
                     {
-                        data: 'type',
-                        name: 'type'
+                        data: 'short_name',
+                        name: 'short_name'
                     },
                     {
                         data: 'email',

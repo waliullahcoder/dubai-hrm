@@ -110,8 +110,10 @@ class ExpenseController extends Controller
             ->where('parent_id', 4)
             ->orderBy('head_name')
             ->get();
+        $hotels = DB::table('staff')
+                 ->get();
 
-        return view('hrm.expense.create', compact('coas'));
+        return view('hrm.expense.create', compact('coas','hotels'));
     }
 
 
@@ -128,6 +130,7 @@ class ExpenseController extends Controller
         ]);
         DB::table('hrm_expense')->insert([
             'expense_head_id'   => $request->expense_head_id,
+            'employee_id'   => $request->employee_id,
             'expense_month' => $request->expense_month,
             'expense_year'  => $request->expense_year,
             'expense_amount'        => $request->expense_amount,
@@ -152,8 +155,10 @@ class ExpenseController extends Controller
             ->where('parent_id', 4)
             ->orderBy('head_name')
             ->get();
+        $hotels = DB::table('staff')
+                 ->get();
 
-        return view('hrm.expense.edit', compact('expense', 'coas'));
+        return view('hrm.expense.edit', compact('expense', 'coas','hotels'));
     }
 
     public function update(Request $request, $id)
@@ -171,6 +176,7 @@ class ExpenseController extends Controller
         DB::table('hrm_expense')
             ->where('id', $id)
             ->update([
+                'employee_id'   => $request->employee_id,
                 'expense_head_id'   => $request->expense_head_id,
                 'expense_month' => $request->expense_month,
                 'expense_year'  => $request->expense_year,

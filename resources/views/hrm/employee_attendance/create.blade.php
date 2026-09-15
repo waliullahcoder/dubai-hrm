@@ -3,16 +3,20 @@
 
 @if(auth()->user()->role_status==4)
 @section('content')
-@php
-    $staff = \App\Models\Staff::where('user_id', auth()->user()->id)->first();
-@endphp
 
 @php
-    $todayAttendance = DB::table('hrm_employee_attendances')->where('employee_id', $staff->id ?? null)
-        ->whereDate('attendance_date', today())
-        ->first();
-    
+    $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
+
+    $todayAttendance = null;
+
+    if ($staff) {
+        $todayAttendance = DB::table('hrm_employee_attendances')
+            ->where('employee_id', $staff->id)
+            ->whereDate('attendance_date', today())
+            ->first();
+    }
 @endphp
+
 <div class="row">
 
     <div class="col-lg-12">
@@ -20,90 +24,100 @@
         <div class="card">
 
             <div class="card-header">
-
                 <h5 class="mb-0">
                     <i class="fas fa-user-check text-success"></i>
                     Employee Attendance
                 </h5>
-
             </div>
 
             <div class="card-body">
 
-            @if(!$todayAttendance->check_out)
+                {{-- Staff not found --}}
+                @if(!$staff)
 
-                <form action="{{ route('admin.employee-attendance.store') }}" method="POST">
+                    <div class="alert alert-danger">
+                        Employee information not found for this user.
+                    </div>
 
-                    @csrf
+                {{-- Attendance not completed --}}
+                @elseif(!$todayAttendance || is_null($todayAttendance->check_out))
 
-                    <div class="row g-3">
-
-                        <div class="col-lg-4">
-                            <label><b>Employee</b></label>
-                             <select name="employee_id[]" id="employee_id" class="form-select">
-                              
-                                <option value="{{ $staff->id }}">
-                                    {{ $staff->id }} - {{ $staff->name }}
-                                </option>
-
-
-                            </select>
-
-                        </div>
-
-                        <div class="col-lg-4">
-                            <label><b>Attendance Date</b></label>
-
-                            <input type="date" name="attendance_date" class="form-control" value="{{ date('Y-m-d') }}"
-                                required readonly>
-
-                        </div>
-
-                        <div class="col-lg-4">
-
-                            <label><b>Status</b></label>
-
-                            <select name="attendance_status" class="form-control">
-                                <option value="Present">Present</option>
-                            </select>
-
-                        </div>
-
-                        <div class="col-lg-3">
-                            <label><b>Check In</b></label>
-                            <input type="time"
-                            name="check_in"
-                            id="check_in"
-                            class="form-control"
-                            step="1"
-                            value="{{ $todayAttendance->check_in ?? date('H:i:s') }}"
-                            >
-
-                        </div>
-
-                        <div class="col-lg-3">
-
-                            <label><b>Check Out</b></label>
-
-                            <input type="time" name="check_out" id="check_out" class="form-control"
-                             step="1"
-                            value="{{ $todayAttendance->check_in == null ? '' : ($todayAttendance->check_out == null ? date('H:i:s') : $todayAttendance->check_out) }}"
-                            >
-
-                        </div>
+                    <form action="{{ route('admin.employee-attendance.store') }}" method="POST">
+                        @csrf
 
                         <div class="row g-3">
+
+                            {{-- Employee --}}
+                            <div class="col-lg-4">
+                                <label><b>Employee</b></label>
+
+                                <select name="employee_id[]" id="employee_id" class="form-control" required>
+                                    <option value="{{ $staff->id }}">
+                                        {{ $staff->id }} - {{ $staff->name }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            {{-- Attendance Date --}}
+                            <div class="col-lg-4">
+                                <label><b>Attendance Date</b></label>
+
+                                <input type="date"
+                                       name="attendance_date"
+                                       class="form-control"
+                                       value="{{ date('Y-m-d') }}"
+                                       required
+                                       readonly>
+                            </div>
+
+                            {{-- Status --}}
+                            <div class="col-lg-4">
+                                <label><b>Status</b></label>
+
+                                <select name="attendance_status" class="form-control" required>
+                                    <option value="Present">Present</option>
+                                </select>
+                            </div>
+
+                            
+
+                            {{-- Check In --}}
+                            <div class="col-lg-3">
+                                <label><b>Check In</b></label>
+
+                                <input type="time"
+                                       name="check_in"
+                                       id="check_in"
+                                       class="form-control"
+                                       step="1"
+                                       value="{{ $todayAttendance->check_in ?? date('H:i:s') }}"
+                                       {{ $todayAttendance && $todayAttendance->check_in ? 'readonly' : '' }}>
+                            </div>
+
+                            {{-- Check Out --}}
+                            <div class="col-lg-3">
+                                <label><b>Check Out</b></label>
+
+                                <input type="time"
+                                       name="check_out"
+                                       id="check_out"
+                                       class="form-control"
+                                       step="1"
+                                       value="{{ $todayAttendance?->check_out ?? date('H:i:s') }}"
+                                       {{ !$todayAttendance || !$todayAttendance->check_out ? 'readonly' : date('H:i:s') }}>
+                            </div>
 
                             {{-- Check In Latitude --}}
                             <div class="col-lg-3">
                                 <label><b>Check In Latitude</b></label>
 
                                 <input type="text"
-                                    name="check_in_latitude"
-                                    id="check_in_latitude"
-                                    class="form-control"
-                                    placeholder="Getting location..."
-                                    readonly>
+                                       name="check_in_latitude"
+                                       id="check_in_latitude"
+                                       class="form-control"
+                                       value="{{ $todayAttendance->check_in_latitude ?? '' }}"
+                                       placeholder="Getting location..."
+                                       readonly>
                             </div>
 
                             {{-- Check In Longitude --}}
@@ -111,11 +125,12 @@
                                 <label><b>Check In Longitude</b></label>
 
                                 <input type="text"
-                                    name="check_in_longitude"
-                                    id="check_in_longitude"
-                                    class="form-control"
-                                    placeholder="Getting location..."
-                                    readonly>
+                                       name="check_in_longitude"
+                                       id="check_in_longitude"
+                                       class="form-control"
+                                       value="{{ $todayAttendance->check_in_longitude ?? '' }}"
+                                       placeholder="Getting location..."
+                                       readonly>
                             </div>
 
                             {{-- Check Out Latitude --}}
@@ -123,11 +138,12 @@
                                 <label><b>Check Out Latitude</b></label>
 
                                 <input type="text"
-                                    name="check_out_latitude"
-                                    id="check_out_latitude"
-                                    class="form-control"
-                                    placeholder="Getting location..."
-                                    readonly>
+                                       name="check_out_latitude"
+                                       id="check_out_latitude"
+                                       class="form-control"
+                                       value="{{ $todayAttendance->check_out_latitude ?? '' }}"
+                                       placeholder="Getting location..."
+                                       readonly>
                             </div>
 
                             {{-- Check Out Longitude --}}
@@ -135,46 +151,62 @@
                                 <label><b>Check Out Longitude</b></label>
 
                                 <input type="text"
-                                    name="check_out_longitude"
-                                    id="check_out_longitude"
-                                    class="form-control"
-                                    placeholder="Getting location..."
-                                    readonly>
+                                       name="check_out_longitude"
+                                       id="check_out_longitude"
+                                       class="form-control"
+                                       value="{{ $todayAttendance->check_out_longitude ?? '' }}"
+                                       placeholder="Getting location..."
+                                       readonly>
+                            </div>
+
+                            {{-- Remarks --}}
+                            <div class="col-lg-12">
+                                <label><b>Remarks</b></label>
+
+                                <textarea name="remarks"
+                                          class="form-control"
+                                          rows="3">{{ $todayAttendance->remarks ?? '' }}</textarea>
+                            </div>
+
+                            {{-- Buttons --}}
+                            <div class="col-lg-12">
+
+                                @if(!$todayAttendance)
+
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                        Check In
+                                    </button>
+
+                                @elseif(is_null($todayAttendance->check_out))
+
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Check Out
+                                    </button>
+
+                                @endif
+
+                                <a href="{{ route('admin.employee-attendance.index') }}"
+                                   class="btn btn-secondary">
+                                    Back
+                                </a>
+
                             </div>
 
                         </div>
 
-                        <div class="col-lg-12">
+                    </form>
 
-                            <label><b>Remarks</b></label>
+                @else
 
-                            <textarea name="remarks" class="form-control" rows="3"></textarea>
-
-                        </div>
-
-                        <div class="col-lg-12">
-                                @if($todayAttendance->check_in==null)
-                                 <button class="btn btn-success"><i class="fas fa-save"></i>Check In</button>
-                                @elseif($todayAttendance->check_out==null)
-                                 <button class="btn btn-success"><i class="fas fa-save"></i>Check Out</button>
-                                @endif 
-
-                            <a href="{{ route('admin.employee-attendance.index') }}" class="btn btn-secondary">
-
-                                Back
-
-                            </a>
-
-                        </div>
-
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        Already done attendance for today!!
                     </div>
 
-                </form>
-                @else
-                <h5 class="mb-0 text-danger">
-                    Already done attendance for today!!
-                </h5>
                 @endif
+
             </div>
 
         </div>
@@ -182,6 +214,7 @@
     </div>
 
 </div>
+
 @endsection
 
 @push('js')
@@ -331,21 +364,85 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         </div>
 
-                        <div class="col-lg-3">
+                      
+                         {{-- Check In --}}
+                            <div class="col-lg-3">
+                                <label><b>Check In</b></label>
 
-                            <label><b>Check In</b></label>
+                                <input type="time"
+                                       name="check_in"
+                                       id="check_in"
+                                       class="form-control"
+                                       step="1"
+                                       value="{{ date('H:i:s') }}">
+                            </div>
 
-                            <input type="time" name="check_in" id="check_in" class="form-control">
+                           
 
-                        </div>
+                            {{-- Check In Latitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check In Latitude</b></label>
 
-                        <div class="col-lg-3">
+                                <input type="text"
+                                       name="check_in_latitude"
+                                       id="check_in_latitude"
+                                       class="form-control"
+                                       value="23.76453894488434"
+                                       placeholder="Getting location...">
+                            </div>
 
-                            <label><b>Check Out</b></label>
+                            {{-- Check In Longitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check In Longitude</b></label>
 
-                            <input type="time" name="check_out" id="check_out" class="form-control">
+                                <input type="text"
+                                       name="check_in_longitude"
+                                       id="check_in_longitude"
+                                       class="form-control"
+                                       value="90.42140253677894"
+                                       placeholder="Getting location..."
+                                       >
+                            </div>
 
-                        </div>
+                             {{-- Check Out --}}
+                            <div class="col-lg-3">
+                                <label><b>Check Out</b></label>
+
+                                <input type="time"
+                                       name="check_out"
+                                       id="check_out"
+                                       class="form-control"
+                                       step="1"
+                                       value="{{ date('H:i:s') }}">
+                            </div>
+
+                            {{-- Check Out Latitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check Out Latitude</b></label>
+
+                                <input type="text"
+                                       name="check_out_latitude"
+                                       id="check_out_latitude"
+                                       class="form-control"
+                                       value="23.76"
+                                       placeholder="Getting location..."
+                                       >
+                            </div>
+
+                            {{-- Check Out Longitude --}}
+                            <div class="col-lg-3">
+                                <label><b>Check Out Longitude</b></label>
+
+                                <input type="text"
+                                       name="check_out_longitude"
+                                       id="check_out_longitude"
+                                       class="form-control"
+                                       value="90.41"
+                                       placeholder="Getting location..."
+                                       >
+                            </div>
+
+                       
 
                         <div class="col-lg-2">
 

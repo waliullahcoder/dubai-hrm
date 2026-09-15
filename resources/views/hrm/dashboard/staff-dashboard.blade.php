@@ -1,367 +1,348 @@
 @extends('layouts.admin.app')
 
 @section('content')
-    <div class="row g-3">
-        <div class="col-12">
-           <!-- Embedded Modern Dashboard Stylesheet -->
-    <style>
-        .custom-info-card {
-            border: none;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #ffffff;
-            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            border-bottom: 4px solid transparent;
-        }
-        .custom-info-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
-        }
-        .card-metrics {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            z-index: 2;
-        }
-        .metric-title {
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-        }
-        .metric-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-        .card-icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            z-index: 2;
-            transition: all 0.3s;
-        }
-        
-        /* Premium Card Variations Base Styling */
-        .card-customer { border-color: #3b82f6;background: linear-gradient(70deg, #3b82f6, #ffffff); }
-        .card-customer .card-icon-box { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
 
-        .card-sales { border-color: #10b981; background: linear-gradient(70deg, #10b981, #ffffff);}
-        .card-sales .card-icon-box { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+@include('hrm.dashboard.app_style')
 
-        .card-cash { border-color: #198754; background: linear-gradient(70deg, #198754, #ffffff);}
-        .card-cash .card-icon-box { background: rgba(99, 102, 241, 0.1); color: #198754; }
+@php
+    $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
-        .card-due { border-color: #ef4444; background: linear-gradient(70deg, #ef4444, #ffffff); }
-        .card-due .card-icon-box { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    $todayAttendance = null;
 
-        .card-products { border-color: #06b6d4; background: linear-gradient(70deg, #06b6d4, #ffffff);}
-        .card-products .card-icon-box { background: rgba(6, 182, 212, 0.1); color: #06b6d4; }
-
-        .card-stock { border-color: #f59e0b; background: linear-gradient(70deg, #f59e0b, #ffffff);}
-        .card-stock .card-icon-box { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-
-        /* Chart Section Premium Border Box */
-        .dashboard-chart-card {
-            background: #ffffff;
-            border: none;
-            border-radius: 14px;
-            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-            padding: 24px;
-        }
-        .chart-header-title {
-            color: #0f172a;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        .chart-header-sub {
-            color: #64748b;
-            font-size: 13px;
-        }
-    </style>
-
-    <?php
-
-if (! function_exists('bn_number')) {
-
-    function bn_number($number)
-    {
-        $english = ['0','1','2','3','4','5','6','7','8','9','.'];
-        $bangla  = ['০','১','২','৩','৪','৫','৬','৭','৮','৯','.'];
-
-        return str_replace($english, $bangla, $number);
+    if ($staff) {
+        $todayAttendancecheckin = DB::table('hrm_employee_attendances')
+            ->where('employee_id', $staff->id)
+            ->whereNotNull('check_in')
+            ->whereDate('attendance_date', today())
+            ->first();
+        $todayAttendancecheckout = DB::table('hrm_employee_attendances')
+            ->where('employee_id', $staff->id)
+            ->whereNotNull('check_out')
+            ->whereDate('attendance_date', today())
+            ->first();
     }
-}
-?>
-
- <div class="container-fluid px-0 py-3">
-    <div class="row g-4">
-
-        <!-- Row 1 -->
-        <div class="col-12">
-            <div class="row g-3">
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-customer">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Employee</span>
-                            <span class="metric-value">0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fad fa-users"></i>
-                        </div>
-                    </div>
+@endphp
+<div class="container py-4">
+    <div class="app-container position-relative">
+        
+        <!-- Header -->
+        <div class="app-header">
+            <div class="user-profile">
+                
+                <img src="{{ file_exists(Auth::user()->image) ? asset(Auth::user()->image) : asset('backend/images/avatar/default/user.jpg') }}" alt="Avatar" class="user-avatar">
+                <div class="user-info">
+                    <p class="greeting">Welcome to Staff Dashboard,</p>
+                    <h5 class="name">{{ Auth::user()->name }}</h5>
+                    <span class="emp-id">ID-{{ $staff->code }}, {{ $staff->address }}</span>
                 </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-sales">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Salary</span>
-                            <span class="metric-value">৳0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fal fa-receipt"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-cash">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Expense</span>
-                            <span class="metric-value">৳0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-due">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Disbursed</span>
-                            <span class="metric-value">৳0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fal fa-money-bill-alt"></i>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+            <a href="#" class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">1</span>
+            </a>
         </div>
 
-        <!-- Row 2 -->
-        <div class="col-12">
-            <div class="row g-3">
+        <!-- Main Body -->
+        <div class="app-body">
+            
+            <!-- Attendance Section -->
+            <div class="checkin-card">
+                <form action="{{ route('admin.employee-attendance.store') }}" method="POST">
+                        @csrf
 
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-products">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Reisgnation</span>
-                            <span class="metric-value">0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fad fa-box-open"></i>
-                        </div>
+                 <!-- Check In -->
+
+                @if($todayAttendancecheckin==null)   
+                <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
+                <input type="hidden" name="attendance_date"  value="{{ date('Y-m-d') }}">
+                <input type="hidden" name="attendance_status" value="Present">
+                <input type="hidden" name="check_in_latitude" id="check_in_latitude" value="23.41">
+                <input type="hidden" name="check_in_longitude" id="check_in_longitude" value="91.42">
+                                            
+                <div class="status-box">
+                    <div class="status-info">
+                        <h6 style="text-align:center">
+                    <div class="status-icon">
+                        <i class="far fa-circle" style="color:white"></i>
+                    </div> Not yet Checked In </h6>
+                        <p style="text-align:center">Start your work by checking in</p>
                     </div>
                 </div>
+               <input type="time" name="check_in"
+                                       id="check_in"
+                                       class="form-control checktime"
+                                       step="1"
+                                       value="{{ date('H:i:s') }}"><br>
+                <button class="btn btn-checkin">
+                    <i class="fas fa-map-marker-alt"></i> Check In
+                </button>
+                @endif
 
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-stock">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Termination</span>
-                            <span class="metric-value">0</span>
+                <!-- Check Out -->
+                @if($todayAttendancecheckin != null && $todayAttendancecheckout == null)   
+                <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
+                <input type="hidden" name="attendance_date"  value="{{ date('Y-m-d') }}">
+                <input type="hidden" name="attendance_status" value="Present">
+                <input type="hidden" name="check_out_latitude" id="check_out_latitude" value="23.41">
+                <input type="hidden" name="check_out_longitude" id="check_out_longitude" value="91.42">
+                            
+                <div class="status-box">
+                    <!-- Big Status Icon -->
+                    <div class="status-info" style="text-align:center">
+                        <h6><div class="status-icon">
+                        <i class="fas fa-check"></i>
+                    </div><strong> Checked In Successfully!</strong></h6>
+                        <p class="subtitle">
+                            Start your work by checking in
+                        </p>
+
+                        <!-- Location Status -->
+                        <div class="location-status">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>
+                                You checked in {{number_format($todayAttendancecheckin->check_in_distance, 2)}} Meters • Allowed 200 meters
+                            </span>
                         </div>
-                        <div class="card-icon-box">
-                            <i class="fad fa-chart-pie"></i>
+
+                        <!-- Check In Time -->
+                        @if($todayAttendancecheckin && $todayAttendancecheckin->check_in)
+                                <i class="far fa-clock" style="font-size:2em"></i>
+
+                            <div class="checkin-time">
+                                
+                                <h3>
+                                    Check In Time<br>
+                                    <strong>
+                                         {{ $todayAttendancecheckin->check_in 
+                                            ? \Carbon\Carbon::parse($todayAttendancecheckin->check_in)->format('h:i A') 
+                                            : '--:--' 
+                                        }}
+                                    </strong>
+                                </h3>
+                            </div>
+
+                        @else
+
+                            <div class="checkin-time">
+                                <i class="far fa-clock"></i>
+
+                                <span>
+                                    Check In Time
+                                    <strong>--:--</strong>
+                                </span>
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                </div>
+                <input type="time" name="check_out"
+                                       id="check_out"
+                                       class="form-control checktime"
+                                       step="1"
+                                       value="{{ date('H:i:s') }}"><br>
+                <button class="btn btn-checkout">
+                    <i class="fas fa-sign-out-alt"></i> Check Out
+                </button>
+                @endif
+
+                 
+
+                <!-- Checked In and Checked Out Both Done -->
+
+                 @if($todayAttendancecheckin != null && $todayAttendancecheckout != null)      
+                <div class="status-box">
+                    <!-- Big Status Icon -->
+                    <div class="status-info" style="text-align:center">
+                        <h6><div class="status-icon">
+                        <i class="fas fa-check"></i>
+                    </div><strong> Checked Out Successfully!</strong></h6>
+                        <p class="subtitle">
+                           Today Working Summary
+                        </p>
+                        <!-- Check In Time -->
+                        @if($todayAttendancecheckin && $todayAttendancecheckin->check_in)
+                                <i class="far fa-clock" style="font-size:2em"></i>
+                           <div class="checkin-time">
+                            <table class="attendance-table">
+                                <tr>
+                                    <td>Check In</td>
+                                    <td><strong>{{ $todayAttendancecheckin->check_in ?? '--:--' }}</strong></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Check Out</td>
+                                    <td><strong>{{ $todayAttendancecheckin->check_out ?? '--:--' }}</strong></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Worked Hours</td>
+                                    <td><strong>{{ $todayAttendancecheckin->worked_hours ?? '0' }}</strong></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Status</td>
+                                    <td><strong>Working</strong></td>
+                                </tr>
+                            </table>
                         </div>
+
+                        @endif
                     </div>
                 </div>
+                 @endif
 
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-due">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Loan</span>
-                            <span class="metric-value">৳0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fal fa-receipt"></i>
-                        </div>
+
+
+                </form>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="menu-grid">
+                
+                <a href="#" class="menu-card">
+                    <div class="menu-icon">
+                        <i class="far fa-clock"></i>
                     </div>
-                </div>
+                    <span class="menu-title">Working Hours</span>
+                </a>
 
-                <div class="col-md-3 col-sm-6">
-                    <div class="custom-info-card card-customer">
-                        <div class="card-metrics">
-                            <span class="metric-title">Total Installment</span>
-                            <span class="metric-value">৳0</span>
-                        </div>
-                        <div class="card-icon-box">
-                            <i class="fal fa-money-bill-alt"></i>
-                        </div>
+                <a href="#" class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-bus"></i>
                     </div>
-                </div>
-
-               
-            <style>
-                .report-card{
-                position:relative;
-                overflow:hidden;
-
-                display:flex;
-                align-items:center;
-                justify-content:space-between;
-
-                padding:28px 30px;
-
-                border-radius:16px;
-
-                background:linear-gradient(135deg, #059999, #00f9cb);
-
-                color:#fff;
-
-                transition:.35s ease;
-
-                box-shadow:0 10px 30px rgba(37,99,235,.25);
-
-            }
-
-            .report-card:hover{
-
-                transform:translateY(-5px);
-
-                box-shadow:0 18px 40px rgba(37,99,235,.35);
-
-            }
-
-            .report-card::before{
-
-                content:"";
-
-                position:absolute;
-
-                width:220px;
-                height:220px;
-
-                background:rgba(255,255,255,.08);
-
-                border-radius:50%;
-
-                right:-70px;
-                top:-70px;
-
-            }
-
-            .report-content{
-
-                position:relative;
-                z-index:2;
-
-            }
-
-            .report-label{
-
-                display:inline-block;
-
-                padding:5px 12px;
-
-                border-radius:30px;
-
-                background:rgba(255,255,255,.15);
-
-                font-size:13px;
-
-                margin-bottom:12px;
-
-            }
-
-            .report-title{
-
-                font-size:26px;
-
-                font-weight:700;
-
-                margin-bottom:8px;
-
-            }
-
-            .report-text{
-
-                opacity:.9;
-
-                font-size:15px;
-
-                max-width:520px;
-
-            }
-
-            .report-icon{
-
-                position:relative;
-
-                z-index:2;
-
-                width:80px;
-                height:80px;
-
-                border-radius:50%;
-
-                background:rgba(255,255,255,.15);
-
-                display:flex;
-                align-items:center;
-                justify-content:center;
-
-                font-size:34px;
-
-            }
-
-            .report-arrow{
-
-                position:absolute;
-
-                right:25px;
-                bottom:18px;
-
-                color:#fff;
-
-                opacity:.8;
-
-                font-size:20px;
-
-                transition:.3s;
-
-            }
-
-            .report-card:hover .report-arrow{
-
-                transform:translateX(8px);
-
-            }
-            </style>
-
-
+                    <span class="menu-title">Transport</span>
+                </a>
+
+                <a href="#" class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <span class="menu-title">Advance</span>
+                </a>
+
+                <a href="#" class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <span class="menu-title">Earnings</span>
+                </a>
+
+                <a href="#" class="menu-card">
+                    <div class="menu-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <span class="menu-title">Salary</span>
+                </a>
+
+                <a href="#" class="menu-card">
+                    <div class="menu-icon">
+                        <i class="far fa-credit-card"></i>
+                    </div>
+                    <span class="menu-title">Payment</span>
+                </a>
 
             </div>
+
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="far fa-clock"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="far fa-user"></i>
+                <span>Profile</span>
+            </a>
         </div>
 
     </div>
 </div>
-        </div>
-    </div>
 @endsection
 
+@push('js')
 
+<script>
+
+// user's device GPS coordinate auto display
+function getCurrentLocation() {
+
+    if (!navigator.geolocation) {
+
+        alert('GPS is not supported by your browser.');
+        return;
+
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+
+            document.getElementById('check_in_latitude').value =
+                latitude.toFixed(7);
+
+            document.getElementById('check_in_longitude').value =
+                longitude.toFixed(7);
+
+            // Checkout-এর জন্যও current location রাখা
+            document.getElementById('check_out_latitude').value =
+                latitude.toFixed(7);
+
+            document.getElementById('check_out_longitude').value =
+                longitude.toFixed(7);
+
+        },
+
+        function(error) {
+
+            if (error.code === error.PERMISSION_DENIED) {
+
+                alert('Please allow GPS/Location permission.');
+
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+
+                alert('Location information is unavailable.');
+
+            } else if (error.code === error.TIMEOUT) {
+
+                alert('Location request timed out.');
+
+            } else {
+
+                alert('Unable to get your location.');
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+
+// Page load হলে GPS নেওয়া হবে
+document.addEventListener('DOMContentLoaded', function () {
+
+    getCurrentLocation();
+
+});
+
+</script>
+
+@endpush
