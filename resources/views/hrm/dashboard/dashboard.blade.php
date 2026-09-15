@@ -217,7 +217,7 @@ if (! function_exists('bn_number')) {
 
                 <div class="col-md-12 col-sm-12">
 
-                <a href="{{ route('admin.hrm.report') }}" class="text-decoration-none">
+                <a href="{{ route('admin.payment.report') }}" class="text-decoration-none">
 
                     <div class="report-card">
 

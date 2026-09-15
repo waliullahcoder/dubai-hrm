@@ -174,8 +174,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/resignation',ResignationController::class);
     Route::resource('/termination',TerminationController::class);
     Route::resource('/appraisal',AppraisalController::class);
-    Route::get('/hrm-report',[HrmReportController::class,'hrmReport'])->name('hrm.report');
     Route::resource('/staff-payment', StaffPaymentController::class);
+    
+    //Reports
+    Route::get('/payment-report',[HrmReportController::class,'paymentReport'])->name('payment.report');
+    Route::get('/expense-report',[HrmReportController::class,'expenseReport'])->name('expense.report');
+    Route::get('/working-hour-report',[HrmReportController::class,'workinghourReport'])->name('workinghour.report');
     
 
 });
