@@ -154,6 +154,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/employee', EmployeeController::class);
     Route::get('/hrm/dashboard',[EmployeeController::class,'dashboard'])->name('hrm.dashboard');
     Route::resource('/employee-attendance', EmployeeAttendanceController::class);
+    Route::get('/attendance-dashboard',[EmployeeAttendanceController::class,'attendanceDashboard'])->name('attendance.dashboard');
     Route::resource('/employee-leave', EmployeeLeaveController::class);
     Route::resource('/holiday', HolidayController::class);
     Route::resource('/payroll', PayrollController::class);

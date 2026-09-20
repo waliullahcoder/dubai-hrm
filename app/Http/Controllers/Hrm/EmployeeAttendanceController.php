@@ -18,6 +18,11 @@ class EmployeeAttendanceController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function attendanceDashboard(){
+
+        return view('hrm.employee_attendance.dashboard');
+    }
     public function index()
     {
         if (request()->ajax()) {
