@@ -60,6 +60,8 @@
         'days'        => collect($daily)->map(fn ($d) => substr($d['date'], 8, 2))->all(),
         'dailyStaff'  => collect($daily)->pluck('staff')->all(),
         'dailyHours'  => collect($daily)->pluck('hours')->all(),
+        'avgHours'    => round($monthHours / max($workingDays, 1), 2),
+        'todayIndex'  => collect($daily)->search(fn ($d) => $d['date'] === $today),
     ];
 
     $initials = fn ($name) => collect(explode(' ', $name))
@@ -348,6 +350,41 @@
     .chart-box    { position: relative; height: 210px; }
     .chart-box-lg { position: relative; height: 260px; }
 
+    .chart-section {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px dashed var(--border);
+    }
+
+    .chart-section-title {
+        margin: 0 0 8px;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 14px;
+        margin-bottom: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .chart-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .chart-legend i {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        background: var(--c);
+    }
+
     /* ---------- Monthly stats ---------- */
     .monthly-stat {
         height: 100%;
@@ -387,7 +424,7 @@
     ========================================================== --}}
     <div class="hrm-header">
         <div>
-            <h4 class="hrm-title">Staff Attendance Dashboard</h4>
+            <h4 class="hrm-title">HRM Dashboard</h4>
             <p class="hrm-subtitle">Staff attendance and working hours across hotels</p>
         </div>
     </div>
@@ -618,7 +655,21 @@
                         @endforeach
                     </div>
 
-                    <div class="chart-box-lg"><canvas id="monthlySummaryChart"></canvas></div>
+                    {{-- Monthly hours (daily bars) --}}
+                    <div class="chart-section">
+                        <h6 class="chart-section-title">
+                            Monthly Hours ({{ number_format($monthHours, 1) }} hrs total)
+                        </h6>
+
+                        <div class="chart-legend">
+                            <span style="--c: #10b981"><i></i> Above average</span>
+                            <span style="--c: #38bdf8"><i></i> Below average</span>
+                            <span style="--c: #f59e0b"><i></i> Today</span>
+                            <span style="--c: #ef4444"><i></i> Average ({{ number_format($monthHours / max($workingDays, 1), 1) }} hrs/day)</span>
+                        </div>
+
+                        <div class="chart-box"><canvas id="monthlyHoursChart"></canvas></div>
+                    </div>
 
                 </div>
             </div>
@@ -691,6 +742,60 @@ document.addEventListener('DOMContentLoaded', function () {
             scales: {
                 x: { beginAtZero: true, grid: softGrid, ticks },
                 y: { grid: cleanGrid, ticks },
+            },
+        },
+    });
+
+    /* ---------- Monthly hours (daily bars + average line) ---------- */
+    const hourBarColors = data.dailyHours.map((hours, i) => {
+        if (i === data.todayIndex) return '#f59e0b';
+        return hours >= data.avgHours ? '#10b981' : '#38bdf8';
+    });
+
+    new Chart(document.getElementById('monthlyHoursChart'), {
+        type: 'bar',
+        data: {
+            labels: data.days,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: 'Total Hours',
+                    data: data.dailyHours,
+                    backgroundColor: hourBarColors,
+                    borderRadius: 6,
+                    maxBarThickness: 34,
+                    order: 2,
+                },
+                {
+                    type: 'line',
+                    label: 'Average',
+                    data: data.dailyHours.map(() => data.avgHours),
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    order: 1,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    grid: cleanGrid,
+                    ticks,
+                    title: { display: true, text: 'Date (September 2025)', font, color: muted },
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: softGrid,
+                    ticks,
+                    title: { display: true, text: 'Hours', font, color: muted },
+                },
             },
         },
     });
