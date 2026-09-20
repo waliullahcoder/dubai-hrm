@@ -11,6 +11,11 @@
 $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
 @endphp
+<style>
+.lblbody{
+    padding-bottom:10px;
+}
+</style>
 <div class="container py-4">
     <div class="app-container position-relative">
 
@@ -22,19 +27,12 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
             <!-- Check Out -->
 
-            <div class="status-box">
-                <!-- Big Status Icon -->
-                <div class="status-info" style="text-align:center">
-                    <h6><strong> Transport Expense </strong></h6>
-                    <p class="subtitle">
-                       Make your expense by submit entry data
-                    </p>
 
-
-
-
-                </div>
-
+            <div class="advance-title">
+                <h3>
+                    <i class="fas fa-arrow-right"></i>
+                    Transport Expense
+                </h3>
             </div>
             <form action="{{ route('admin.expense.store') }}" method="POST">
 
@@ -44,13 +42,26 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
                     <div class="row">
 
-                        
-                        <input type="hidden" name="expense_head_id" value="313">
+
+                      
                         <input type="hidden" name="employee_id" value="{{$staff->id}}">
                         <input type="hidden" name="status" value="Pending">
-                        
-                        
-                        <div class="col-md-12 mb-12">
+
+                       <div class="col-md-12 mb-12 lblbody">
+                        <label class="form-label">Expense Type <span class="text-danger">*</span></label>
+                        <select name="expense_head_id" class="form-select select" required>
+                            <option value="313">313 - RTA Bus </option>
+                            @foreach($coas as $coa)
+                            <option value="{{ $coa->id }}">
+                                {{ $coa->id }} - {{ $coa->head_name }}
+                            </option>
+                            @endforeach
+
+                        </select>
+                         </div>
+
+
+                        <div class="col-md-12 mb-12 lblbody">
                             <label class="form-label">Expense Month <span class="text-danger">*</span></label>
 
                             <select name="expense_month" class="form-select" required>
@@ -62,9 +73,9 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
                             </select>
 
                         </div>
-
-                        <div class="col-md-12 mb-12">
-                            <label><b>Expense Year</b></label>
+                          
+                        <div class="col-md-12 mb-12 lblbody">
+                            <label class="form-label">Expense Year</label>
                             <select name="expense_year" class="form-control">
                                 @for($i=date('Y')-2;$i<=date('Y')+2;$i++) <option value="{{ $i }}"
                                     {{ request('expense_year', date('Y')) == $i ? 'selected' : '' }}>
@@ -74,7 +85,7 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
                             </select>
                         </div>
 
-                        <div class="col-md-12 mb-12">
+                        <div class="col-md-12 mb-12 lblbody">
                             <label class="form-label">Expense Amount <span class="text-danger">*</span></label>
 
                             <input type="number" step="0.01" min="0" name="expense_amount" class="form-control"
@@ -82,7 +93,7 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
                         </div>
 
-                        <div class="col-md-12 mb-12">
+                        <div class="col-md-12 mb-12 lblbody">
                             <label class="form-label">Expense Date <span class="text-danger">*</span></label>
 
                             <input type="date" name="expense_date" class="form-control" value="{{ date('Y-m-d') }}"
@@ -90,8 +101,8 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
                         </div>
 
-                        
-                        <div class="col-md-12 mb-12">
+
+                        <div class="col-md-12 mb-12 lblbody">
 
                             <label class="form-label">Remarks</label>
 
@@ -154,7 +165,7 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Expense Type <span class="text-danger">*</span></label>
                     <select name="expense_head_id" class="form-select select" required>
-                        <option value="313">313 - Transport Expense </option>
+                        <option value="313">313 - RTA Bus </option>
                         @foreach($coas as $coa)
                         <option value="{{ $coa->id }}">
                             {{ $coa->id }} - {{ $coa->head_name }}

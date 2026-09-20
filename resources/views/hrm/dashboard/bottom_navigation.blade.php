@@ -3,11 +3,11 @@
                 <i class="fas fa-home"></i>
                 <span>Home</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="{{url('admin/payment-report')}}" class="nav-item">
                 <i class="far fa-clock"></i>
-                <span>History</span>
+                <span>Payment History</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="{{url('admin/profile')}}" class="nav-item">
                 <i class="far fa-user"></i>
                 <span>Profile</span>
             </a>

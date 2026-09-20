@@ -113,6 +113,7 @@ use App\Http\Controllers\Hrm\TerminationController;
 use App\Http\Controllers\Hrm\AppraisalController;
 use App\Http\Controllers\Hrm\HrmReportController;
 use App\Http\Controllers\Hrm\StaffPaymentController;
+use App\Http\Controllers\Hrm\StaffReportController;
 
 Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('login.index');
@@ -180,6 +181,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/payment-report',[HrmReportController::class,'paymentReport'])->name('payment.report');
     Route::get('/expense-report',[HrmReportController::class,'expenseReport'])->name('expense.report');
     Route::get('/working-hour-report',[HrmReportController::class,'workinghourReport'])->name('workinghour.report');
+
+    //Staff Report
+    Route::get('/staff-advance',[StaffReportController::class,'staffAdvance'])->name('advance.report');
+    Route::get('/staff-earning',[StaffReportController::class,'staffEarning'])->name('earning.report');
+    Route::get('/working-hours',[StaffReportController::class,'workingHours'])->name('working.hour.report');
+    Route::get('/my-payment-report',[StaffReportController::class,'staffPayment'])->name('my.paymen.reportt');
     
 
 });

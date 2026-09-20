@@ -8,8 +8,7 @@
                     <span class="emp-id">ID-{{ $staff->code }}, {{ $staff->address }}</span>
                 </div>
             </div>
-            <a href="#" class="notification-btn">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">1</span>
+            <a href="{{url('admin/dashboard')}}" class="notification-btn">
+                <i class="fas fa-home"></i>
             </a>
         </div>

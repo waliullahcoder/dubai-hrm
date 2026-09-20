@@ -132,7 +132,7 @@
     }
 
     .logo {
-
+      
         width: 100px;
         height: 100px;
         border-radius: 50%;
@@ -144,7 +144,7 @@
         font-size: 45px;
         margin-bottom: 30px;
         box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
-
+        margin-top:20px;
     }
 
     .left-panel h1 {
@@ -338,14 +338,13 @@
 
                 <div class="left-panel">
 
-                    <div class="logo">
+                    <div>
 
-                        <i class="fas fa-user-tie"></i>
-
+                    <img src="{{asset(@$admin_setting->logo)}}" class="logo" alt="{{$admin_setting->title}}">
+                    
                     </div>
 
-                    <h1>STAFF WORKFORCE
-                        MANAGEMENT SYSTEM (HRM)</h1>
+                    <h1>{{$admin_setting->title}}</h1>
 
                     <ul class="features">
 

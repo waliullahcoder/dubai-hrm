@@ -1,7 +1,7 @@
 <style>
     /* Employee Mobile UI Wrapper */
     .app-container {
-        max-width: 420px;
+        /* max-width: 420px; */
         margin: 0 auto;
         background: #f4f7fe;
         border-radius: 28px;
@@ -85,11 +85,15 @@
 
     /* Main Body Area */
     .app-body {
-        padding: 0 16px;
+        /* padding: 0 16px; */
         margin-top: -18px;
         padding-bottom: 70px;
     }
 
+    .p-3,.py-3,.py-4{
+    padding:0px !important;
+    }
+   
     /* Check-In Card Area */
     .checkin-card {
         background: #ffffff;
@@ -301,7 +305,7 @@
                         align-items: center;
                         justify-content: center;
                         border: 2px solid rgba(255, 255, 255, 0.2);
-                        margin-left:126px;
+                        margin-left:40%;
                     }
 
                     .status-icon i {
@@ -424,5 +428,500 @@
     .checktime{
         font-size:2em;
         color:#1cb174 !important;
+    }
+</style>
+
+<style>
+    /* =========================================================
+       MY ADVANCE SECTION
+    ========================================================= */
+
+    .advance-section {
+        margin: 20px;
+    }
+
+
+    /* =========================================================
+       SECTION HEADER - BLUE
+    ========================================================= */
+
+    .advance-title {
+        background: linear-gradient(
+            135deg,
+            #eef5ff,
+            #e3efff
+        );
+
+        border: 1px solid #cfe0ff;
+
+        border-left: 4px solid #3b83ee;
+
+        border-radius: 12px;
+
+        padding: 14px 18px;
+
+        margin-bottom: 15px;
+
+        box-shadow:
+            0 4px 15px rgba(59, 131, 238, 0.08);
+    }
+
+
+    .advance-title h3 {
+        margin: 0;
+
+        font-size: 19px;
+
+        font-weight: 700;
+
+        color: #2459a6;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+    }
+
+
+    .advance-title h3 i {
+        width: 34px;
+        height: 34px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        background: #3b83ee;
+
+        color: #fff;
+
+        border-radius: 9px;
+
+        font-size: 14px;
+
+        box-shadow:
+            0 4px 10px rgba(59, 131, 238, 0.25);
+    }
+
+
+    /* =========================================================
+       COMMON ADVANCE CARD
+    ========================================================= */
+
+    .advance-card {
+        display: block;
+
+        position: relative;
+
+        height: 100%;
+
+        text-decoration: none;
+
+        background: #fff;
+
+        border: 1px solid #e1e8f2;
+
+        border-radius: 14px;
+
+        padding: 20px;
+
+        overflow: hidden;
+
+        transition: all 0.25s ease;
+
+        box-shadow:
+            0 4px 18px rgba(0, 0, 0, 0.04);
+    }
+
+
+    .advance-card:hover {
+        text-decoration: none;
+
+        transform: translateY(-4px);
+
+        box-shadow:
+            0 10px 28px rgba(0, 0, 0, 0.09);
+    }
+
+
+    /* =========================================================
+       LEFT BORDER
+    ========================================================= */
+
+    .advance-card::before {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        top: 0;
+
+        width: 4px;
+        height: 100%;
+
+        opacity: 0;
+
+        transition: 0.25s ease;
+    }
+
+
+    .advance-card:hover::before {
+        opacity: 1;
+    }
+
+
+    /* =========================================================
+       ICON
+    ========================================================= */
+
+    .advance-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 10px;
+
+        font-size: 17px;
+
+        margin-bottom: 13px;
+    }
+
+
+    /* =========================================================
+       CARD TITLE
+    ========================================================= */
+
+    .advance-card .menu-title {
+        display: block;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        margin-bottom: 5px;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.3px;
+    }
+
+
+    /* =========================================================
+       AMOUNT
+    ========================================================= */
+
+    .advance-card h1 {
+        margin: 0;
+
+        font-size: 25px;
+
+        font-weight: 700;
+
+        line-height: 1.2;
+    }
+
+
+    /* =========================================================
+       ARROW
+    ========================================================= */
+
+    .advance-arrow {
+        position: absolute;
+
+        right: 16px;
+        top: 18px;
+
+        width: 28px;
+        height: 28px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        font-size: 11px;
+
+        transition: 0.25s ease;
+    }
+
+
+    .advance-card:hover .advance-arrow {
+        color: #fff;
+
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================================
+       1. TOTAL ADVANCE - GREEN
+    ========================================================= */
+
+    .advance-total {
+        background: linear-gradient(
+            135deg,
+            #f2fbf6,
+            #e8f8ee
+        );
+
+        border-color: #ccebd8;
+    }
+
+
+    .advance-total::before {
+        background: #198754;
+    }
+
+
+    .advance-total .advance-icon {
+        background: #e4f6eb;
+
+        color: #198754;
+    }
+
+
+    .advance-total .menu-title {
+        color: #547565;
+    }
+
+
+    .advance-total h1 {
+        color: #198754;
+    }
+
+
+    .advance-total .advance-arrow {
+        background: #e4f6eb;
+
+        color: #198754;
+    }
+
+
+    .advance-total:hover {
+        border-color: #9ed5b3;
+
+        box-shadow:
+            0 10px 28px rgba(25, 135, 84, 0.13);
+    }
+
+
+    .advance-total:hover .advance-arrow {
+        background: #198754;
+    }
+
+
+    /* =========================================================
+       2. RECOVERED ADVANCE - PURPLE
+    ========================================================= */
+
+    .advance-recovered {
+        background: linear-gradient(
+            135deg,
+            #f7f2ff,
+            #eee6ff
+        );
+
+        border-color: #dfd0fa;
+    }
+
+
+    .advance-recovered::before {
+        background: #6f42c1;
+    }
+
+
+    .advance-recovered .advance-icon {
+        background: #eee5ff;
+
+        color: #6f42c1;
+    }
+
+
+    .advance-recovered .menu-title {
+        color: #6c5a85;
+    }
+
+
+    .advance-recovered h1 {
+        color: #6f42c1;
+    }
+
+
+    .advance-recovered .advance-arrow {
+        background: #eee5ff;
+
+        color: #6f42c1;
+    }
+
+
+    .advance-recovered:hover {
+        border-color: #c6aceb;
+
+        box-shadow:
+            0 10px 28px rgba(111, 66, 193, 0.13);
+    }
+
+
+    .advance-recovered:hover .advance-arrow {
+        background: #6f42c1;
+    }
+
+
+    /* =========================================================
+       3. OUTSTANDING - RED
+    ========================================================= */
+
+    .advance-outstanding {
+        background: linear-gradient(
+            135deg,
+            #fff5f5,
+            #ffe8e8
+        );
+
+        border: 1px solid #ffbfc4;
+
+        box-shadow:
+            0 6px 22px rgba(220, 53, 69, 0.10);
+    }
+
+
+    .advance-outstanding::before {
+        background: #dc3545;
+    }
+
+
+    .advance-outstanding .advance-icon {
+        background: #dc3545;
+
+        color: #fff;
+
+        box-shadow:
+            0 5px 12px rgba(220, 53, 69, 0.22);
+    }
+
+
+    .advance-outstanding .menu-title {
+        color: #842029;
+    }
+
+
+    .advance-outstanding h1 {
+        color: #dc3545;
+
+        font-size: 27px;
+    }
+
+
+    .advance-outstanding .advance-arrow {
+        background: #ffe1e4;
+
+        color: #dc3545;
+    }
+
+
+    .advance-outstanding:hover {
+        border-color: #ff9fa8;
+
+        box-shadow:
+            0 10px 30px rgba(220, 53, 69, 0.16);
+    }
+
+
+    .advance-outstanding:hover .advance-arrow {
+        background: #dc3545;
+    }
+
+
+    /* =========================================================
+       4. HISTORY - BLUE
+    ========================================================= */
+
+    .advance-history {
+        background: linear-gradient(
+            135deg,
+            #f4f8ff,
+            #eaf2ff
+        );
+
+        border-color: #d3e2fb;
+    }
+
+
+    .advance-history::before {
+        background: #3b83ee;
+    }
+
+
+    .advance-history .advance-icon {
+        background: #e4efff;
+
+        color: #3b83ee;
+    }
+
+
+    .advance-history .menu-title {
+        color: #58708f;
+    }
+
+
+    .advance-history h1 {
+        color: #2f6fc4;
+
+        font-size: 16px;
+    }
+
+
+    .advance-history .advance-arrow {
+        background: #e4efff;
+
+        color: #3b83ee;
+    }
+
+
+    .advance-history:hover {
+        border-color: #aac9f5;
+
+        box-shadow:
+            0 10px 28px rgba(59, 131, 238, 0.12);
+    }
+
+
+    .advance-history:hover .advance-arrow {
+        background: #3b83ee;
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 767px) {
+
+        .advance-title {
+            padding: 12px 14px;
+        }
+
+
+        .advance-title h3 {
+            font-size: 17px;
+        }
+
+
+        .advance-card {
+            padding: 17px;
+        }
+
+
+        .advance-card h1 {
+            font-size: 22px;
+        }
+
     }
 </style>
