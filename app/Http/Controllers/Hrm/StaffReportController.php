@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Staff;
+use App\Models\Hotel;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

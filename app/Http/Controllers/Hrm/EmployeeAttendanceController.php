@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Staff;
+use App\Models\Hotel;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,348 @@ class EmployeeAttendanceController extends Controller
      * Display a listing of the resource.
      */
 
-    public function attendanceDashboard(){
+public function attendanceDashboard(Request $request)
+{
+    /*
+    |--------------------------------------------------------------------------
+    | FILTERS
+    |--------------------------------------------------------------------------
+    */
 
-        return view('hrm.employee_attendance.dashboard');
+    $selectedDate = $request->date
+        ? Carbon::parse($request->date)
+        : Carbon::today();
+
+    $selectedMonth = $request->month
+        ? Carbon::createFromFormat('Y-m', $request->month)
+        : Carbon::today();
+
+    $hotelId = $request->hotel_id;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MONTH RANGE
+    |--------------------------------------------------------------------------
+    */
+
+    $monthStart = $selectedMonth->copy()->startOfMonth();
+    $monthEnd   = $selectedMonth->copy()->endOfMonth();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HOTELS
+    |--------------------------------------------------------------------------
+    */
+
+    $hotels = Hotel::where('status', 'Active')
+        ->orderBy('name')
+        ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TODAY / SELECTED DATE ATTENDANCE
+    |--------------------------------------------------------------------------
+    */
+
+    $attendanceQuery = DB::table('hrm_employee_attendances as a')
+        ->join('staff as s', 's.id', '=', 'a.employee_id')
+        ->leftJoin('hrm_hotels as h', 'h.id', '=', 's.hotel_id')
+        ->whereDate('a.attendance_date', $selectedDate->format('Y-m-d'))
+        ->where('a.attendance_status', 'Present');
+
+    if ($hotelId) {
+        $attendanceQuery->where('s.hotel_id', $hotelId);
     }
+
+    $attendance = $attendanceQuery
+        ->select(
+            'a.id',
+            'a.employee_id',
+            's.hotel_id',
+            'a.check_in',
+            'a.check_out',
+            'a.worked_hours',
+            's.name as staff_name',
+            'h.name as hotel_name'
+        )
+        ->orderBy('a.check_in')
+        ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SELECTED DATE SUMMARY
+    |--------------------------------------------------------------------------
+    */
+
+    $todayStaff = $attendance->unique('employee_id')->count();
+
+    $todayHours = $attendance->sum(function ($row) {
+        return (float) $row->worked_hours;
+    });
+
+    $activeHotels = $attendance
+        ->whereNotNull('hotel_id')
+        ->pluck('hotel_id')
+        ->unique()
+        ->count();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MONTHLY ATTENDANCE QUERY
+    |--------------------------------------------------------------------------
+    */
+
+    $monthlyQuery = DB::table('hrm_employee_attendances as a')
+        ->join('staff as s', 's.id', '=', 'a.employee_id')
+        ->leftJoin('hrm_hotels as h', 'h.id', '=', 's.hotel_id')
+        ->whereBetween('a.attendance_date', [
+            $monthStart->format('Y-m-d'),
+            $monthEnd->format('Y-m-d')
+        ])
+        ->where('a.attendance_status', 'Present');
+
+    if ($hotelId) {
+        $monthlyQuery->where('s.hotel_id', $hotelId);
+    }
+
+    $monthlyAttendance = $monthlyQuery
+        ->select(
+            'a.id',
+            'a.employee_id',
+            's.hotel_id',
+            'a.attendance_date',
+            'a.worked_hours',
+            'a.check_in',
+            'a.check_out',
+            's.name as staff_name',
+            'h.name as hotel_name'
+        )
+        ->orderBy('a.attendance_date')
+        ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UNIQUE STAFF THIS MONTH
+    |--------------------------------------------------------------------------
+    */
+
+    $uniqueStaffThisMonth = $monthlyAttendance
+        ->pluck('employee_id')
+        ->unique()
+        ->count();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MONTH TOTAL HOURS
+    |--------------------------------------------------------------------------
+    */
+
+    $monthHours = $monthlyAttendance->sum(function ($row) {
+        return (float) $row->worked_hours;
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WORKING DAYS
+    |--------------------------------------------------------------------------
+    */
+
+    $workingDays = $monthlyAttendance
+        ->groupBy(function ($row) {
+            return Carbon::parse($row->attendance_date)->format('Y-m-d');
+        })
+        ->count();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HOTEL COLORS
+    |--------------------------------------------------------------------------
+    */
+
+    $hotelColors = [
+        '#4f46e5',
+        '#0d9488',
+        '#f59e0b',
+        '#ec4899',
+        '#0ea5e9',
+        '#8b5cf6',
+        '#ef4444',
+        '#10b981',
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HOTEL WISE TODAY DATA
+    |--------------------------------------------------------------------------
+    */
+
+    $staffByHotel = $attendance
+        ->groupBy('hotel_name')
+        ->map(function ($rows) {
+            return $rows->pluck('employee_id')->unique()->count();
+        });
+
+    $hoursByHotel = $attendance
+        ->groupBy('hotel_name')
+        ->map(function ($rows) {
+            return $rows->sum(function ($row) {
+                return (float) $row->worked_hours;
+            });
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | HOTEL CHART DATA
+    |--------------------------------------------------------------------------
+    */
+
+    $hotelChartLabels = $attendance
+        ->pluck('hotel_name')
+        ->filter()
+        ->unique()
+        ->values()
+        ->all();
+
+    $hotelChartColors = collect($hotelChartLabels)
+        ->values()
+        ->map(function ($hotel, $index) use ($hotelColors) {
+            return $hotelColors[$index % count($hotelColors)];
+        })
+        ->all();
+
+    $hotelStaffCounts = collect($hotelChartLabels)
+        ->map(function ($hotel) use ($staffByHotel) {
+            return $staffByHotel[$hotel] ?? 0;
+        })
+        ->all();
+
+    $hotelHourTotals = collect($hotelChartLabels)
+        ->map(function ($hotel) use ($hoursByHotel) {
+            return round($hoursByHotel[$hotel] ?? 0, 2);
+        })
+        ->all();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DAILY SUMMARY
+    |--------------------------------------------------------------------------
+    */
+
+    $daily = collect();
+
+    $currentDay = $monthStart->copy();
+
+    while ($currentDay <= $monthEnd) {
+
+        $date = $currentDay->format('Y-m-d');
+
+        $dayRows = $monthlyAttendance->filter(function ($row) use ($date) {
+            return Carbon::parse($row->attendance_date)->format('Y-m-d') === $date;
+        });
+
+        $daily->push([
+            'date'   => $date,
+            'staff'  => $dayRows->pluck('employee_id')->unique()->count(),
+            'hours'  => round(
+                $dayRows->sum(function ($row) {
+                    return (float) $row->worked_hours;
+                }),
+                2
+            ),
+            'hotels' => $dayRows
+                ->pluck('hotel_id')
+                ->filter()
+                ->unique()
+                ->count(),
+        ]);
+
+        $currentDay->addDay();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | AVERAGE HOURS
+    |--------------------------------------------------------------------------
+    */
+
+    $avgHours = $workingDays > 0
+        ? round($monthHours / $workingDays, 2)
+        : 0;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CHART DATA
+    |--------------------------------------------------------------------------
+    */
+
+    $chartData = [
+        'hotels'      => $hotelChartLabels,
+        'colors'      => $hotelChartColors,
+        'staffCounts' => $hotelStaffCounts,
+        'hourTotals'  => $hotelHourTotals,
+
+        'days' => $daily
+            ->map(function ($row) {
+                return Carbon::parse($row['date'])->format('d');
+            })
+            ->values()
+            ->all(),
+
+        'dailyStaff' => $daily
+            ->pluck('staff')
+            ->values()
+            ->all(),
+
+        'dailyHours' => $daily
+            ->pluck('hours')
+            ->values()
+            ->all(),
+
+        'avgHours' => $avgHours,
+
+        'todayIndex' => $daily->search(function ($row) use ($selectedDate) {
+            return $row['date'] === $selectedDate->format('Y-m-d');
+        }),
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETURN VIEW
+    |--------------------------------------------------------------------------
+    */
+
+    return view('hrm.employee_attendance.dashboard', compact(
+        'hotels',
+        'attendance',
+        'daily',
+        'chartData',
+        'todayStaff',
+        'todayHours',
+        'activeHotels',
+        'uniqueStaffThisMonth',
+        'monthHours',
+        'workingDays',
+        'avgHours',
+        'selectedDate',
+        'selectedMonth',
+        'hotelId'
+    ));
+}
     public function index()
     {
         if (request()->ajax()) {
@@ -449,6 +788,36 @@ class EmployeeAttendanceController extends Controller
             ->route('admin.employee-attendance.index')
             ->with('success', 'Attendance updated successfully.');
     }
+
+
+
+
+     public function paymentData()
+       {
+            $staff = Staff::where('user_id',Auth::user()->id)->first();
+            $totalpayments = DB::table('hrm_payments')->where('employee_id',$staff->id)->sum('payment_amount');
+            $payments = DB::table('hrm_payments')->where('employee_id',$staff->id)->where('status','Payment')->sum('payment_amount');
+            $advance = DB::table('hrm_payments')->where('employee_id',$staff->id)->where('status','Advance')->sum('payment_amount');
+            $expense = DB::table('hrm_expense')->where('employee_id',$staff->id)->where('status','Approved')->sum('expense_amount');
+            $totalWorkedHours = DB::table('hrm_employee_attendances')->where('employee_id',$staff->id)->where('attendance_status','Present')->sum('worked_hours');
+
+            $hotelcount = Hotel::where('status','Active')->count();
+            
+            $earnings =  $staff->basic_salary * $totalWorkedHours - $staff->others;
+            $net_payable = $earnings-$totalpayments;
+
+            return [
+                'staff' => $staff,
+                'totalpayments' => $totalpayments,
+                'payments' => $payments,
+                'advance' => $advance,
+                'worked_hours' => $totalWorkedHours,
+                'expense' => $expense,
+                'earnings' => $earnings,
+                'net_payable' => $net_payable,
+                'hotelcount' => $hotelcount
+            ];
+        }
 
 
 }
