@@ -114,6 +114,7 @@ use App\Http\Controllers\Hrm\AppraisalController;
 use App\Http\Controllers\Hrm\HrmReportController;
 use App\Http\Controllers\Hrm\StaffPaymentController;
 use App\Http\Controllers\Hrm\StaffReportController;
+use App\Http\Controllers\Hrm\HotelController;
 
 Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('login.index');
@@ -172,6 +173,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/employee-loan',LoanController::class);
     Route::resource('/employee-overtime',OverTimeController::class);
     Route::resource('/expense',ExpenseController::class);
+    Route::resource('/hotel',HotelController::class);
     Route::resource('/documents',DocumentController::class);
     Route::resource('/resignation',ResignationController::class);
     Route::resource('/termination',TerminationController::class);

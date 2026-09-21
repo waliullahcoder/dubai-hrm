@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Staff;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Hotel;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,8 +95,9 @@ class EmployeeController extends Controller
 
         $title = 'Add New Staff/Employee';
         $companies = Company::orderBy('name')->get();
+        $hotels = Hotel::orderBy('id','desc')->where('status','Active')->get();
         $branches = Branch::where('company_id', Auth::user()->company_id)->orderBy('name')->get();
-        return view('hrm.employee.create', compact('title', 'companies', 'branches'));
+        return view('hrm.employee.create', compact('title', 'companies', 'branches','hotels'));
     }
 
     /**
@@ -134,6 +136,7 @@ class EmployeeController extends Controller
             Staff::create([
             'company_id' => $request->company_id ?? Auth::user()->company_id,
             'branch_id' => $request->branch_id,
+            'hotel_id' => $request->hotel_id,
             'user_id' => $user->id,
             'code' => $request->code,
             'name' => $request->name,
@@ -194,8 +197,9 @@ class EmployeeController extends Controller
         $data = Staff::findOrFail($id);
         $link = route('admin.employee.update', $id);
         $companies = Company::orderBy('name')->get();
+        $hotels = Hotel::orderBy('id','desc')->where('status','Active')->get();
         $branches = Branch::where('company_id', $data->company_id)->orderBy('name')->get();
-        return view('hrm.employee.edit', compact('title', 'data', 'link', 'companies', 'branches', 'id'));
+        return view('hrm.employee.edit', compact('title', 'data', 'link', 'companies', 'branches', 'id','hotels'));
     }
 
     /**
@@ -243,6 +247,7 @@ class EmployeeController extends Controller
             $data->update([
                 'company_id' => $request->company_id ?? Auth::user()->company_id,
                 'branch_id' => $request->branch_id,
+                'hotel_id' => $request->hotel_id,
                 'user_id' => $userid,
                 'role_status' => 4,
                 'code' => $request->code,

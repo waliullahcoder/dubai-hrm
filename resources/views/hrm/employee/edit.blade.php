@@ -77,9 +77,19 @@
                 value="{{ $data->name }}" placeholder="Staff Name">
         </div>
         <div class="col-lg-4 col-sm-6">
-            <label for="short_name" class="form-label"><b><i class="fad fa-hotel"></i> Hotel Name <span class="text-danger">*</span></b></label>
+            <label for="short_name" class="form-label"><b>Short Name <span class="text-danger">*</span></b></label>
             <input type="text" class="form-control" id="short_name" name="short_name" required
-                value="{{ $data->short_name }}" placeholder="Hotel Name">
+                value="{{ $data->short_name }}" placeholder="Short Name">
+        </div>
+         <div class="col-lg-4 col-sm-6">
+            <label for="short_name" class="form-label"><b><i class="fad fa-hotel"></i> Hotel Name <span class="text-danger">*</span></b></label>
+            <select class="select form-select" id="hotel_id" name="hotel_id" required>
+                @foreach($hotels as $hotel)
+                  <option value="{{$hotel->id}}"
+                  {{ $data->hotel_id == $hotel->id ? 'selected' : '' }}>
+                  {{$hotel->name}}, {{$hotel->address}}</option>
+                @endforeach
+            </select>
         </div>
         <div class="col-lg-4 col-sm-6">
             <label for="designation" class="form-label"><b>Designation</b></label>
