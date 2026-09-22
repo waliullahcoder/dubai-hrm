@@ -14,6 +14,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
 USE `technopa_hrm`;
 
 -- Dumping structure for table technopa_hrm.abouts
@@ -161,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `admin_menus` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=284 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.admin_menus: ~179 rows (approximately)
 DELETE FROM `admin_menus`;
@@ -175,7 +176,6 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(7, 7, 2, 'Menu Setup', 'মেনু সেটআপ', 'admin.admin-menu.index', NULL, 5, 1, 1, '2023-09-19 09:06:24', '2023-09-19 09:15:35'),
 	(9, 21, 8, 'Sales Group', 'বিক্রয় গ্রুপ', 'admin.group.index', NULL, 5, 0, 1, '2023-09-19 09:20:46', '2024-10-13 17:24:19'),
 	(10, 22, 8, 'Store Setup', 'স্টোর সেটআপ', 'admin.store.index', NULL, 3, 1, 1, '2023-09-19 09:20:59', '2023-09-23 14:49:13'),
-	(11, 23, 8, 'Product Category', 'পণ্যের ক্যাটাগরি', 'admin.category.index', NULL, 8, 1, 1, '2023-09-19 09:21:10', '2024-10-12 11:31:46'),
 	(12, 24, 8, 'Product Setup', 'পণ্য সেটআপ', 'admin.product.index', NULL, 9, 1, 1, '2023-09-19 09:21:19', '2023-09-25 14:14:03'),
 	(13, 25, 8, 'Employee Setup', 'স্টাফ সেটআপ', 'admin.staff.index', NULL, 4, 1, 1, '2023-09-19 09:21:25', '2023-09-23 14:49:31'),
 	(14, 26, 8, 'Product List', 'পণ্যের তালিকা', 'admin.product-list.index', NULL, 10, 1, 1, '2023-09-19 09:21:36', '2023-09-30 06:36:17'),
@@ -301,7 +301,7 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(195, 596, 48, 'Running Sales Report', 'চলমান বিক্রয় প্রতিবেদন', 'admin.retail-sales-report.index', NULL, 13, 1, 1, '2025-05-05 05:42:20', '2025-05-05 05:42:20'),
 	(196, 597, 38, 'Retail Return', 'খুচরা বিক্রয় ফেরত', 'admin.retail-return.index', NULL, 14, 1, 1, '2025-05-13 08:44:34', '2025-05-13 08:44:34'),
 	(197, 609, 48, 'Retail Return Report', 'খুচরা ফেরত প্রতিবেদন', 'admin.retail-return-report.index', NULL, 14, 1, 1, '2025-05-28 09:38:20', '2025-05-28 09:38:30'),
-	(199, 611, NULL, 'HRM Department', 'হিউম্যান রিসোর্স & বেতন ব্যবস্থাপনা', 'hrm', '<i class="fad fa-user-tie"></i>', 8, 1, 1, '2026-07-16 06:24:08', '2026-09-07 10:40:13'),
+	(199, 611, NULL, 'Loan Management', 'হিউম্যান রিসোর্স & বেতন ব্যবস্থাপনা', 'hrm', '<i class="fad fa-user-tie"></i>', 8, 1, 1, '2026-07-16 06:24:08', '2026-09-22 05:39:37'),
 	(200, 612, 198, 'Lead Management', 'লিড ব্যবস্থাপনা', 'admin.lead.index', NULL, 2, 1, 1, '2026-07-16 06:28:14', '2026-07-21 05:11:00'),
 	(201, 613, 256, 'Employee List', 'কর্মচারী ব্যবস্থাপনা', 'admin.employee.index', '<i class="fad fa-user-tie"></i>', 1, 1, 1, '2026-07-16 06:29:37', '2026-09-06 04:19:35'),
 	(202, 614, 198, 'Lead Source', 'লিডের উৎস', 'admin.lead-source.index', NULL, 2, 1, 1, '2026-07-16 06:31:42', '2026-07-19 11:05:22'),
@@ -312,23 +312,15 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(221, 633, 198, 'CRM Dashboard', 'সিআরএম ড্যাশবোর্ড', 'admin.crm.dashboard', NULL, 1, 1, 1, '2026-07-16 06:41:34', '2026-07-21 05:50:33'),
 	(222, 634, 198, 'CRM Reports', 'সিআরএম প্রতিবেদন', 'admin.crm-report.index', NULL, 20, 1, 1, '2026-07-16 06:41:56', '2026-07-27 09:09:40'),
 	(225, 637, 260, 'Employee Attendance', 'কর্মচারীর উপস্থিতি', 'admin.employee-attendance.index', '<i class="fad fa-calendar-check"></i>', 4, 1, 1, '2026-07-16 06:46:37', '2026-09-07 10:05:24'),
-	(226, 638, NULL, 'Leave Management', 'ছুটি ব্যবস্থাপনা', NULL, '<i class="fad fa-calendar-times"></i>', 5, 1, 1, '2026-07-16 06:47:07', '2026-09-07 10:00:05'),
 	(227, 639, 226, 'Leave Application', 'ছুটির আবেদন', 'admin.employee-leave.create', '<i class="fad fa-file-signature"></i>', 6, 1, 1, '2026-07-16 06:47:37', '2026-09-07 10:01:39'),
-	(228, 640, NULL, 'Holiday Management', 'ছুটির তালিকা', NULL, '<i class="fad fa-calendar-star"></i>', 7, 1, 1, '2026-07-16 06:48:31', '2026-09-07 10:11:10'),
 	(231, 643, NULL, 'Payroll Management', 'বেতন ব্যবস্থাপনা', NULL, '<i class="fad fa-money-check-alt"></i>', 10, 1, 1, '2026-07-16 06:51:20', '2026-09-07 10:31:36'),
 	(232, 644, 264, 'Salary Structure', 'বেতন কাঠামো', 'admin.salary.structure', NULL, 1, 1, 1, '2026-07-16 06:51:47', '2026-09-07 10:18:00'),
 	(233, 645, 264, 'Generate Salary', 'বেতন তৈরি', 'admin.salary.generate', NULL, 2, 1, 1, '2026-07-16 06:52:16', '2026-09-07 10:19:31'),
 	(234, 646, 264, 'Salary Sheet', 'বেতন শীট', 'admin.salary.generate', NULL, 13, 1, 1, '2026-07-16 06:52:51', '2026-09-07 10:19:52'),
 	(236, 648, 231, 'Payslip', 'বেতন স্লিপ', 'admin.pay.slip', NULL, 14, 1, 1, '2026-07-16 06:54:31', '2026-09-07 10:36:07'),
-	(237, 649, 199, 'Bonus Management', 'বোনাস ব্যবস্থাপনা', 'admin.employee-bonus.index', NULL, 15, 1, 1, '2026-07-16 06:54:57', '2026-08-06 04:41:11'),
-	(238, 650, 199, 'Increment Management', 'ইনক্রিমেন্ট ব্যবস্থাপনা', 'admin.employee-increment.index', NULL, 16, 1, 1, '2026-07-16 06:55:21', '2026-08-06 06:03:46'),
-	(239, 651, 199, 'Loan Management', 'ঋণ ব্যবস্থাপনা', 'admin.employee-loan.index', NULL, 17, 1, 1, '2026-07-16 06:55:46', '2026-08-06 06:25:18'),
-	(241, 653, 199, 'Overtime Management', 'ওভারটাইম ব্যবস্থাপনা', 'admin.employee-overtime.index', NULL, 18, 1, 1, '2026-07-16 06:56:34', '2026-08-09 04:55:23'),
+	(239, 651, 199, 'Manage Loan', 'ঋণ ব্যবস্থাপনা', 'admin.employee-loan.index', NULL, 17, 1, 1, '2026-07-16 06:55:46', '2026-09-22 05:43:58'),
 	(242, 654, 265, 'Expense Manage', 'ব্যয় ব্যবস্থাপনা', 'admin.expense.index', NULL, 18, 1, 1, '2026-07-16 06:57:08', '2026-09-07 10:27:36'),
 	(243, 655, 256, 'Employee Documents', 'কর্মচারীর ডকুমেন্ট', 'admin.documents.index', NULL, 19, 1, 1, '2026-07-16 06:57:39', '2026-09-07 10:37:19'),
-	(244, 656, 199, 'Resignation', 'পদত্যাগ', 'admin.resignation.index', NULL, 22, 1, 1, '2026-07-16 08:43:30', '2026-08-09 09:12:34'),
-	(245, 657, 199, 'Termination', 'চাকরি সমাপ্তি', 'admin.termination.index', NULL, 23, 1, 1, '2026-07-16 08:44:10', '2026-08-09 09:29:00'),
-	(249, 661, 199, 'Performance Appraisal', 'কর্মদক্ষতা মূল্যায়ন', 'admin.appraisal.index', NULL, 27, 1, 1, '2026-07-16 08:45:44', '2026-08-09 10:26:27'),
 	(252, 664, 274, 'Payment Reports', 'এইচআর প্রতিবেদন', 'admin.payment.report', NULL, 30, 1, 1, '2026-07-16 08:46:46', '2026-09-15 06:41:03'),
 	(254, 676, 198, 'Customer Requirements', 'কাস্টমার চাহিদা', 'admin.customer-requirement.index', NULL, 10, 1, 1, '2026-07-21 05:08:08', '2026-07-27 05:37:04'),
 	(255, 714, 198, 'Enlisted New Client', 'নতুন গ্রাহক তালিকাভুক্ত', 'admin.enlisted.new', NULL, 2, 1, 1, '2026-08-15 09:39:19', '2026-08-15 09:41:48'),
@@ -355,7 +347,10 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(277, 739, 260, 'Attendance Dashboard', 'Attendance Dashboard', 'admin.attendance.dashboard', NULL, 0, 1, 1, '2026-09-20 05:55:49', '2026-09-20 05:55:49'),
 	(278, 740, NULL, 'Hotel Management', 'Hotel Management', NULL, '<i class="fad fa-hotel"></i>', 2, 1, 1, '2026-09-20 06:41:22', '2026-09-20 06:41:22'),
 	(279, 741, 278, 'Manage Hotel', 'Manage Hotel', 'admin.hotel.index', NULL, 2, 1, 1, '2026-09-20 06:42:29', '2026-09-20 06:42:29'),
-	(280, 742, 278, 'Add Hotel', 'Add Hotel', 'admin.hotel.create', NULL, 1, 1, 1, '2026-09-20 06:44:08', '2026-09-20 06:44:08');
+	(280, 742, 278, 'Add Hotel', 'Add Hotel', 'admin.hotel.create', NULL, 1, 1, 1, '2026-09-20 06:44:08', '2026-09-20 06:44:08'),
+	(281, 744, 256, 'Manage Department', 'Manage Department', 'admin.category.index', NULL, 1, 1, 1, '2026-09-21 11:50:56', '2026-09-21 11:50:56'),
+	(282, 745, 256, 'New Department', 'New Department', 'admin.category.create', NULL, 1, 1, 1, '2026-09-21 11:51:45', '2026-09-21 11:51:45'),
+	(283, 747, 199, 'Loan Application', 'Loan Application', 'admin.employee-loan.create', NULL, 1, 1, 1, '2026-09-22 05:44:43', '2026-09-22 05:44:43');
 
 -- Dumping structure for table technopa_hrm.admin_menu_actions
 DROP TABLE IF EXISTS `admin_menu_actions`;
@@ -369,7 +364,7 @@ CREATE TABLE IF NOT EXISTS `admin_menu_actions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=462 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=463 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.admin_menu_actions: ~318 rows (approximately)
 DELETE FROM `admin_menu_actions`;
@@ -410,11 +405,6 @@ INSERT INTO `admin_menu_actions` (`id`, `permission_id`, `admin_menu_id`, `name`
 	(45, 115, 13, 'edit', 'admin.staff.edit', 1, '2023-09-25 07:03:58', '2023-09-25 07:03:58'),
 	(46, 116, 13, 'update', 'admin.staff.update', 1, '2023-09-25 07:04:04', '2023-09-25 07:04:04'),
 	(47, 117, 13, 'delete', 'admin.staff.destroy', 1, '2023-09-25 07:04:10', '2023-09-25 07:04:10'),
-	(48, 118, 11, 'create', 'admin.category.create', 1, '2023-09-25 07:04:55', '2023-09-25 07:04:55'),
-	(49, 119, 11, 'store', 'admin.category.store', 1, '2023-09-25 07:04:59', '2023-09-25 07:04:59'),
-	(50, 120, 11, 'edit', 'admin.category.edit', 1, '2023-09-25 07:05:03', '2023-09-25 07:05:03'),
-	(51, 121, 11, 'update', 'admin.category.update', 1, '2023-09-25 07:05:10', '2023-09-25 07:05:10'),
-	(52, 122, 11, 'delete', 'admin.category.destroy', 1, '2023-09-25 07:05:15', '2023-09-25 07:05:15'),
 	(53, 123, 10, 'create', 'admin.store.create', 1, '2023-09-25 07:05:43', '2023-09-25 07:05:43'),
 	(54, 124, 10, 'store', 'admin.store.store', 1, '2023-09-25 07:05:51', '2023-09-25 07:05:51'),
 	(55, 125, 10, 'edit', 'admin.store.edit', 1, '2023-09-25 07:05:55', '2023-09-25 07:05:55'),
@@ -665,32 +655,19 @@ INSERT INTO `admin_menu_actions` (`id`, `permission_id`, `admin_menu_id`, `name`
 	(433, 687, 201, 'edit', 'admin.employee.edit', 1, '2026-07-28 05:42:10', '2026-07-28 05:42:10'),
 	(434, 688, 225, 'create', 'admin.employee-attendance.create', 1, '2026-07-28 11:40:14', '2026-07-28 11:40:14'),
 	(435, 690, 225, 'edit', 'admin.employee-attendance.edit', 1, '2026-07-28 11:40:31', '2026-07-28 11:40:31'),
-	(436, 691, 226, 'edit', 'admin.employee-leave.edit', 1, '2026-07-29 06:56:42', '2026-07-29 06:56:42'),
-	(437, 692, 228, 'edit', 'admin.holiday.edit', 1, '2026-07-29 08:34:42', '2026-07-29 08:34:42'),
 	(438, 693, 231, 'edit', 'admin.payroll.edit', 1, '2026-07-29 10:10:02', '2026-07-29 10:10:02'),
 	(439, 694, 231, 'pay', 'admin.payroll.update-status', 1, '2026-08-04 04:27:47', '2026-08-04 04:27:47'),
 	(440, 695, 232, 'certificate', 'admin.salary.structure.certificate', 1, '2026-08-04 06:30:26', '2026-08-04 06:30:26'),
-	(441, 696, 237, 'create', 'admin.employee-bonus.create', 1, '2026-08-06 04:54:43', '2026-08-06 04:54:43'),
-	(442, 697, 237, 'edit', 'admin.employee-bonus.edit', 1, '2026-08-06 05:44:17', '2026-08-06 05:44:17'),
-	(443, 698, 238, 'create', 'admin.employee-increment.create', 1, '2026-08-06 06:04:15', '2026-08-06 06:04:15'),
-	(444, 699, 238, 'edit', 'admin.employee-increment.edit', 1, '2026-08-06 06:04:28', '2026-08-06 06:04:28'),
 	(445, 700, 239, 'create', 'admin.employee-loan.create', 1, '2026-08-06 06:36:45', '2026-08-06 06:36:45'),
 	(446, 701, 239, 'edit', 'admin.employee-loan.edit', 1, '2026-08-06 06:36:55', '2026-08-06 06:36:55'),
-	(447, 702, 241, 'create', 'admin.employee-overtime.create', 1, '2026-08-09 04:55:52', '2026-08-09 04:55:52'),
-	(448, 703, 241, 'edit', 'admin.employee-overtime.edit', 1, '2026-08-09 04:56:03', '2026-08-09 04:56:03'),
 	(449, 704, 242, 'create', 'admin.expense.create', 1, '2026-08-09 06:09:36', '2026-08-09 06:09:36'),
 	(450, 705, 242, 'edit', 'admin.expense.edit', 1, '2026-08-09 06:09:48', '2026-08-09 06:09:48'),
 	(451, 706, 243, 'create', 'admin.documents.create', 1, '2026-08-09 06:54:09', '2026-08-09 06:54:09'),
 	(452, 707, 243, 'edit', 'admin.documents.edit', 1, '2026-08-09 06:54:20', '2026-08-09 06:54:20'),
-	(453, 708, 244, 'create', 'admin.resignation.create', 1, '2026-08-09 09:13:01', '2026-08-09 09:13:01'),
-	(454, 709, 244, 'edit', 'admin.resignation.edit', 1, '2026-08-09 09:13:12', '2026-08-09 09:13:12'),
-	(455, 710, 245, 'create', 'admin.termination.create', 1, '2026-08-09 09:29:25', '2026-08-09 09:29:25'),
-	(456, 711, 245, 'edit', 'admin.termination.edit', 1, '2026-08-09 09:29:37', '2026-08-09 09:29:37'),
-	(457, 712, 249, 'create', 'admin.appraisal.create', 1, '2026-08-09 10:26:53', '2026-08-09 10:26:53'),
-	(458, 713, 249, 'edit', 'admin.appraisal.edit', 1, '2026-08-09 10:27:06', '2026-08-09 10:27:06'),
 	(459, 734, 272, 'create', 'admin.staff-payment.create', 1, '2026-09-15 05:36:24', '2026-09-15 05:36:24'),
 	(460, 735, 272, 'edit', 'admin.staff-payment.edit', 1, '2026-09-15 05:36:34', '2026-09-15 05:36:34'),
-	(461, 743, 279, 'edit', 'admin.hotel.edit', 1, '2026-09-20 06:46:24', '2026-09-20 06:46:24');
+	(461, 743, 279, 'edit', 'admin.hotel.edit', 1, '2026-09-20 06:46:24', '2026-09-20 06:46:24'),
+	(462, 746, 281, 'edit', 'admin.category.edit', 1, '2026-09-21 11:59:15', '2026-09-21 11:59:15');
 
 -- Dumping structure for table technopa_hrm.admin_settings
 DROP TABLE IF EXISTS `admin_settings`;
@@ -726,7 +703,7 @@ CREATE TABLE IF NOT EXISTS `admin_settings` (
 -- Dumping data for table technopa_hrm.admin_settings: ~1 rows (approximately)
 DELETE FROM `admin_settings`;
 INSERT INTO `admin_settings` (`id`, `logo`, `favicon`, `title`, `footer_text`, `secondary_color`, `template_status`, `body_bg`, `card_bg`, `title_bg`, `primary_bg`, `secondary_bg`, `text1_color`, `text2_color`, `primary_color`, `accounting`, `invest_value`, `store_id`, `facebook`, `twitter`, `linkedin`, `whatsapp`, `google`, `created_at`, `updated_at`) VALUES
-	(1, 'media/admin-setting//2026-07-15-ABhLVxbUicCewF4lf9izApmOuLIkjhJ3CIqsXenI.webp', 'media/admin-setting//2026-07-15-vbvTfL6D5b73pcbmXUwv1M8lPsiwQAny8u2BU0yA.webp', 'AppproERP', '© 2025 Developed by <a target="_blank" href="http://www.technoparkbd.com/">Techno Park Bangladesh</a>', '#ff6505', 'template2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#198754', 1, 50000, 2, NULL, NULL, NULL, NULL, NULL, '2023-09-19 09:03:18', '2026-08-23 10:58:14');
+	(1, 'media/admin-setting//2026-09-21-LHeLZAfDLNtJ3W1aRjJj8C4bb7zriAoqfUU51Sur.webp', 'media/admin-setting//2026-09-21-SpKQ7giBSYe2GQEANPQ7yPRFVeGYdcEH7C9dimSZ.webp', 'Jannnat Parties', '© 2025 Developed by <a target="_blank" href="http://www.technoparkbd.com/">Techno Park Bangladesh</a>', '#ff6505', 'template2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '#198754', 1, 50000, 2, NULL, NULL, NULL, NULL, NULL, '2023-09-19 09:03:18', '2026-09-21 11:30:21');
 
 -- Dumping structure for table technopa_hrm.areas
 DROP TABLE IF EXISTS `areas`;
@@ -873,7 +850,7 @@ CREATE TABLE IF NOT EXISTS `branches` (
 -- Dumping data for table technopa_hrm.branches: ~1 rows (approximately)
 DELETE FROM `branches`;
 INSERT INTO `branches` (`id`, `company_id`, `prefix`, `name`, `contact_person`, `email`, `phone`, `fax`, `website`, `vat`, `tin`, `trade_license`, `address`, `status`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(1, 1, 'AHQ', 'Shankhari Bazar', 'Mamunur Rashid', 'sales@salestrackerbd.com', '01844000103', NULL, 'https://sahebbazaar.com/', NULL, NULL, 'zz', 'Dhaka', 1, 1, 1, 1, NULL, '2023-09-23 06:52:33', '2025-04-28 11:50:47');
+	(1, 1, 'AHQ', 'Jannnat Parties', 'Jannnat Parties', 'sales@salestrackerbd.com', '01844000103', NULL, 'https://sahebbazaar.com/', NULL, NULL, 'zz', 'Dhaka', 1, 1, 1, 1, NULL, '2023-09-23 06:52:33', '2026-09-21 11:31:22');
 
 -- Dumping structure for table technopa_hrm.bulk_collections
 DROP TABLE IF EXISTS `bulk_collections`;
@@ -942,182 +919,19 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=214 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=222 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.categories: ~171 rows (approximately)
+-- Dumping data for table technopa_hrm.categories: ~8 rows (approximately)
 DELETE FROM `categories`;
 INSERT INTO `categories` (`id`, `company_id`, `parent_id`, `name`, `slug`, `image`, `meta_title`, `meta_keyword`, `meta_description`, `featured`, `order`, `status`, `show_frontend`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(31, 1, NULL, 'Chicken Item', 'chicken-item', NULL, 'Poultry', NULL, NULL, 0, 0, 1, 1, 1, 1, 2, '2025-04-27 12:15:44', '2024-07-07 11:44:44', '2025-04-27 12:15:44'),
-	(43, 1, NULL, 'Frozen & Canned Foods', 'frozen-canned-foods', 'media/category/2025-10-07-HZOejrqEI2nV6w6Q3lklRY11XMUG4oDzh1die7ur.webp', 'Frozen Ready Foods', 'Frozen Foods', 'Frozen meals can be a nutritious option, especially if they\'re filled with vegetables, lean proteins, and whole grains', 0, 0, 1, 0, 1, 159, NULL, NULL, '2024-07-07 12:21:19', '2025-10-07 11:08:27'),
-	(44, 1, NULL, 'Dairy & Egg', 'dairy-egg', NULL, 'Dairy', NULL, NULL, 0, 0, 1, 0, 1, 159, NULL, NULL, '2024-07-07 12:21:32', '2025-04-29 14:37:36'),
-	(46, 1, 31, 'Sub Category', 'sub-category', NULL, NULL, NULL, NULL, 0, 0, 1, 1, 1, NULL, 2, '2024-07-25 10:21:01', '2024-07-25 07:20:11', '2024-07-25 10:21:01'),
-	(47, 1, NULL, 'Health & Wellness', 'health-wellness', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 2, NULL, NULL, NULL, '2025-04-27 12:15:26', '2025-04-27 13:22:18'),
-	(48, 1, 47, 'Herbal & Digestive Aids', 'herbal-digestive-aids', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 2, NULL, NULL, NULL, '2025-04-27 12:16:26', '2025-04-27 12:16:26'),
-	(49, 1, NULL, 'Beverages', 'beverages', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-28 11:16:06', '2025-04-28 11:16:06'),
-	(50, 1, 49, 'Coffee', 'coffee', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-28 11:16:40', '2025-04-28 11:16:40'),
-	(51, 1, NULL, 'Break Fast', 'break-fast', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-28 14:39:26', '2025-04-28 14:39:26'),
-	(52, 1, 51, 'Cereals', 'cereals', NULL, 'Dry Food', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-04-28 14:40:57', '2025-04-28 14:41:10'),
-	(53, 1, NULL, 'Snakes', 'snakes', NULL, 'Dry Food', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-28 15:10:41', '2025-04-28 15:10:41'),
-	(54, 1, 53, 'Chips& Pretzels', 'chips-pretzels', NULL, 'Dry Food', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-28 15:13:16', '2025-04-28 15:13:16'),
-	(55, 1, NULL, 'Energy Boosters', 'energy-boosters', NULL, 'Energy Drink', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-04-28 15:32:42', '2025-05-04 20:08:46'),
-	(56, 1, 49, 'Syrups & Powder Drinks', 'syrups-powder-drinks', NULL, 'Powder Drinks', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-28 16:00:59', '2025-04-28 16:00:59'),
-	(57, 1, NULL, 'Cooking', 'cooking', NULL, 'Cooking', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 12:35:11', '2025-04-29 12:35:11'),
-	(58, 1, 57, 'Cooking Oil', 'cooking-oil', NULL, 'Health Oil', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-04-29 12:36:12', '2026-02-23 15:09:23'),
-	(59, 1, 57, 'Atta Maida & Suji', 'atta-maida-suji', NULL, 'Healthy floor', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 12:40:09', '2025-04-29 12:40:09'),
-	(60, 1, 49, 'Tea', 'tea', NULL, 'Healthy Tea', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 13:05:34', '2025-04-29 13:05:34'),
-	(61, 1, 57, 'Rice', 'rice', NULL, 'Rice', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 13:09:59', '2025-04-29 13:09:59'),
-	(62, 1, 44, 'Powder & Milk', 'powder-milk', NULL, 'Powder', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 14:38:43', '2025-04-29 14:38:43'),
-	(63, 1, NULL, 'Sauces & Pickles', 'sauces-pickles', NULL, 'Sauces & Pickles', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 15:57:06', '2025-04-29 15:57:06'),
-	(64, 1, NULL, 'Daibetes Care', 'daibetes-care', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 16:04:53', '2025-04-29 16:04:53'),
-	(65, 1, NULL, 'Baby Products', 'baby-products-3', NULL, 'Baby Products', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-04-29 16:05:54', '2026-02-25 15:09:51'),
-	(66, 1, 65, 'Baby Milk', 'baby-milk', NULL, 'Drink', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 16:06:42', '2025-04-29 16:06:42'),
-	(67, 1, 57, 'Salt & Suger', 'salt-suger', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-29 16:18:39', '2025-04-29 16:18:39'),
-	(68, 1, 57, 'Rice', 'rice-2', NULL, 'Rice', NULL, NULL, 0, 0, 1, 0, 159, 159, 159, '2025-04-29 16:36:35', '2025-04-29 16:32:54', '2025-04-29 16:36:35'),
-	(69, 1, 51, 'Dips, Spreads& Syrups', 'dips-spreads-syrups', NULL, 'Dips, Spreads& Syrups', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-30 06:27:30', '2025-04-30 06:27:30'),
-	(70, 1, 53, 'Local Snakes', 'local-snakes', NULL, 'Local Snakes', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-30 07:19:11', '2025-04-30 07:19:11'),
-	(71, 1, 53, 'Noodles', 'noodles', NULL, 'Noodles', 'Noodles', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-04-30 08:55:32', '2025-04-30 08:55:32'),
-	(72, 1, 51, 'Jams & Jellies', 'jams-jellies', NULL, 'Jams & Jellies', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-01 09:27:57', '2025-05-01 09:27:57'),
-	(73, 1, 63, 'Pickles', 'pickles', NULL, 'Pickles', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-01 10:26:33', '2025-05-01 10:26:33'),
-	(74, 1, 63, 'Cooking Sauces', 'cooking-sauces', NULL, 'Cooking Sauces', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-01 10:27:42', '2025-05-01 10:27:42'),
-	(75, 1, 63, 'Tomato Sauces', 'tomato-sauces', NULL, 'Tomato Sauces', 'Tomato Sauces', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-01 10:36:14', '2025-05-01 10:36:14'),
-	(76, 1, 51, 'Honey', 'honey', NULL, 'Honey', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 07:41:18', '2025-05-02 07:41:18'),
-	(77, 1, NULL, 'Cleaning Supplies', 'cleaning-supplies', NULL, 'Cleaning Supplies', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 10:02:26', '2025-05-02 10:02:26'),
-	(78, 1, 77, 'Air Fresheners', 'air-fresheners', NULL, 'Air Fresheners', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 10:03:51', '2025-05-02 10:03:51'),
-	(79, 1, NULL, 'Personal Care', 'personal-care', NULL, 'Personal Care', 'Personal Care', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 10:18:27', '2025-05-02 10:18:27'),
-	(80, 1, 79, 'Oral Care', 'oral-care', NULL, 'Oral Care', 'Oral Care', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 10:19:12', '2025-05-02 10:19:12'),
-	(81, 1, 57, 'Spices', 'spices', NULL, 'Spices', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 10:41:18', '2025-05-02 10:41:18'),
-	(82, 1, NULL, 'Home Accessories', 'home-accessories', NULL, 'Home', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-02 11:25:24', '2025-08-20 07:52:23'),
-	(83, 1, 82, 'Glass Set', 'glass-set', NULL, 'Glass Set', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-02 13:18:08', '2025-05-02 13:18:08'),
-	(84, 1, 57, 'Ready MIx', 'ready-mix', NULL, 'Ready MIx', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-03 15:15:22', '2025-05-03 15:15:22'),
-	(85, 1, 57, 'Shemai & Suji', 'shemai-suji', NULL, 'Shemai & Suji', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-04 05:43:31', '2025-05-04 05:43:54'),
-	(86, 1, 57, 'Colors & Flavours', 'colors-flavours', NULL, 'Colors & Flavours', NULL, 'Colors & Flavours', 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-04 05:52:48', '2025-05-04 05:52:48'),
-	(87, 1, 57, 'Ghee', 'ghee', NULL, 'Ghee', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-04 06:40:01', '2025-05-04 06:40:01'),
-	(88, 1, 77, 'Laundry', 'laundry', NULL, 'Laundry', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-04 07:40:23', '2025-05-04 07:40:23'),
-	(89, 1, 79, 'Body Soap', 'body-soap', NULL, 'Body Care', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-04 13:02:39', '2025-05-05 21:03:29'),
-	(90, 1, 77, 'Toilet Cleaners', 'toilet-cleaners', NULL, 'Toilet Cleaners', 'Toilet Cleaners', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-04 14:01:54', '2025-05-04 14:01:54'),
-	(91, 1, 77, 'Dishwashing Supplies', 'dishwashing-supplies', NULL, 'Dishwashing Supplies', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-04 14:27:59', '2025-05-04 14:27:59'),
-	(92, 1, 53, 'Soup', 'soup', NULL, 'Soup', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-05 07:00:40', '2025-05-05 07:01:03'),
-	(93, 1, 79, 'Tissue & Wipes & Towel', 'tissue-wipes-towel', NULL, 'Tissue & Wipes & Towel', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-05 19:53:04', '2025-05-20 13:23:05'),
-	(94, 1, 79, 'Hand Wash', 'hand-wash', NULL, 'Hand Cleaner', 'Hand Wash', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-05 21:18:20', '2025-05-05 21:18:20'),
-	(95, 1, 77, 'Pest Control', 'pest-control', NULL, 'Pest Control', NULL, NULL, 0, 0, 1, 0, 159, 160, NULL, NULL, '2025-05-05 21:39:00', '2026-02-28 06:58:22'),
-	(96, 1, 53, 'Biscuits & Cookies', 'biscuits-cookies', NULL, 'Cookies', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-08 11:50:12', '2025-05-08 11:50:12'),
-	(97, 1, 79, 'Woman care', 'woman-care', NULL, 'Woman care', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-09 07:53:57', '2025-05-09 07:53:57'),
-	(98, 1, 57, 'Special Ingredients', 'special-ingredients', NULL, 'Special Ingredients', 'Special Ingredients', NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-09 09:22:32', '2025-05-09 09:22:32'),
-	(99, 1, 57, 'Dal or Lentil', 'dal-or-lentil', NULL, 'Dal or Lentil', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-09 11:13:30', '2025-05-09 11:13:30'),
-	(100, 1, 53, 'Pasta & Macaroni', 'pasta-macaroni', NULL, 'Pasta & Macaroni', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-09 11:17:00', '2025-05-09 11:17:00'),
-	(101, 1, 43, 'Canned Foods', 'canned-foods', NULL, 'Canned Foods', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-09 13:44:57', '2025-05-09 13:44:57'),
-	(102, 1, 44, 'Butter & Sour Cream', 'butter-sour-cream', NULL, 'Butter & Sour Cream', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-09 14:11:05', '2025-05-09 14:11:05'),
-	(103, 1, 82, 'Italiano Set', 'italiano-set', NULL, 'Italiano Set', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-10 08:18:35', '2025-05-10 08:18:35'),
-	(104, 1, 79, 'Body & Hair Oil', 'body-hair-oil', NULL, 'Hair Care & Body Care', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-11 09:50:24', '2025-05-11 10:13:45'),
-	(105, 1, 79, 'Men\'s Care', 'mens-care', NULL, 'Men\'s Care', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-11 09:52:00', '2025-05-11 09:52:00'),
-	(106, 1, 105, 'Shaving Needs', 'shaving-needs', NULL, 'Shaving Needs', NULL, NULL, 0, 0, 1, 0, 159, NULL, 159, '2025-05-11 11:10:15', '2025-05-11 11:07:05', '2025-05-11 11:10:15'),
-	(107, 1, NULL, 'RFL Group', 'rfl-group', NULL, 'Rfl Group', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-13 10:02:10', '2026-01-05 15:24:51'),
-	(108, 1, 65, 'Oral Care', 'oral-care-2', NULL, 'Oral Care', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-13 13:23:54', '2025-05-13 13:23:54'),
-	(109, 1, NULL, 'Candy & Chocolate', 'candy-chocolate', NULL, 'Candy & Chocolate', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-15 13:21:51', '2025-05-15 13:21:51'),
-	(110, 1, 109, 'Chocolates', 'chocolates', NULL, 'Chocolates', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-15 13:28:02', '2025-05-15 13:28:02'),
-	(111, 1, 43, 'Frozen Foods', 'frozen-foods', NULL, 'Frozen Foods', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-15 15:27:22', '2025-05-15 15:27:22'),
-	(112, 1, 79, 'Shampoo & Conditioner', 'shampoo-conditioner', NULL, 'Shampoo', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-16 15:17:44', '2025-05-20 08:55:27'),
-	(113, 1, 65, 'Baby Powder & Lotion& Oil & Cream', 'baby-powder-lotion-oil-cream', NULL, 'Baby Powder & Lotion& Oil', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-18 14:20:08', '2025-05-18 14:44:39'),
-	(114, 1, 65, 'Baby Soap & Shampoo& Wash', 'baby-soap-shampoo-wash', NULL, 'Baby Soap & Shampoo & Wash', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-18 14:21:05', '2025-05-19 15:33:39'),
-	(115, 1, 79, 'Deodorants', 'deodorants', NULL, 'Men & Woman Deodorants', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-19 13:29:25', '2025-05-19 13:29:25'),
-	(116, 1, 79, 'Powder & Cream', 'powder-cream', NULL, 'Powder & Cream', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-19 13:34:48', '2025-05-19 13:34:48'),
-	(117, 1, 79, 'Face Wash', 'face-wash', NULL, 'Face Wash', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-20 09:13:55', '2025-05-20 09:13:55'),
-	(118, 1, 65, 'Wipes & Cotton Buds', 'wipes-cotton-buds', NULL, 'Wipes & Cotton Buds', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-05-20 15:41:51', '2025-05-20 15:42:26'),
-	(119, 1, 49, 'Water', 'water', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 161, 161, NULL, NULL, '2025-05-21 10:29:38', '2025-05-21 10:29:52'),
-	(120, 1, 49, 'Juice & Smoody', 'juice-smoody', NULL, 'Juice & Smoody', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-21 16:02:59', '2025-05-21 16:02:59'),
-	(121, 1, 82, 'Carpet Texture', 'carpet-texture', NULL, 'Caepet Texture', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-22 08:54:12', '2025-05-22 08:54:12'),
-	(122, 1, 82, 'Flask', 'flask', NULL, 'Flask', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-22 10:27:01', '2025-05-22 10:27:01'),
-	(123, 1, 123, 'Knief & Sigar', 'knief-sigar', NULL, 'Knief & Sigar', NULL, NULL, 0, 0, 1, 0, 161, 159, NULL, NULL, '2025-05-22 12:37:25', '2025-12-04 09:50:58'),
-	(124, 1, 53, 'Ice Cream', 'ice-cream', NULL, 'Ice Cream', NULL, NULL, 0, 0, 1, 0, 2, NULL, NULL, NULL, '2025-05-23 14:17:43', '2025-05-23 14:17:43'),
-	(125, 1, 47, 'Keto Food', 'keto-food', NULL, 'Keto Food', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-24 13:12:29', '2025-05-24 13:12:29'),
-	(126, 1, 109, 'Candy', 'candy-2', NULL, 'Candy', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-24 16:25:16', '2025-05-24 16:25:16'),
-	(127, 1, 49, 'Soft Drinks', 'soft-drinks', NULL, 'Soft Drinks', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-05-25 16:57:45', '2025-05-25 16:57:45'),
-	(128, 1, 65, 'Diapers', 'diapers', NULL, 'Diapers', NULL, NULL, 0, 0, 1, 0, 2, NULL, NULL, NULL, '2025-05-28 17:35:15', '2025-05-28 17:35:15'),
-	(129, 1, 82, 'Umbrella', 'umbrella', NULL, 'Umbrella', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-06-04 02:33:38', '2025-06-04 02:33:38'),
-	(130, 1, 79, 'Hair Color', 'hair-color', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-06-06 11:22:49', '2025-06-06 11:23:07'),
-	(131, 1, 82, 'Toy', 'toy', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-06-06 15:49:30', '2025-06-06 15:49:30'),
-	(132, 1, 53, 'Cake\'s', 'cakes', NULL, 'Cake\'s', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-06-30 08:30:35', '2025-06-30 08:30:35'),
-	(133, 1, 79, 'Pain Balm', 'pain-balm', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-07-09 14:08:55', '2025-07-09 14:08:55'),
-	(134, 1, 65, 'Mumpot/Fiter', 'mumpotfiter', NULL, 'Mumpot', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-07-11 09:17:19', '2025-07-11 09:18:09'),
-	(135, 1, 82, 'Key Holder', 'key-holder', NULL, 'Keys and Bags Designer', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-07-18 09:19:19', '2025-07-18 09:19:19'),
-	(136, 1, 82, 'Baby', 'baby-9', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, 159, 159, '2026-04-08 10:36:16', '2025-07-21 11:34:47', '2026-04-08 10:36:16'),
-	(137, 1, 82, 'Blender', 'blender', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 160, 159, 159, '2025-12-05 09:29:59', '2025-07-30 08:16:26', '2025-12-05 09:29:59'),
-	(138, 1, 82, 'Agorbati & Candle', 'agorbati-candle', 'media/category//2025-07-30-FZaJDuGryiuqd5tQd5mplhOoKz3UolLfnUX8KQXL.webp', NULL, NULL, NULL, 0, 0, 1, 0, 160, NULL, NULL, NULL, '2025-07-30 08:37:39', '2025-07-30 08:37:39'),
-	(139, 1, 82, 'Cake Making Item', 'cake-making-item', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 160, 160, NULL, NULL, '2025-08-01 08:49:56', '2025-08-01 08:50:08'),
-	(140, 1, 82, 'Nepthonil', 'nepthonil', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-08-03 13:28:52', '2025-08-03 13:28:52'),
-	(141, 1, 82, 'Glass Wepper & Handle Brush', 'glass-wepper-handle-brush', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-08-12 14:22:04', '2025-08-12 14:22:04'),
-	(142, 1, 82, 'Hotpot', 'hotpot', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-08-20 09:12:10', '2025-08-20 09:12:10'),
-	(143, 1, 82, 'Bed Floor Jharu', 'bed-floor-jharu', NULL, 'Bed Floor Jharu', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-08-20 09:15:15', '2025-08-20 09:15:15'),
-	(144, 1, 82, 'Plate & Bowl', 'plate-bowl', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-08-20 10:52:42', '2025-08-20 16:09:21'),
-	(145, 1, 82, 'Cup & Mug', 'cup-mug', NULL, 'Cup & Mug', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-08-20 14:53:11', '2025-12-05 09:31:00'),
-	(146, 1, 82, 'Glass Made Porduct', 'glass-made-porduct', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, 159, '2026-01-30 14:05:35', '2025-08-21 13:40:27', '2026-01-30 14:05:35'),
-	(147, 1, 79, 'Body lotion', 'body-lotion', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 160, NULL, NULL, NULL, '2025-10-17 10:05:31', '2025-10-17 10:05:31'),
-	(148, 1, 79, 'Lip Blam', 'lip-blam', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-11-16 08:46:31', '2025-11-16 08:46:31'),
-	(149, 1, NULL, 'Kitchen Accessories', 'kitchen-accessories', NULL, 'Kitchen Accessories', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 09:55:23', '2025-12-04 09:55:23'),
-	(150, 1, 149, 'Knief & Sigar', 'knief-sigar-2', NULL, 'Knief & Sigar', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 09:55:39', '2025-12-04 09:55:39'),
-	(151, 1, 149, 'Chalni & Chakni & Cimta', 'chalni-chakni-cimta', NULL, 'Chalni', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-12-04 10:36:25', '2026-02-11 09:41:51'),
-	(152, 1, 79, 'Body Washer', 'body-washer', NULL, 'Body Washer', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 10:53:59', '2025-12-04 10:53:59'),
-	(153, 1, 149, 'Hand glubs', 'hand-glubs', NULL, 'Hand glubs', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 11:09:02', '2025-12-04 11:09:02'),
-	(154, 1, 149, 'Lemon Crusher', 'lemon-crusher', NULL, 'Lemon Crusher', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 11:12:50', '2025-12-04 11:12:50'),
-	(155, 1, 149, 'Salad Cutter', 'salad-cutter', NULL, 'Salad Cutter', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 11:19:34', '2025-12-04 11:19:34'),
-	(156, 1, 149, 'Dail Ghutni', 'dail-ghutni', NULL, 'Dail Ghutni', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 11:26:34', '2025-12-04 11:26:34'),
-	(157, 1, 149, 'Tab Washer', 'tab-washer', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 11:36:23', '2025-12-04 11:36:23'),
-	(158, 1, 149, 'Chopsticks', 'chopsticks', NULL, 'Chopsticks', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 11:42:31', '2025-12-04 11:42:31'),
-	(159, 1, 82, 'Wall Hook & Hoolder', 'wall-hook-hoolder', NULL, 'Wall Hook', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-12-04 11:51:45', '2025-12-04 16:22:00'),
-	(160, 1, 149, 'Barbique', 'barbique', NULL, 'Barbique Items', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 13:34:30', '2025-12-04 13:34:30'),
-	(161, 1, 82, 'Tiffin Box & Lunch Box', 'tiffin-box-lunch-box', NULL, 'Tiffin Box', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-12-04 14:36:40', '2025-12-05 08:31:27'),
-	(162, 1, 149, 'Masala Storage', 'masala-storage', NULL, 'Masala Storage', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 14:57:02', '2025-12-04 14:57:02'),
-	(163, 1, 82, 'Water botol & Designer Pot', 'water-botol-designer-pot', NULL, 'Water botol & Designer Pot', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-04 15:25:47', '2025-12-04 15:25:47'),
-	(164, 1, 203, 'Electronic Machines', 'electronic-machines', NULL, 'Electronic Machines', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2025-12-04 15:44:45', '2026-02-13 09:29:09'),
-	(165, 1, 82, 'Pa Gosoni', 'pa-gosoni', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-06 09:17:59', '2025-12-06 09:17:59'),
-	(166, 1, 149, 'Hata & Cheni', 'hata-cheni', NULL, 'Hata & Cheni', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-06 11:12:02', '2025-12-06 11:12:02'),
-	(167, 1, 82, 'Kelp & Rope', 'kelp-rope', NULL, 'Kelp & Rope', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-06 12:03:07', '2025-12-06 12:03:07'),
-	(168, 1, 149, 'Chamus & Kata Chamus', 'chamus-kata-chamus', NULL, 'Chamus & Kata Chamus', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-06 13:23:53', '2025-12-06 13:23:53'),
-	(169, 1, 149, 'Water Pureit', 'water-pureit', NULL, 'Water Pureit', NULL, NULL, 0, 0, 1, 0, 160, NULL, NULL, NULL, '2025-12-15 09:01:55', '2025-12-15 09:01:55'),
-	(170, 1, 65, 'Baby Products', 'baby-products-2', NULL, 'Baby Products', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-15 09:13:40', '2025-12-15 09:13:40'),
-	(171, 1, 82, 'Battery', 'battery', NULL, 'Battery', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2025-12-21 10:59:34', '2025-12-21 10:59:34'),
-	(172, 1, 107, 'Table & Chair', 'table-chair', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-05 15:25:59', '2026-01-05 15:25:59'),
-	(173, 1, 149, 'Chopping Board', 'chopping-board', NULL, 'Chopping Board', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-07 14:25:39', '2026-01-07 14:25:39'),
-	(174, 1, 149, 'Fry Pan', 'fry-pan', NULL, 'Fry Pan', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-07 14:56:37', '2026-01-07 14:56:37'),
-	(175, 1, 107, 'Toilet Brush', 'toilet-brush', NULL, 'Toilet Brush', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 14:17:52', '2026-01-08 14:17:52'),
-	(176, 1, 107, 'Flask & Hotpot', 'flask-hotpot', NULL, 'Flask& Hotpot', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-01-08 14:23:23', '2026-02-07 08:06:02'),
-	(177, 1, 107, 'Stool &  Tool', 'stool-tool', NULL, 'Stool &  Tool', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 14:29:38', '2026-01-08 14:29:38'),
-	(178, 1, 107, 'Rat Trap', 'rat-trap', NULL, 'Rat Trap', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 14:33:29', '2026-01-08 14:33:29'),
-	(179, 1, 107, 'Mesh & Chalni', 'mesh-chalni', NULL, 'Mesh & Chalni', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 14:37:18', '2026-01-08 14:37:18'),
-	(180, 1, 107, 'Balti & Mug', 'balti-mug', NULL, 'Balti & Mug', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 14:45:23', '2026-01-08 14:45:23'),
-	(181, 1, 107, 'Dustbin &  Duster', 'dustbin-duster', NULL, 'Dustbin &  Duster', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 14:57:21', '2026-01-08 14:57:21'),
-	(182, 1, 107, 'Tea Strainer', 'tea-strainer', NULL, 'Tea Strainer', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 15:01:47', '2026-01-08 15:01:47'),
-	(183, 1, 107, 'Air Tied Contaniar', 'air-tied-contaniar', NULL, 'Air Tied Contaniar', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 15:05:16', '2026-01-08 15:05:16'),
-	(184, 1, 107, 'Hotpot', 'hotpot-2', NULL, 'Hotpot', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 15:29:50', '2026-01-08 15:29:50'),
-	(185, 1, 107, 'Electic Kettle', 'electic-kettle', NULL, 'Electic Kettle', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-08 15:54:37', '2026-01-08 15:54:37'),
-	(186, 1, 203, 'Coffee Maker', 'coffee-maker', NULL, 'Coffee Maker', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-01-10 09:32:40', '2026-02-13 09:32:09'),
-	(187, 1, 149, 'Egg Bitar', 'egg-bitar', NULL, 'Egg Bitar', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-10 11:04:39', '2026-01-10 11:04:39'),
-	(188, 1, 149, 'Gas Lighter & Lighter', 'gas-lighter-lighter', NULL, 'Gas Lighter & Lighter', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-10 12:05:32', '2026-01-10 12:05:32'),
-	(189, 1, 79, 'Hot Bag', 'hot-bag', NULL, 'Hot Bag', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-10 14:33:22', '2026-01-10 14:33:22'),
-	(190, 1, 149, 'Measuring Cup', 'measuring-cup', NULL, 'Measuring Cup', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-01-10 15:53:55', '2026-01-10 15:54:25'),
-	(191, 1, 146, 'Glass Jug & Glass', 'glass-jug-glass', NULL, 'Glass Jug & Glass', NULL, NULL, 0, 0, 1, 0, 159, NULL, 159, '2026-01-30 13:58:44', '2026-01-30 13:53:44', '2026-01-30 13:58:44'),
-	(192, 1, 146, 'Glass Jug & Glass', 'glass-jug-glass-2', NULL, 'Glass Jug & Glass', NULL, NULL, 0, 0, 1, 0, 159, NULL, 159, '2026-01-30 14:01:37', '2026-01-30 13:59:01', '2026-01-30 14:01:37'),
-	(193, 1, NULL, 'Glass Made Porduct', 'glass-made-porduct-2', NULL, 'Glass Made Porduct', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-30 14:06:07', '2026-01-30 14:06:07'),
-	(194, 1, 193, 'Glass Jug & Glass', 'glass-jug-glass-3', NULL, 'Glass Jug & Glass', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-30 14:06:52', '2026-01-30 14:06:52'),
-	(195, 1, 82, 'Stand & Holder', 'stand-holder', NULL, 'Stand & Holder', NULL, NULL, 0, 0, 1, 0, 159, NULL, 159, '2026-01-30 14:40:27', '2026-01-30 14:39:40', '2026-01-30 14:40:27'),
-	(196, 1, 193, 'Short Glass', 'short-glass', NULL, 'Short Glass', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-31 08:41:21', '2026-01-31 08:41:21'),
-	(197, 1, 193, 'Bowl & Bati', 'bowl-bati', NULL, 'Bowl & Bati', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-01-31 10:23:22', '2026-01-31 10:23:22'),
-	(198, 1, 193, 'Cup Plate', 'cup-plate', NULL, 'Cup Plate', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-01-31 15:54:04', '2026-01-31 15:54:38'),
-	(199, 1, 107, 'Jug & Glass', 'jug-glass', NULL, 'Jug & Glass', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-06 10:49:09', '2026-02-06 10:49:09'),
-	(200, 1, 107, 'Water botol & Designer Pot', 'water-botol-designer-pot-2', NULL, 'Water botol & Designer Pot', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-06 15:57:13', '2026-02-06 15:57:13'),
-	(201, 1, 107, 'Flower Top & Busket', 'flower-top-busket', NULL, 'Flower Top & Busket', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-09 15:08:36', '2026-02-09 15:08:36'),
-	(202, 1, 149, 'Cooker', 'cooker', NULL, 'Cooker', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-13 09:15:32', '2026-02-13 09:15:32'),
-	(203, 1, NULL, 'Electronic Accessories', 'electronic-accessories', NULL, 'Electronic Accessories', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-02-13 09:28:43', '2026-02-13 09:28:49'),
-	(204, 1, 203, 'Blender', 'blender-2', NULL, 'Blender', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-13 09:34:25', '2026-02-13 09:34:25'),
-	(205, 1, 203, 'Rice Cooker', 'rice-cooker', NULL, 'Rice Cooker', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-13 09:51:57', '2026-02-13 09:51:57'),
-	(206, 1, 65, 'Baby Towel & Wips', 'baby-towel-wips', NULL, 'Baby Towel & Wips', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-25 15:24:35', '2026-02-25 15:24:35'),
-	(207, 1, 65, 'Baby Brush', 'baby-brush', NULL, 'Baby Brush', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-25 15:40:37', '2026-02-25 15:40:37'),
-	(208, 1, 65, 'Baby Cup & Bati & Chamus', 'baby-cup-bati-chamus', NULL, 'Baby Cup & Bati & Chamus', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-02-25 15:46:51', '2026-02-25 16:43:48'),
-	(209, 1, 65, 'Fiter Cleaner', 'fiter-cleaner', NULL, 'Fiter Cleaner', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-25 16:33:28', '2026-02-25 16:33:28'),
-	(210, 1, 82, 'Shoe Polish', 'shoe-polish', NULL, 'Shoe Polish', NULL, NULL, 0, 0, 1, 0, 159, NULL, NULL, NULL, '2026-02-26 15:56:46', '2026-02-26 15:56:46'),
-	(211, 1, 193, 'Plate', 'plate-2', NULL, 'Plate', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-03-10 08:18:09', '2026-03-10 08:18:46'),
-	(212, 1, 193, 'Designer Things', 'designer-things', NULL, 'Designer Things', NULL, NULL, 0, 0, 1, 0, 159, 159, NULL, NULL, '2026-03-10 08:28:46', '2026-04-08 09:16:23'),
-	(213, 1, 104, 'Hair Oil', 'hair-oil', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, NULL, NULL, NULL, '2026-07-27 04:25:07', '2026-07-27 04:25:07');
+	(214, 1, NULL, 'Buggy Driver', 'buggy-driver', NULL, NULL, NULL, 'sxsa', 0, 0, 1, 0, 1, 1, NULL, NULL, '2026-09-21 11:53:12', '2026-09-21 12:03:44'),
+	(215, 1, NULL, 'Belly Boy', 'belly-boy', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, NULL, NULL, NULL, '2026-09-22 05:47:34', '2026-09-22 05:47:34'),
+	(216, 1, NULL, 'Kitchen Connection', 'kitchen-connection', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, NULL, NULL, NULL, '2026-09-22 05:47:58', '2026-09-22 05:47:58'),
+	(217, 1, NULL, 'Nuska', 'nuska', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, NULL, NULL, NULL, '2026-09-22 05:48:10', '2026-09-22 05:48:10'),
+	(218, 1, 4, 'Room Service', 'room-service', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, 1, NULL, NULL, '2026-09-22 05:48:26', '2026-09-22 06:19:07'),
+	(219, 1, 6, 'Front Office', 'front-office', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, 1, NULL, NULL, '2026-09-22 05:48:38', '2026-09-22 06:02:20'),
+	(220, 1, 5, 'Banquet', 'banquet', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, 1, NULL, NULL, '2026-09-22 05:48:56', '2026-09-22 06:02:06'),
+	(221, 1, 6, 'HR', 'hr', NULL, NULL, NULL, NULL, 0, 0, 1, 0, 1, NULL, NULL, NULL, '2026-09-22 06:19:33', '2026-09-22 06:27:55');
 
 -- Dumping structure for table technopa_hrm.category_vendors
 DROP TABLE IF EXISTS `category_vendors`;
@@ -1130,42 +944,8 @@ CREATE TABLE IF NOT EXISTS `category_vendors` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.category_vendors: ~33 rows (approximately)
+-- Dumping data for table technopa_hrm.category_vendors: ~0 rows (approximately)
 DELETE FROM `category_vendors`;
-INSERT INTO `category_vendors` (`id`, `category_id`, `vendor_id`, `created_at`, `updated_at`) VALUES
-	(26, 9, 1, '2023-10-19 06:38:23', '2023-10-19 06:38:23'),
-	(77, 31, 1, '2024-07-25 06:26:03', '2024-07-25 06:26:03'),
-	(80, 47, 1, '2025-04-27 12:15:26', '2025-04-27 12:15:26'),
-	(81, 48, 1, '2025-04-27 12:16:26', '2025-04-27 12:16:26'),
-	(82, 49, 2, '2025-04-28 11:16:06', '2025-04-28 11:16:06'),
-	(83, 51, 1, '2025-04-28 14:39:26', '2025-04-28 14:39:26'),
-	(85, 52, 1, '2025-04-28 14:41:10', '2025-04-28 14:41:10'),
-	(86, 53, 1, '2025-04-28 15:10:41', '2025-04-28 15:10:41'),
-	(87, 54, 1, '2025-04-28 15:13:16', '2025-04-28 15:13:16'),
-	(89, 56, 4, '2025-04-28 16:00:59', '2025-04-28 16:00:59'),
-	(90, 57, 3, '2025-04-29 12:35:11', '2025-04-29 12:35:11'),
-	(92, 59, 3, '2025-04-29 12:40:09', '2025-04-29 12:40:09'),
-	(93, 60, 3, '2025-04-29 13:05:34', '2025-04-29 13:05:34'),
-	(94, 61, 3, '2025-04-29 13:09:59', '2025-04-29 13:09:59'),
-	(95, 44, 1, '2025-04-29 14:37:36', '2025-04-29 14:37:36'),
-	(96, 62, 4, '2025-04-29 14:38:43', '2025-04-29 14:38:43'),
-	(97, 63, 4, '2025-04-29 15:57:06', '2025-04-29 15:57:06'),
-	(98, 64, 4, '2025-04-29 16:04:53', '2025-04-29 16:04:53'),
-	(99, 70, 7, '2025-04-30 07:19:11', '2025-04-30 07:19:11'),
-	(100, 71, 7, '2025-04-30 08:55:32', '2025-04-30 08:55:32'),
-	(101, 72, 7, '2025-05-01 09:27:57', '2025-05-01 09:27:57'),
-	(102, 76, 8, '2025-05-02 07:41:18', '2025-05-02 07:41:18'),
-	(103, 77, 8, '2025-05-02 10:02:26', '2025-05-02 10:02:26'),
-	(104, 78, 8, '2025-05-02 10:03:51', '2025-05-02 10:03:51'),
-	(106, 83, 10, '2025-05-02 13:18:08', '2025-05-02 13:18:08'),
-	(107, 55, 4, '2025-05-04 20:08:46', '2025-05-04 20:08:46'),
-	(108, 97, 7, '2025-05-09 07:53:57', '2025-05-09 07:53:57'),
-	(111, 119, 31, '2025-05-21 10:29:52', '2025-05-21 10:29:52'),
-	(112, 82, 10, '2025-08-20 07:52:23', '2025-08-20 07:52:23'),
-	(114, 43, 21, '2025-10-07 11:16:33', '2025-10-07 11:16:33'),
-	(116, 107, 10, '2026-01-05 15:24:51', '2026-01-05 15:24:51'),
-	(117, 58, 3, '2026-02-23 15:09:23', '2026-02-23 15:09:23'),
-	(118, 213, 1, '2026-07-27 04:25:07', '2026-07-27 04:25:07');
 
 -- Dumping structure for table technopa_hrm.chain_clients
 DROP TABLE IF EXISTS `chain_clients`;
@@ -1247,18 +1027,8 @@ CREATE TABLE IF NOT EXISTS `client_categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.client_categories: ~9 rows (approximately)
+-- Dumping data for table technopa_hrm.client_categories: ~0 rows (approximately)
 DELETE FROM `client_categories`;
-INSERT INTO `client_categories` (`id`, `company_id`, `name`, `status`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(1, 1, 'RETAILER', 1, 1, NULL, 2, '2024-05-12 04:55:39', '2023-09-23 15:05:44', '2024-05-12 04:55:39'),
-	(2, 1, 'DISTRIBUTOR', 1, 1, NULL, 2, '2024-05-12 04:55:39', '2023-09-23 15:05:10', '2024-05-12 04:55:39'),
-	(3, 1, 'HOTEL', 1, 1, 2, 2, '2024-05-12 04:55:39', '2023-09-23 15:05:27', '2024-05-12 04:55:39'),
-	(4, 1, 'CORPORATE', 1, 1, NULL, 2, '2024-05-12 04:55:39', '2023-09-23 15:05:59', '2024-05-12 04:55:39'),
-	(5, 1, 'OTHERS', 1, 1, NULL, 2, '2024-05-12 04:55:39', '2023-09-23 15:06:18', '2024-05-12 04:55:39'),
-	(6, 1, 'RESTAURANT', 1, 2, NULL, 2, '2024-05-12 04:55:39', '2023-11-07 08:19:04', '2024-05-12 04:55:39'),
-	(7, 1, 'Hospital', 1, 2, NULL, 2, '2024-05-12 04:55:39', '2023-11-07 08:19:33', '2024-05-12 04:55:39'),
-	(8, 1, 'Club', 1, 2, NULL, 2, '2024-05-12 04:55:39', '2023-11-13 04:32:44', '2024-05-12 04:55:39'),
-	(9, 1, 'Super Shop', 1, 2, NULL, 2, '2024-05-12 04:55:39', '2023-12-27 18:39:54', '2024-05-12 04:55:39');
 
 -- Dumping structure for table technopa_hrm.client_messages
 DROP TABLE IF EXISTS `client_messages`;
@@ -1608,7 +1378,7 @@ CREATE TABLE IF NOT EXISTS `companies` (
 -- Dumping data for table technopa_hrm.companies: ~1 rows (approximately)
 DELETE FROM `companies`;
 INSERT INTO `companies` (`id`, `prefix`, `name`, `username`, `email`, `phone`, `fax`, `website`, `vat`, `tin`, `trade_license`, `address`, `logo`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(1, 'ERP', 'App Pro ERP', 'sahebbazaar', 'info@technoparkbd.com', '01552344239', '01552344239', 'Website: www.technoparkbd.com', '5', NULL, NULL, 'House # 10/B Road No 6, Dhaka 1205', 'media/company//2026-07-23-YzSlNBtshZ2ucbW5wSG5Sps3ZFtnjR91rbTqsl0Y.webp', 1, 1, NULL, NULL, '2023-09-23 06:52:33', '2026-07-23 09:53:37');
+	(1, 'HRM', 'Jannnat Parties', 'jannatparties', 'info@technoparkbd.com', '01552344239', '01552344239', 'Website: www.technoparkbd.com', '5', NULL, NULL, 'House # 10/B Road No 6, Dhaka 1205', 'media/company//2026-07-23-YzSlNBtshZ2ucbW5wSG5Sps3ZFtnjR91rbTqsl0Y.webp', 1, 1, NULL, NULL, '2023-09-23 06:52:33', '2026-09-21 11:31:02');
 
 -- Dumping structure for table technopa_hrm.contacts
 DROP TABLE IF EXISTS `contacts`;
@@ -2600,14 +2370,15 @@ CREATE TABLE IF NOT EXISTS `hrm_hotels` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_hotels: ~3 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_hotels: ~4 rows (approximately)
 DELETE FROM `hrm_hotels`;
 INSERT INTO `hrm_hotels` (`id`, `name`, `phone`, `address`, `entry_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(4, 'Sheraton Dhaka', '01303740757', '316/2, Rampura Dhaka', '2026-09-20', 'sd', 'Active', 1, 1, '2026-09-20 06:49:33', '2026-09-20 06:50:58'),
 	(5, 'Hotel Madina', '01921588521', 'UA, Arab', '2026-09-20', 'dsfds', 'Active', 1, NULL, '2026-09-20 06:51:26', '2026-09-20 06:51:26'),
-	(6, 'Relaxation Hotel', '01921599567', 'Sydney, Australia', '2026-09-20', 'cdcfsdfds', 'Inactive', 1, 1, '2026-09-20 06:52:42', '2026-09-20 06:53:35');
+	(6, 'Relaxation Hotel', '01921599567', 'Sydney, Australia', '2026-09-20', 'cdcfsdfds', 'Inactive', 1, 1, '2026-09-20 06:52:42', '2026-09-20 06:53:35'),
+	(7, 'Fardin Hotel', NULL, 'Dhaka, BD', '2026-09-22', 'sdfs', 'Active', 1, 1, '2026-09-22 06:23:34', '2026-09-22 06:26:04');
 
 -- Dumping structure for table technopa_hrm.hrm_payments
 DROP TABLE IF EXISTS `hrm_payments`;
@@ -2634,7 +2405,7 @@ CREATE TABLE IF NOT EXISTS `hrm_payments` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_payments: ~4 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_payments: ~3 rows (approximately)
 DELETE FROM `hrm_payments`;
 INSERT INTO `hrm_payments` (`id`, `payment_head_id`, `employee_id`, `payment_month`, `payment_year`, `hours`, `hour_rate`, `payment_amount`, `payment_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(3, 313, 52, '1', '2026', NULL, NULL, 65.00, '2026-09-15', 'sdfs', 'Payment', 1, 1, '2026-09-15 05:31:11', '2026-09-15 05:40:53'),
@@ -4359,7 +4130,7 @@ CREATE TABLE IF NOT EXISTS `model_has_roles` (
   KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.model_has_roles: ~84 rows (approximately)
+-- Dumping data for table technopa_hrm.model_has_roles: ~83 rows (approximately)
 DELETE FROM `model_has_roles`;
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 	(10, 'App\\Models\\User', 1),
@@ -4633,7 +4404,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=744 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=748 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.permissions: ~496 rows (approximately)
 DELETE FROM `permissions`;
@@ -4658,7 +4429,6 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(19, 'admin.admin-menuAction.destroy', 'web', '2023-09-19 09:19:02', '2023-09-19 09:19:02'),
 	(21, 'Sales Group', 'web', '2023-09-19 09:20:46', '2023-09-23 14:50:24'),
 	(22, 'Store Setup', 'web', '2023-09-19 09:20:59', '2023-09-19 09:20:59'),
-	(23, 'admin.category.index', 'web', '2023-09-19 09:21:10', '2024-10-12 11:31:46'),
 	(24, 'Product Setup', 'web', '2023-09-19 09:21:19', '2023-09-19 09:21:19'),
 	(25, 'Staff Setup', 'web', '2023-09-19 09:21:25', '2023-09-19 09:21:25'),
 	(26, 'Product List', 'web', '2023-09-19 09:21:36', '2023-09-19 09:21:36'),
@@ -4732,11 +4502,6 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(115, 'admin.staff.edit', 'web', '2023-09-25 07:03:58', '2023-09-25 07:03:58'),
 	(116, 'admin.staff.update', 'web', '2023-09-25 07:04:04', '2023-09-25 07:04:04'),
 	(117, 'admin.staff.destroy', 'web', '2023-09-25 07:04:10', '2023-09-25 07:04:10'),
-	(118, 'admin.category.create', 'web', '2023-09-25 07:04:55', '2023-09-25 07:04:55'),
-	(119, 'admin.category.store', 'web', '2023-09-25 07:04:59', '2023-09-25 07:04:59'),
-	(120, 'admin.category.edit', 'web', '2023-09-25 07:05:03', '2023-09-25 07:05:03'),
-	(121, 'admin.category.update', 'web', '2023-09-25 07:05:10', '2023-09-25 07:05:10'),
-	(122, 'admin.category.destroy', 'web', '2023-09-25 07:05:15', '2023-09-25 07:05:15'),
 	(123, 'admin.store.create', 'web', '2023-09-25 07:05:43', '2023-09-25 07:05:43'),
 	(124, 'admin.store.store', 'web', '2023-09-25 07:05:51', '2023-09-25 07:05:51'),
 	(125, 'admin.store.edit', 'web', '2023-09-25 07:05:55', '2023-09-25 07:05:55'),
@@ -5043,7 +4808,7 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(607, 'Payment Due', 'web', '2025-05-26 08:54:31', '2025-05-26 08:54:31'),
 	(608, 'Outstanding', 'web', '2025-05-26 08:54:36', '2025-05-26 08:54:36'),
 	(609, 'admin.retail-return-report.index', 'web', '2025-05-28 09:38:20', '2025-05-28 09:38:30'),
-	(611, 'hrm', 'web', '2026-07-16 06:24:05', '2026-09-07 10:40:13'),
+	(611, 'hrm', 'web', '2026-07-16 06:24:05', '2026-09-22 05:39:37'),
 	(612, 'Lead Management', 'web', '2026-07-16 06:28:12', '2026-07-16 06:28:12'),
 	(613, 'admin.employee.index', 'web', '2026-07-16 06:29:37', '2026-09-06 04:17:16'),
 	(614, 'Lead Source', 'web', '2026-07-16 06:31:41', '2026-07-16 06:31:41'),
@@ -5054,23 +4819,15 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(633, 'CRM Dashboard', 'web', '2026-07-16 06:41:34', '2026-07-16 06:41:34'),
 	(634, 'CRM Reports', 'web', '2026-07-16 06:41:56', '2026-07-16 06:41:56'),
 	(637, 'Employee Attendance', 'web', '2026-07-16 06:46:36', '2026-07-16 06:46:36'),
-	(638, 'Leave Management', 'web', '2026-07-16 06:47:06', '2026-07-16 06:47:06'),
 	(639, 'Leave Application', 'web', '2026-07-16 06:47:36', '2026-07-16 06:47:36'),
-	(640, 'admin.holiday.index', 'web', '2026-07-16 06:48:31', '2026-07-29 08:34:12'),
 	(643, 'Payroll Management', 'web', '2026-07-16 06:51:20', '2026-07-16 06:51:20'),
 	(644, 'Salary Structure', 'web', '2026-07-16 06:51:46', '2026-07-16 06:51:46'),
 	(645, 'Generate Salary', 'web', '2026-07-16 06:52:15', '2026-07-16 06:52:15'),
 	(646, 'Salary Sheet', 'web', '2026-07-16 06:52:51', '2026-07-16 06:52:51'),
 	(648, 'Payslip', 'web', '2026-07-16 06:54:29', '2026-07-16 06:54:29'),
-	(649, 'Bonus Management', 'web', '2026-07-16 06:54:56', '2026-07-16 06:54:56'),
-	(650, 'Increment Management', 'web', '2026-07-16 06:55:20', '2026-07-16 06:55:20'),
-	(651, 'Loan Management', 'web', '2026-07-16 06:55:45', '2026-07-16 06:55:45'),
-	(653, 'Overtime Management', 'web', '2026-07-16 06:56:34', '2026-07-16 06:56:34'),
+	(651, 'admin.employee-loan.index', 'web', '2026-07-16 06:55:45', '2026-09-22 05:43:57'),
 	(654, 'Expense Manage', 'web', '2026-07-16 06:57:08', '2026-09-07 10:26:57'),
 	(655, 'Employee Documents', 'web', '2026-07-16 06:57:38', '2026-07-16 06:57:38'),
-	(656, 'Resignation', 'web', '2026-07-16 08:43:29', '2026-07-16 08:43:29'),
-	(657, 'Termination', 'web', '2026-07-16 08:44:09', '2026-07-16 08:44:09'),
-	(661, 'Performance Appraisal', 'web', '2026-07-16 08:45:43', '2026-07-16 08:45:43'),
 	(664, 'admin.hrm.report', 'web', '2026-07-16 08:46:46', '2026-09-15 06:37:24'),
 	(667, 'admin.lead-source.edit', 'web', '2026-07-19 11:06:54', '2026-07-19 11:06:54'),
 	(668, 'admin.lead-source.create', 'web', '2026-07-20 08:31:24', '2026-07-20 08:31:24'),
@@ -5094,29 +4851,15 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(687, 'admin.employee.edit', 'web', '2026-07-28 05:42:09', '2026-07-28 05:42:09'),
 	(688, 'admin.employee-attendance.create', 'web', '2026-07-28 11:40:14', '2026-07-28 11:40:14'),
 	(690, 'admin.employee-attendance.edit', 'web', '2026-07-28 11:40:31', '2026-07-28 11:40:31'),
-	(691, 'admin.employee-leave.edit', 'web', '2026-07-29 06:56:41', '2026-07-29 06:56:41'),
-	(692, 'admin.holiday.edit', 'web', '2026-07-29 08:34:41', '2026-07-29 08:34:41'),
 	(693, 'admin.payroll.edit', 'web', '2026-07-29 10:10:02', '2026-07-29 10:10:02'),
 	(694, 'admin.payroll.update-status', 'web', '2026-08-04 04:27:47', '2026-08-04 04:27:47'),
 	(695, 'admin.salary.structure.certificate', 'web', '2026-08-04 06:30:26', '2026-08-04 06:30:26'),
-	(696, 'admin.employee-bonus.create', 'web', '2026-08-06 04:54:42', '2026-08-06 04:54:42'),
-	(697, 'admin.employee-bonus.edit', 'web', '2026-08-06 05:44:16', '2026-08-06 05:44:16'),
-	(698, 'admin.employee-increment.create', 'web', '2026-08-06 06:04:14', '2026-08-06 06:04:14'),
-	(699, 'admin.employee-increment.edit', 'web', '2026-08-06 06:04:28', '2026-08-06 06:04:28'),
 	(700, 'admin.employee-loan.create', 'web', '2026-08-06 06:36:44', '2026-08-06 06:36:44'),
 	(701, 'admin.employee-loan.edit', 'web', '2026-08-06 06:36:54', '2026-08-06 06:36:54'),
-	(702, 'admin.employee-overtime.create', 'web', '2026-08-09 04:55:52', '2026-08-09 04:55:52'),
-	(703, 'admin.employee-overtime.edit', 'web', '2026-08-09 04:56:02', '2026-08-09 04:56:02'),
 	(704, 'admin.expense.create', 'web', '2026-08-09 06:09:36', '2026-08-09 06:09:36'),
 	(705, 'admin.expense.edit', 'web', '2026-08-09 06:09:48', '2026-08-09 06:09:48'),
 	(706, 'admin.documents.create', 'web', '2026-08-09 06:54:08', '2026-08-09 06:54:08'),
 	(707, 'admin.documents.edit', 'web', '2026-08-09 06:54:19', '2026-08-09 06:54:19'),
-	(708, 'admin.resignation.create', 'web', '2026-08-09 09:13:00', '2026-08-09 09:13:00'),
-	(709, 'admin.resignation.edit', 'web', '2026-08-09 09:13:12', '2026-08-09 09:13:12'),
-	(710, 'admin.termination.create', 'web', '2026-08-09 09:29:24', '2026-08-09 09:29:24'),
-	(711, 'admin.termination.edit', 'web', '2026-08-09 09:29:36', '2026-08-09 09:29:36'),
-	(712, 'admin.appraisal.create', 'web', '2026-08-09 10:26:53', '2026-08-09 10:26:53'),
-	(713, 'admin.appraisal.edit', 'web', '2026-08-09 10:27:05', '2026-08-09 10:27:05'),
 	(714, 'Enlisted New Client', 'web', '2026-08-15 09:39:19', '2026-08-15 09:39:19'),
 	(715, 'Employee Management', 'web', '2026-09-06 04:18:28', '2026-09-06 04:18:28'),
 	(716, 'New Employee', 'web', '2026-09-06 04:22:06', '2026-09-06 04:22:06'),
@@ -5144,7 +4887,11 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(740, 'Hotel Management', 'web', '2026-09-20 06:41:22', '2026-09-20 06:41:22'),
 	(741, 'Manage Hotel', 'web', '2026-09-20 06:42:29', '2026-09-20 06:42:29'),
 	(742, 'Add Hotel', 'web', '2026-09-20 06:44:07', '2026-09-20 06:44:07'),
-	(743, 'admin.hotel.edit', 'web', '2026-09-20 06:46:24', '2026-09-20 06:46:24');
+	(743, 'admin.hotel.edit', 'web', '2026-09-20 06:46:24', '2026-09-20 06:46:24'),
+	(744, 'Manage Department', 'web', '2026-09-21 11:50:55', '2026-09-21 11:50:55'),
+	(745, 'New Department', 'web', '2026-09-21 11:51:45', '2026-09-21 11:51:45'),
+	(746, 'admin.category.edit', 'web', '2026-09-21 11:59:15', '2026-09-21 11:59:15'),
+	(747, 'Loan Application', 'web', '2026-09-22 05:44:42', '2026-09-22 05:44:42');
 
 -- Dumping structure for table technopa_hrm.personal_access_tokens
 DROP TABLE IF EXISTS `personal_access_tokens`;
@@ -5821,7 +5568,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(5, 1),
 	(6, 1),
 	(22, 1),
-	(23, 1),
 	(24, 1),
 	(25, 1),
 	(26, 1),
@@ -5875,11 +5621,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(115, 1),
 	(116, 1),
 	(117, 1),
-	(118, 1),
-	(119, 1),
-	(120, 1),
-	(121, 1),
-	(122, 1),
 	(123, 1),
 	(124, 1),
 	(125, 1),
@@ -6110,7 +5851,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(19, 10),
 	(21, 10),
 	(22, 10),
-	(23, 10),
 	(24, 10),
 	(25, 10),
 	(26, 10),
@@ -6183,11 +5923,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(115, 10),
 	(116, 10),
 	(117, 10),
-	(118, 10),
-	(119, 10),
-	(120, 10),
-	(121, 10),
-	(122, 10),
 	(123, 10),
 	(124, 10),
 	(125, 10),
@@ -6507,23 +6242,15 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(633, 10),
 	(634, 10),
 	(637, 10),
-	(638, 10),
 	(639, 10),
-	(640, 10),
 	(643, 10),
 	(644, 10),
 	(645, 10),
 	(646, 10),
 	(648, 10),
-	(649, 10),
-	(650, 10),
 	(651, 10),
-	(653, 10),
 	(654, 10),
 	(655, 10),
-	(656, 10),
-	(657, 10),
-	(661, 10),
 	(664, 10),
 	(667, 10),
 	(668, 10),
@@ -6547,29 +6274,15 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(687, 10),
 	(688, 10),
 	(690, 10),
-	(691, 10),
-	(692, 10),
 	(693, 10),
 	(694, 10),
 	(695, 10),
-	(696, 10),
-	(697, 10),
-	(698, 10),
-	(699, 10),
 	(700, 10),
 	(701, 10),
-	(702, 10),
-	(703, 10),
 	(704, 10),
 	(705, 10),
 	(706, 10),
 	(707, 10),
-	(708, 10),
-	(709, 10),
-	(710, 10),
-	(711, 10),
-	(712, 10),
-	(713, 10),
 	(714, 10),
 	(715, 10),
 	(716, 10),
@@ -6598,6 +6311,10 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(741, 10),
 	(742, 10),
 	(743, 10),
+	(744, 10),
+	(745, 10),
+	(746, 10),
+	(747, 10),
 	(1, 13),
 	(612, 13),
 	(614, 13),
@@ -6640,7 +6357,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(5, 15),
 	(6, 15),
 	(22, 15),
-	(23, 15),
 	(24, 15),
 	(25, 15),
 	(26, 15),
@@ -6700,11 +6416,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(115, 15),
 	(116, 15),
 	(117, 15),
-	(118, 15),
-	(119, 15),
-	(120, 15),
-	(121, 15),
-	(122, 15),
 	(123, 15),
 	(124, 15),
 	(125, 15),
@@ -6887,7 +6598,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(600, 15),
 	(1, 16),
 	(22, 16),
-	(23, 16),
 	(24, 16),
 	(25, 16),
 	(26, 16),
@@ -6928,11 +6638,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(115, 16),
 	(116, 16),
 	(117, 16),
-	(118, 16),
-	(119, 16),
-	(120, 16),
-	(121, 16),
-	(122, 16),
 	(123, 16),
 	(124, 16),
 	(125, 16),
@@ -7079,23 +6784,15 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(611, 19),
 	(613, 19),
 	(637, 19),
-	(638, 19),
 	(639, 19),
-	(640, 19),
 	(643, 19),
 	(644, 19),
 	(645, 19),
 	(646, 19),
 	(648, 19),
-	(649, 19),
-	(650, 19),
 	(651, 19),
-	(653, 19),
 	(654, 19),
 	(655, 19),
-	(656, 19),
-	(657, 19),
-	(661, 19),
 	(664, 19),
 	(1, 20),
 	(335, 20),
@@ -7280,7 +6977,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(5, 25),
 	(6, 25),
 	(22, 25),
-	(23, 25),
 	(24, 25),
 	(25, 25),
 	(26, 25),
@@ -7333,11 +7029,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(115, 25),
 	(116, 25),
 	(117, 25),
-	(118, 25),
-	(119, 25),
-	(120, 25),
-	(121, 25),
-	(122, 25),
 	(123, 25),
 	(124, 25),
 	(125, 25),
@@ -7511,7 +7202,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(18, 26),
 	(19, 26),
 	(22, 26),
-	(23, 26),
 	(24, 26),
 	(25, 26),
 	(26, 26),
@@ -7571,11 +7261,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(115, 26),
 	(116, 26),
 	(117, 26),
-	(118, 26),
-	(119, 26),
-	(120, 26),
-	(121, 26),
-	(122, 26),
 	(123, 26),
 	(124, 26),
 	(125, 26),
@@ -7819,23 +7504,15 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(633, 26),
 	(634, 26),
 	(637, 26),
-	(638, 26),
 	(639, 26),
-	(640, 26),
 	(643, 26),
 	(644, 26),
 	(645, 26),
 	(646, 26),
 	(648, 26),
-	(649, 26),
-	(650, 26),
 	(651, 26),
-	(653, 26),
 	(654, 26),
 	(655, 26),
-	(656, 26),
-	(657, 26),
-	(661, 26),
 	(664, 26),
 	(667, 26),
 	(668, 26),
@@ -7859,29 +7536,15 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(687, 26),
 	(688, 26),
 	(690, 26),
-	(691, 26),
-	(692, 26),
 	(693, 26),
 	(694, 26),
 	(695, 26),
-	(696, 26),
-	(697, 26),
-	(698, 26),
-	(699, 26),
 	(700, 26),
 	(701, 26),
-	(702, 26),
-	(703, 26),
 	(704, 26),
 	(705, 26),
 	(706, 26),
 	(707, 26),
-	(708, 26),
-	(709, 26),
-	(710, 26),
-	(711, 26),
-	(712, 26),
-	(713, 26),
 	(1, 27),
 	(540, 27),
 	(542, 27),
@@ -8079,7 +7742,7 @@ CREATE TABLE IF NOT EXISTS `settings` (
 -- Dumping data for table technopa_hrm.settings: ~1 rows (approximately)
 DELETE FROM `settings`;
 INSERT INTO `settings` (`id`, `app_name`, `title`, `primary_mobile`, `secondary_mobile`, `primary_email`, `secondary_email`, `office_time`, `address`, `description`, `meta_title`, `meta_keyword`, `meta_description`, `meta_image`, `google_map`, `favicon`, `logo`, `footer_logo`, `placeholder`, `facebook_page`, `facebook_group`, `youtube`, `twitter`, `linkedin`, `google`, `whatsapp`, `instagram`, `pinterest`, `banner_one`, `banner_one_link`, `banner_two`, `banner_two_link`, `created_at`, `updated_at`) VALUES
-	(1, 'AppproERP', 'AppproERP', '01805030076', '01805030076', 'technoparkbd@gmail.com', 'technoparkbd@gmail.com', NULL, '316/2, DIT Road, 5th Floor, East Rampura, Dhaka', NULL, NULL, '01805030076', NULL, 'media/default//2026-07-16-GaJWYbIV3ahWmswJNxG9XIXuFrdcBIAJNvTkRAoN.webp', NULL, 'media/default//2026-07-16-PHSfscLfHL6DHvFDEmCO0KkvkfnZT4sROS1B8xYM.webp', 'media/default//2026-07-16-quMsHHqJbjfK5TSq3VKy76CvqEqOqLvuEXsAkVyt.webp', 'media/default//2026-07-16-vodFHymOJWBvxcKovsAaNjV97Z6jnv9teDpXRgNi.webp', 'media/default//2026-07-16-Z8Kj4zvAn5Y3d7YCA3IMMoYkOtzkkMVaaZS5NW1r.webp', 'https://www.facebook.com/people/Saheb-Bazar/61575484293604/', NULL, '#', '#', '#', '#', 'https://whatsapp.com', NULL, NULL, NULL, NULL, NULL, NULL, '2023-10-08 16:05:10', '2026-07-21 03:18:53');
+	(1, 'Jannnat Parties', 'Jannnat Parties', '01805030076', '01805030076', 'technoparkbd@gmail.com', 'technoparkbd@gmail.com', NULL, '316/2, DIT Road, 5th Floor, East Rampura, Dhaka', NULL, NULL, '01805030076', NULL, 'media/default//2026-09-21-aaSXRSjGFE1VaPXEaox13CNSMBL51qiIguKABKS6.webp', NULL, 'media/default//2026-09-21-T1r3hwLbaxvAjVnSC9fSxAoQawV13dPVndj5IDzf.webp', 'media/default//2026-09-21-tStZGuau2wyhqT1Ll9NvgV9tPUqwE6b8yzr1o5rf.webp', 'media/default//2026-09-21-cDzIpHuoOIhJSmFuSeVP8Vc07kS0zWRSqDYW9knz.webp', 'media/default//2026-09-21-tvcsFwXf1jYhctZaVlSF7uzFjFStAKFSWRh0Mslt.webp', 'https://www.facebook.com/people/Saheb-Bazar/61575484293604/', NULL, '#', '#', '#', '#', 'https://whatsapp.com', NULL, NULL, NULL, NULL, NULL, NULL, '2023-10-08 16:05:10', '2026-09-21 11:35:34');
 
 -- Dumping structure for table technopa_hrm.shipping_addresses
 DROP TABLE IF EXISTS `shipping_addresses`;
@@ -8549,10 +8212,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.users: ~30 rows (approximately)
+-- Dumping data for table technopa_hrm.users: ~29 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `role`, `company_id`, `name`, `user_name`, `email`, `phone`, `address`, `image`, `cover_image`, `area_id`, `branch_id`, `store_id`, `role_status`, `status`, `is_staff`, `staff_id`, `email_verified_at`, `otp`, `otp_expire`, `password`, `remember_token`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(1, 1, 1, 'Admin', 'admin', 'admin@gmail.com', NULL, NULL, 'backend/images/avatar/profile-IwBtUMDTgMGKw3bCsTpkyPHylMGtgyjL6RR66nRG.jpeg', 'backend/images/avatar/cover-rQ6njzwB14WniZM5k17ASTLX7wB66R2spVUy7der.png', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2023-11-24 11:04:22', '$2a$12$yxZO/Kv/5ANCuMMA/QJD2eVwPNj9BSyDwdTJCdzVpedljgS8qGi0e', NULL, NULL, 1, NULL, NULL, '2023-10-24 06:03:09', '2026-08-13 11:33:13'),
+	(1, 1, 1, 'Admin', 'admin', 'admin@gmail.com', NULL, NULL, 'backend/images/avatar/profile-fzfBNxUwXUwZg5j1fkRrXlLs1nUiFGSHme6aktgN.jpeg', 'backend/images/avatar/cover-nc4lyhtFLr8Bd5pxxqXkOh0NojguAjXPJe9GW79B.png', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2023-11-24 11:04:22', '$2a$12$yxZO/Kv/5ANCuMMA/QJD2eVwPNj9BSyDwdTJCdzVpedljgS8qGi0e', NULL, NULL, 1, NULL, NULL, '2023-10-24 06:03:09', '2026-09-21 11:29:47'),
 	(2, 1, 1, 'Shimul', 'Shimul', 'info@sahebbazaar.com', '01715227149', 'Rampura, Dhaka', 'backend/images/avatar/profile-DL2pMk5cc2COZI24cXBoVdmIAS5iCGVvscnsT6At.webp', 'backend/images/avatar/cover-6yCWR2Fx8T4X6b5jNClMz71AvciWD9qG3FjtgioE.jpg', NULL, '["1"]', '["2"]', 1, 1, 1, 59, NULL, NULL, '2023-11-24 11:04:22', '$2y$10$7frEMDiVrrXW0r9mnLIkren/K4HaSlwVlR3B3dqaKqiDBY5kJt.bW', NULL, 1, 159, NULL, NULL, '2023-09-23 06:52:33', '2026-04-08 11:33:50'),
 	(159, 1, 1, 'Arnob Sur', 'Arnob', 'arnabsurarnabsur@gmail.com', '01567963270', '63 Shankhari bazar, Dhaka-1100', 'backend/images/avatar/profile-2KHPX9ecY62gPTtVTwTF1ZrTGvZWi7BEjn1bpSf3.webp', NULL, NULL, '["1"]', '["2"]', 1, 1, 1, 60, NULL, NULL, '2025-04-27 19:04:41', '$2y$10$wo8dUR0ZfHjU.GC72.r75uBZgdXZao5ZTGO6dcNacXgGl.MeRU2GC', NULL, 2, 2, NULL, NULL, '2025-04-27 13:04:41', '2026-04-08 11:40:36'),
 	(160, 1, 1, 'Shamol Sen', 'Shamol', NULL, NULL, NULL, NULL, NULL, NULL, '["1"]', '["2"]', 1, 1, 1, 61, NULL, NULL, '2025-04-28 17:53:20', '$2y$10$iX9c44WlIupd9VWRUIMMa.K78FdfGEqfrhg70oqPuqG.RO8QA1C1C', NULL, 1, 2, NULL, NULL, '2025-04-28 11:53:20', '2025-06-18 06:17:54'),

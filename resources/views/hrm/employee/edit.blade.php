@@ -28,42 +28,14 @@
         <div class="col-lg-4 col-sm-6">
             <label for="type" class="form-label"><b>Department  <span class="text-danger">*</span></b></label>
             <div class="custom-select">
-                <select class="form-control custom-select__element" name="type" id="type" required>
-                    <option value="general" {{ $data->type == 'general' ? 'selected' : '' }}>General</option>
-                    <option value="sales" {{ $data->type == 'sales' ? 'selected' : '' }}>Sales</option>
-                    <option value="driver" {{ $data->type == 'driver' ? 'selected' : '' }}>Driver</option>
-                    <option value="delivery_man" {{ $data->type == 'delivery_man' ? 'selected' : '' }}>
-                        Delivery Man
-                    </option>
-
-                    <option value="marketing" {{ $data->type == 'marketing' ? 'selected' : '' }}>
-                        Marketing
-                    </option>
-
-                    <option value="software" {{ $data->type == 'software' ? 'selected' : '' }}>
-                        Software
-                    </option>
-
-                    <option value="digital" {{ $data->type == 'digital' ? 'selected' : '' }}>
-                        Digital Marketing
-                    </option>
-
-                    <option value="hr_and_admin" {{ $data->type == 'hr_and_admin' ? 'selected' : '' }}>
-                        HR & Admin
-                    </option>
-
-                    <option value="office_assistant" {{ $data->type == 'office_assistant' ? 'selected' : '' }}>
-                        Office Assistant
-                    </option>
-
-                    <option value="accounts" {{ $data->type == 'accounts' ? 'selected' : '' }}>
-                        Accounts
-                    </option>
-
-                    <option value="engineering" {{ $data->type == 'engineering' ? 'selected' : '' }}>
-                        Engineering
-                    </option>
-                </select>
+                 <select name="department_id" id="department_id" class="select form-select" data-placeholder="Select Department" required>
+                
+                @foreach ($departments as $department)
+                    <option value="{{ $department->id }}"
+                        {{ $data->department_id == $department->id ? 'selected' : '' }}>
+                        {{ $department->name }}</option>
+                @endforeach
+            </select>  
             </div>
         </div>
         <div class="col-lg-4 col-sm-6">

@@ -11,10 +11,10 @@
             <thead>
                 <tr class="text-nowrap">
                     <th width="3"></th>
-                    @if (Auth::user()->hasRole('Software Admin'))
+                    <!-- @if (Auth::user()->hasRole('Software Admin'))
                         <th>Company</th>
                     @endif
-                    <th>Branch Name</th>
+                    <th>Branch Name</th> -->
                     <th>Name</th>
                     <th>Contact</th>
                     <th><i class="fad fa-hotel"></i> Hotel</th>
@@ -76,15 +76,7 @@
                         searchable: false,
                         width: '3'
                     },
-                    @if (Auth::user()->hasRole('Software Admin'))
-                        {
-                            data: 'company.name',
-                            name: 'company.name',
-                        },
-                    @endif {
-                        data: 'branch.name',
-                        name: 'branch.name'
-                    },
+                   
                     {
                         data: 'name',
                         name: 'name'

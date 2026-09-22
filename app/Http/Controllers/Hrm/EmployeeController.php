@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hrm;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Company;
+use App\Models\Category;
 use App\Models\Staff;
 use App\Models\User;
 use App\Models\Role;
@@ -75,8 +76,9 @@ class EmployeeController extends Controller
         $title = 'Add New Staff/Employee';
         $companies = Company::orderBy('name')->get();
         $hotels = Hotel::orderBy('id','desc')->where('status','Active')->get();
+        $departments = Category::orderBy('id','desc')->get();
         $branches = Branch::where('company_id', Auth::user()->company_id)->orderBy('name')->get();
-        return view('hrm.employee.create', compact('title', 'companies', 'branches','hotels'));
+        return view('hrm.employee.create', compact('title', 'companies','departments', 'branches','hotels'));
     }
 
     /**
@@ -88,7 +90,6 @@ class EmployeeController extends Controller
             'branch_id' => 'required',
             'code' => 'required',
             'name' => 'required',
-            'type' => 'required',
             'joining_date' => 'required',
         ]);
 
@@ -115,6 +116,7 @@ class EmployeeController extends Controller
             Staff::create([
             'company_id' => $request->company_id ?? Auth::user()->company_id,
             'branch_id' => $request->branch_id,
+            'department_id' => $request->department_id,
             'hotel_id' => $request->hotel_id,
             'user_id' => $user->id,
             'code' => $request->code,
@@ -137,7 +139,7 @@ class EmployeeController extends Controller
             'increment_percent' => $request->increment_percent,
             'increment_amount' => $request->increment_amount,
             'total_salary' => $request->total_salary,
-            'type' => $request->type,
+            'type' => 'active',
             'created_by' => Auth::user()->id,
             ]);
 
@@ -176,9 +178,10 @@ class EmployeeController extends Controller
         $data = Staff::findOrFail($id);
         $link = route('admin.employee.update', $id);
         $companies = Company::orderBy('name')->get();
+        $departments = Category::orderBy('id','desc')->get();
         $hotels = Hotel::orderBy('id','desc')->where('status','Active')->get();
         $branches = Branch::where('company_id', $data->company_id)->orderBy('name')->get();
-        return view('hrm.employee.edit', compact('title', 'data', 'link', 'companies', 'branches', 'id','hotels'));
+        return view('hrm.employee.edit', compact('title', 'data', 'link', 'companies', 'departments', 'branches', 'id','hotels'));
     }
 
     /**
@@ -189,7 +192,6 @@ class EmployeeController extends Controller
         $request->validate([
             'branch_id' => 'required',
             'code' => 'required',
-            'type' => 'required',
             'name' => 'required',
             'joining_date' => 'required',
         ]);
@@ -226,6 +228,7 @@ class EmployeeController extends Controller
             $data->update([
                 'company_id' => $request->company_id ?? Auth::user()->company_id,
                 'branch_id' => $request->branch_id,
+                'department_id' => $request->department_id,
                 'hotel_id' => $request->hotel_id,
                 'user_id' => $userid,
                 'role_status' => 4,
@@ -249,7 +252,7 @@ class EmployeeController extends Controller
                 'increment_percent' => $request->increment_percent,
                 'increment_amount' => $request->increment_amount,
                 'total_salary' => $request->total_salary,
-                'type' => $request->type,
+                'type' => 'active',
                 'updated_by' => Auth::user()->id,
             ]);
 

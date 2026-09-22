@@ -30,36 +30,15 @@
         <div class="col-lg-4 col-sm-6">
             <label for="type" class="form-label"><b>Department <span class="text-danger">*</span></b></label>
             <div class="custom-select">
-                <select class="form-control custom-select__element" name="type" id="type" required>
-                    <option value="general" {{ old('type') && old('type') == 'general' ? 'selected' : '' }}>General</option>
-                    <option value="sales" {{ old('type') && old('type') == 'sales' ? 'selected' : '' }}>Sales</option>
-                    <option value="driver" {{ old('type') && old('type') == 'driver' ? 'selected' : '' }}>Driver</option>
-                    <option value="delivery_man" {{ old('type') && old('type') == 'delivery_man' ? 'selected' : '' }}>
-                        Delivery Man
-                    </option>
-                    <option value="marketing" {{ old('type') && old('type') == 'marketing' ? 'selected' : '' }}>
-                        Marketing
-                    </option>
-                    <option value="software" {{ old('type') && old('type') == 'software' ? 'selected' : '' }}>
-                        Software
-                    </option>
-                    <option value="digital" {{ old('type') && old('type') == 'digital' ? 'selected' : '' }}>
-                        Digital Marketing
-                    </option>
-                    <option value="hr_and_admin" {{ old('type') && old('type') == 'hr_and_admin' ? 'selected' : '' }}>
-                        HR & Admin
-                    </option>
-                    <option value="office_assistant" {{ old('type') && old('type') == 'office_assistant' ? 'selected' : '' }}>
-                        Office Asistant
-                    </option>
-                    <option value="accounts" {{ old('type') && old('type') == 'accounts' ? 'selected' : '' }}>
-                        Accounts
-                    </option>
-                    <option value="engineering" {{ old('type') && old('type') == 'engineering' ? 'selected' : '' }}>
-                        Engineering
-                    </option>
-                </select>
-            </div>
+           <select name="department_id" id="department_id" class="select form-select" data-placeholder="Select Department" required>
+                
+                @foreach ($departments as $department)
+                    <option value="{{ $department->id }}"
+                        {{ old('department_id') && old('department_id') == $department->id ? 'selected' : '' }}>
+                        {{ $department->name }}</option>
+                @endforeach
+            </select>            
+        </div>
         </div>
         <div class="col-lg-4 col-sm-6">
             <label for="code" class="form-label"><b>Code <span class="text-danger">*</span></b></label>

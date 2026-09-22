@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Staff extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['company_id', 'hotel_id','branch_id', 'store_id', 'user_id', 'code', 'name', 'short_name', 'currency_code', 'designation', 'phone', 'email', 'ac_no', 'ac_branch','basic_salary','house_rent','medical_allowance','others','deducted','increment_percent','increment_amount','total_salary','leave_balance', 'address', 'national_id', 'joining_date', 'type', 'status', 'created_by', 'updated_by', 'deleted_by'];
+    protected $fillable = ['company_id', 'hotel_id','department_id','branch_id', 'store_id', 'user_id', 'code', 'name', 'short_name', 'currency_code', 'designation', 'phone', 'email', 'ac_no', 'ac_branch','basic_salary','house_rent','medical_allowance','others','deducted','increment_percent','increment_amount','total_salary','leave_balance', 'address', 'national_id', 'joining_date', 'type', 'status', 'created_by', 'updated_by', 'deleted_by'];
 
     protected static function booted()
     {
@@ -19,6 +19,10 @@ class Staff extends Model
     public function hotel()
     {
         return $this->belongsTo(Hotel::class, 'hotel_id');
+    }
+    public function department()
+    {
+        return $this->belongsTo(Ctegory::class, 'department_id');
     }
 
     public function company()
