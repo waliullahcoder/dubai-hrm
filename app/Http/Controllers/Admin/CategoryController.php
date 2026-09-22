@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\HelperClass;
 use App\Models\Category;
+use App\Models\Hotel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,57 +24,103 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        if (request()->ajax()) {
-            $model = Category::with(['company', 'parent'])->orderBy('id', 'desc');
-            $type = request('type');
-            if (!empty($type) && $type == 'trash') {
-                $model->onlyTrashed();
-            }
-            return DataTables::eloquent($model)
-                ->addColumn('checkbox', function ($row) {
-                    $checkbox = '<div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input ' . (!empty(request('type')) && request('type') == "trash" ? 'trash_multi_checkbox' : 'multi_checkbox') . '" id="' . $row->id . '" name="multi_checkbox[]" value="' . $row->id . '"><label for="' . $row->id . '" class="custom-control-label"></label></div>';
-                    return $checkbox;
-                })
-                ->addColumn('image', function ($row) {
-                    return file_exists($row->image) ? '<img src="' . asset($row->image) . '" height="40" alt="">' : 'No Image';
-                })
-                ->addColumn('parent_category', function ($row) {
-                    return @$row->parent->name;
-                })
-                ->addColumn('status', function ($row) {
-                    $status = '<div class="form-check form-switch">
-                    <input class="form-check-input change-status c-pointer" data-url="' . Route('admin.category.edit', $row->id) . '" type="checkbox" name="status" ' . ($row->status == 1 ? 'checked' : '') . '>
-                    </div>';
-                    return $status;
-                })
-                ->addColumn('actions', function ($row) {
-                    $type = request('type');
-                    $data = [
-                        'id' => $row->id,
-                        'edit' => !empty($type) && $type == 'trash' ? false : true,
-                    ];
-                    return ActionButtons::actions($data);
-                })
-                ->rawColumns(['checkbox', 'image', 'status', 'actions'])
-                ->make(true);
-        }
+{
+    if (request()->ajax()) {
 
-        $title = "Category Setup";
-        return view('admin.category.index', compact('title'));
+        $model = DB::table('categories as c')
+            ->leftJoin('hrm_hotels as h', 'h.id', '=', 'c.parent_id')
+            ->select(
+                'c.id',
+                'c.name',
+                'c.status',
+                'h.name as hotel_name',
+                'c.parent_id'
+            )
+            ->orderByDesc('c.id');
+
+        $type = request('type');
+
+        
+
+        return DataTables::of($model)
+
+            ->addColumn('checkbox', function ($row) use ($type) {
+
+                $class = $type === 'trash'
+                    ? 'trash_multi_checkbox'
+                    : 'multi_checkbox';
+
+                return '
+                    <div class="custom-control custom-checkbox">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input ' . $class . '"
+                            id="category_' . $row->id . '"
+                            name="multi_checkbox[]"
+                            value="' . $row->id . '"
+                        >
+                        <label
+                            for="category_' . $row->id . '"
+                            class="custom-control-label">
+                        </label>
+                    </div>
+                ';
+            })
+
+            ->editColumn('hotel_name', function ($row) {
+                return $row->hotel_name ?? '-';
+            })
+
+
+            ->editColumn('status', function ($row) {
+
+                return '
+                    <div class="form-check form-switch">
+                        <input
+                            class="form-check-input change-status c-pointer"
+                            data-url="' . route('admin.category.edit', $row->id) . '"
+                            type="checkbox"
+                            name="status"
+                            ' . ($row->status == 1 ? 'checked' : '') . '
+                        >
+                    </div>
+                ';
+            })
+
+            ->addColumn('actions', function ($row) use ($type) {
+
+                $data = [
+                    'id'   => $row->id,
+                    'edit' => $type !== 'trash',
+                ];
+
+                return ActionButtons::actions($data);
+            })
+
+            ->rawColumns([
+                'checkbox',
+                'status',
+                'actions'
+            ])
+
+            ->make(true);
     }
+
+    $title = "Department Setup";
+
+    return view('admin.category.index', compact('title'));
+}
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $title = 'Add New Category';
-        $companies = Company::orderBy('name')->get();
+        $title = 'Add New Department';
+        $hotels = Hotel::orderBy('name')->get();
         $product_categories = Category::root()->with(['children'])->orderBy('name')->get();
         $vendors = Vendor::where('status', 1)->orderBy('name')->get();
-        return view('admin.category.create', compact('title', 'companies', 'product_categories', 'vendors'));
+        return view('admin.category.create', compact('title', 'hotels', 'product_categories', 'vendors'));
     }
 
     /**
@@ -139,14 +186,14 @@ class CategoryController extends Controller
             return response()->json(['status' => 'success']);
         }
 
-        $title = 'Update Category';
-        $companies = Company::orderBy('name')->get();
+        $title = 'Update Department';
+        $hotels = Hotel::orderBy('name')->get();
         $categories = Category::root()->with(['children'])->orderBy('name')->get();
         $vendors = Vendor::where('status', 1)->orderBy('name')->get();
         $data = Category::findOrFail($id);
         $link = route('admin.category.update', $id);
         $selected_vendors = $data->vendors->pluck('vendor_id')->toArray();
-        return view('admin.category.edit', compact('title', 'companies', 'categories', 'vendors', 'data', 'link', 'selected_vendors'));
+        return view('admin.category.edit', compact('title', 'hotels', 'categories', 'vendors', 'data', 'link', 'selected_vendors'));
     }
 
     private function cacheClear()
@@ -200,7 +247,6 @@ class CategoryController extends Controller
             }
         });
 
-        $this->cacheClear();
         return redirect()->Route('admin.category.index')->withSuccessMessage('Updated Successfully!');
     }
 

@@ -152,8 +152,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
 // HRM
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('/category', CategoryController::class);
     Route::resource('/employee', EmployeeController::class);
-    Route::get('/hrm/dashboard',[EmployeeController::class,'dashboard'])->name('hrm.dashboard');
     Route::resource('/employee-attendance', EmployeeAttendanceController::class);
     Route::get('/attendance-dashboard',[EmployeeAttendanceController::class,'attendanceDashboard'])->name('attendance.dashboard');
     Route::resource('/employee-leave', EmployeeLeaveController::class);
@@ -332,7 +332,7 @@ Route::group(['as' => 'admin.', 'prefix' => 'admin', 'middleware' => ['admin_per
     Route::resource('/transfer-receive', TransferReceiveController::class);
 
     // Category
-    Route::resource('/category', CategoryController::class);
+    
 
     // Attribute
     Route::resource('/attribute', AttributeController::class);

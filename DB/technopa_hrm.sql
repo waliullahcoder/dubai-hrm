@@ -161,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `admin_menus` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=277 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.admin_menus: ~179 rows (approximately)
 DELETE FROM `admin_menus`;
@@ -329,7 +329,6 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(244, 656, 199, 'Resignation', 'পদত্যাগ', 'admin.resignation.index', NULL, 22, 1, 1, '2026-07-16 08:43:30', '2026-08-09 09:12:34'),
 	(245, 657, 199, 'Termination', 'চাকরি সমাপ্তি', 'admin.termination.index', NULL, 23, 1, 1, '2026-07-16 08:44:10', '2026-08-09 09:29:00'),
 	(249, 661, 199, 'Performance Appraisal', 'কর্মদক্ষতা মূল্যায়ন', 'admin.appraisal.index', NULL, 27, 1, 1, '2026-07-16 08:45:44', '2026-08-09 10:26:27'),
-	(251, 663, 199, 'HR Dashboard', 'এইচআর ড্যাশবোর্ড', 'admin.hrm.dashboard', NULL, 1, 1, 1, '2026-07-16 08:46:26', '2026-07-28 06:15:04'),
 	(252, 664, 274, 'Payment Reports', 'এইচআর প্রতিবেদন', 'admin.payment.report', NULL, 30, 1, 1, '2026-07-16 08:46:46', '2026-09-15 06:41:03'),
 	(254, 676, 198, 'Customer Requirements', 'কাস্টমার চাহিদা', 'admin.customer-requirement.index', NULL, 10, 1, 1, '2026-07-21 05:08:08', '2026-07-27 05:37:04'),
 	(255, 714, 198, 'Enlisted New Client', 'নতুন গ্রাহক তালিকাভুক্ত', 'admin.enlisted.new', NULL, 2, 1, 1, '2026-08-15 09:39:19', '2026-08-15 09:41:48'),
@@ -352,7 +351,11 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(273, 733, 271, 'New Payment', 'nw', 'admin.staff-payment.create', NULL, 1, 1, 1, '2026-09-15 05:35:23', '2026-09-15 05:35:23'),
 	(274, 736, NULL, 'All Report', 'All Report', NULL, '<i class="fas fa-chart-pie"></i>', 14, 1, 1, '2026-09-15 06:36:21', '2026-09-15 06:36:21'),
 	(275, 737, 274, 'Expense Report', 'Expense Report', 'admin.expense.report', NULL, 1, 1, 1, '2026-09-15 09:07:39', '2026-09-15 09:07:39'),
-	(276, 738, 274, 'Working Hour Report', 'Working Hour Report', 'admin.workinghour.report', NULL, 1, 1, 1, '2026-09-15 10:03:23', '2026-09-15 10:03:23');
+	(276, 738, 274, 'Working Hour Report', 'Working Hour Report', 'admin.workinghour.report', NULL, 1, 1, 1, '2026-09-15 10:03:23', '2026-09-15 10:03:23'),
+	(277, 739, 260, 'Attendance Dashboard', 'Attendance Dashboard', 'admin.attendance.dashboard', NULL, 0, 1, 1, '2026-09-20 05:55:49', '2026-09-20 05:55:49'),
+	(278, 740, NULL, 'Hotel Management', 'Hotel Management', NULL, '<i class="fad fa-hotel"></i>', 2, 1, 1, '2026-09-20 06:41:22', '2026-09-20 06:41:22'),
+	(279, 741, 278, 'Manage Hotel', 'Manage Hotel', 'admin.hotel.index', NULL, 2, 1, 1, '2026-09-20 06:42:29', '2026-09-20 06:42:29'),
+	(280, 742, 278, 'Add Hotel', 'Add Hotel', 'admin.hotel.create', NULL, 1, 1, 1, '2026-09-20 06:44:08', '2026-09-20 06:44:08');
 
 -- Dumping structure for table technopa_hrm.admin_menu_actions
 DROP TABLE IF EXISTS `admin_menu_actions`;
@@ -366,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `admin_menu_actions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=461 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=462 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.admin_menu_actions: ~318 rows (approximately)
 DELETE FROM `admin_menu_actions`;
@@ -686,7 +689,8 @@ INSERT INTO `admin_menu_actions` (`id`, `permission_id`, `admin_menu_id`, `name`
 	(457, 712, 249, 'create', 'admin.appraisal.create', 1, '2026-08-09 10:26:53', '2026-08-09 10:26:53'),
 	(458, 713, 249, 'edit', 'admin.appraisal.edit', 1, '2026-08-09 10:27:06', '2026-08-09 10:27:06'),
 	(459, 734, 272, 'create', 'admin.staff-payment.create', 1, '2026-09-15 05:36:24', '2026-09-15 05:36:24'),
-	(460, 735, 272, 'edit', 'admin.staff-payment.edit', 1, '2026-09-15 05:36:34', '2026-09-15 05:36:34');
+	(460, 735, 272, 'edit', 'admin.staff-payment.edit', 1, '2026-09-15 05:36:34', '2026-09-15 05:36:34'),
+	(461, 743, 279, 'edit', 'admin.hotel.edit', 1, '2026-09-20 06:46:24', '2026-09-20 06:46:24');
 
 -- Dumping structure for table technopa_hrm.admin_settings
 DROP TABLE IF EXISTS `admin_settings`;
@@ -2171,9 +2175,9 @@ CREATE TABLE IF NOT EXISTS `hrm_employee_attendances` (
   KEY `idx_employee_id` (`employee_id`),
   KEY `idx_attendance_date` (`attendance_date`),
   KEY `idx_status` (`attendance_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_employee_attendances: ~14 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_employee_attendances: ~16 rows (approximately)
 DELETE FROM `hrm_employee_attendances`;
 INSERT INTO `hrm_employee_attendances` (`id`, `employee_id`, `attendance_date`, `check_in`, `check_in_latitude`, `check_in_longitude`, `check_in_distance`, `check_out`, `check_out_latitude`, `check_out_longitude`, `check_out_distance`, `late_minutes`, `overtime_minutes`, `worked_hours`, `attendance_status`, `remarks`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(1, 60, '2026-07-28', '09:06:00', NULL, NULL, NULL, '23:18:00', NULL, NULL, NULL, 6, 318, 14.20, 'Present', 'this is', 1, 1, '2026-07-28 11:01:54', '2026-07-28 11:43:28'),
@@ -2189,7 +2193,9 @@ INSERT INTO `hrm_employee_attendances` (`id`, `employee_id`, `attendance_date`, 
 	(11, 67, '2026-09-13', '08:59:00', 23.760000, 90.410000, 0.029361, '16:59:00', 23.760000, 90.410000, 0.029361, 0, 0, 8.00, 'Present', NULL, 1, NULL, '2026-09-13 10:59:10', '2026-09-14 03:45:57'),
 	(16, 67, '2026-09-14', '17:35:26', 23.410000, 91.420000, 3.427601, '17:36:18', 23.410000, 91.420000, 315.498417, 515, 0, 0.00, 'Present', NULL, 191, NULL, '2026-09-14 11:36:17', '2026-09-14 11:36:55'),
 	(18, 67, '2026-09-17', '09:00:00', 23.410000, 91.420000, 3.427601, '16:28:00', NULL, NULL, 3.427601, 0, 0, 7.00, 'Present', NULL, 191, NULL, '2026-09-17 10:28:00', '2026-09-17 10:28:00'),
-	(19, 67, '2026-09-19', '09:00:30', 23.410000, 91.420000, 3.427601, '18:00:00', 23.410000, 91.420000, 315.498417, 0, 0, 8.00, 'Present', NULL, 191, NULL, '2026-09-19 04:47:16', '2026-09-19 09:06:54');
+	(19, 67, '2026-09-19', '09:00:30', 23.410000, 91.420000, 3.427601, '18:00:00', 23.410000, 91.420000, 315.498417, 0, 0, 8.00, 'Present', NULL, 191, NULL, '2026-09-19 04:47:16', '2026-09-19 09:06:54'),
+	(20, 67, '2026-09-21', '08:49:05', 23.410000, 91.420000, 3.427601, '18:49:19', 23.410000, 91.420000, 315.498417, 0, 49, 10.00, 'Present', NULL, 191, NULL, '2026-09-21 08:49:18', '2026-09-21 08:49:31'),
+	(21, 68, '2026-09-21', '10:53:35', 23.410000, 91.420000, 3.427601, '14:53:43', 23.410000, 91.420000, 315.498417, 113, 0, 4.00, 'Present', NULL, 192, NULL, '2026-09-21 08:53:42', '2026-09-21 08:53:47');
 
 -- Dumping structure for table technopa_hrm.hrm_employee_bonuses
 DROP TABLE IF EXISTS `hrm_employee_bonuses`;
@@ -2572,11 +2578,36 @@ CREATE TABLE IF NOT EXISTS `hrm_expense` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_expense: ~2 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_expense: ~1 rows (approximately)
 DELETE FROM `hrm_expense`;
 INSERT INTO `hrm_expense` (`id`, `expense_head_id`, `employee_id`, `expense_month`, `expense_year`, `expense_amount`, `expense_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(2, 126, 61, '1', '2026', 66.00, '2026-08-09', 'sdasdasd', 'Approved', 1, 1, '2026-08-09 06:10:19', '2026-09-13 04:47:56'),
 	(3, 313, 67, '1', '2026', 34.00, '2026-09-15', 'sddsf', 'Pending', 191, NULL, '2026-09-15 11:49:18', '2026-09-15 11:49:18');
+
+-- Dumping structure for table technopa_hrm.hrm_hotels
+DROP TABLE IF EXISTS `hrm_hotels`;
+CREATE TABLE IF NOT EXISTS `hrm_hotels` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `entry_date` date NOT NULL,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Active',
+  `created_by` int DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table technopa_hrm.hrm_hotels: ~3 rows (approximately)
+DELETE FROM `hrm_hotels`;
+INSERT INTO `hrm_hotels` (`id`, `name`, `phone`, `address`, `entry_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+	(4, 'Sheraton Dhaka', '01303740757', '316/2, Rampura Dhaka', '2026-09-20', 'sd', 'Active', 1, 1, '2026-09-20 06:49:33', '2026-09-20 06:50:58'),
+	(5, 'Hotel Madina', '01921588521', 'UA, Arab', '2026-09-20', 'dsfds', 'Active', 1, NULL, '2026-09-20 06:51:26', '2026-09-20 06:51:26'),
+	(6, 'Relaxation Hotel', '01921599567', 'Sydney, Australia', '2026-09-20', 'cdcfsdfds', 'Inactive', 1, 1, '2026-09-20 06:52:42', '2026-09-20 06:53:35');
 
 -- Dumping structure for table technopa_hrm.hrm_payments
 DROP TABLE IF EXISTS `hrm_payments`;
@@ -4328,7 +4359,7 @@ CREATE TABLE IF NOT EXISTS `model_has_roles` (
   KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.model_has_roles: ~83 rows (approximately)
+-- Dumping data for table technopa_hrm.model_has_roles: ~84 rows (approximately)
 DELETE FROM `model_has_roles`;
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 	(10, 'App\\Models\\User', 1),
@@ -4415,7 +4446,8 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 	(25, 'App\\Models\\User', 186),
 	(27, 'App\\Models\\User', 186),
 	(26, 'App\\Models\\User', 187),
-	(27, 'App\\Models\\User', 191);
+	(27, 'App\\Models\\User', 191),
+	(27, 'App\\Models\\User', 192);
 
 -- Dumping structure for table technopa_hrm.online_deliveries
 DROP TABLE IF EXISTS `online_deliveries`;
@@ -4601,7 +4633,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=739 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=744 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.permissions: ~496 rows (approximately)
 DELETE FROM `permissions`;
@@ -5039,7 +5071,6 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(656, 'Resignation', 'web', '2026-07-16 08:43:29', '2026-07-16 08:43:29'),
 	(657, 'Termination', 'web', '2026-07-16 08:44:09', '2026-07-16 08:44:09'),
 	(661, 'Performance Appraisal', 'web', '2026-07-16 08:45:43', '2026-07-16 08:45:43'),
-	(663, 'HR Dashboard', 'web', '2026-07-16 08:46:25', '2026-07-16 08:46:25'),
 	(664, 'admin.hrm.report', 'web', '2026-07-16 08:46:46', '2026-09-15 06:37:24'),
 	(667, 'admin.lead-source.edit', 'web', '2026-07-19 11:06:54', '2026-07-19 11:06:54'),
 	(668, 'admin.lead-source.create', 'web', '2026-07-20 08:31:24', '2026-07-20 08:31:24'),
@@ -5108,7 +5139,12 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(735, 'admin.staff-payment.edit', 'web', '2026-09-15 05:36:34', '2026-09-15 05:36:34'),
 	(736, 'All Report', 'web', '2026-09-15 06:36:21', '2026-09-15 06:36:21'),
 	(737, 'Expense Report', 'web', '2026-09-15 09:07:38', '2026-09-15 09:07:38'),
-	(738, 'Working Hour Report', 'web', '2026-09-15 10:03:23', '2026-09-15 10:03:23');
+	(738, 'Working Hour Report', 'web', '2026-09-15 10:03:23', '2026-09-15 10:03:23'),
+	(739, 'Attendance Dashboard', 'web', '2026-09-20 05:55:48', '2026-09-20 05:55:48'),
+	(740, 'Hotel Management', 'web', '2026-09-20 06:41:22', '2026-09-20 06:41:22'),
+	(741, 'Manage Hotel', 'web', '2026-09-20 06:42:29', '2026-09-20 06:42:29'),
+	(742, 'Add Hotel', 'web', '2026-09-20 06:44:07', '2026-09-20 06:44:07'),
+	(743, 'admin.hotel.edit', 'web', '2026-09-20 06:46:24', '2026-09-20 06:46:24');
 
 -- Dumping structure for table technopa_hrm.personal_access_tokens
 DROP TABLE IF EXISTS `personal_access_tokens`;
@@ -6488,7 +6524,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(656, 10),
 	(657, 10),
 	(661, 10),
-	(663, 10),
 	(664, 10),
 	(667, 10),
 	(668, 10),
@@ -6558,6 +6593,11 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(736, 10),
 	(737, 10),
 	(738, 10),
+	(739, 10),
+	(740, 10),
+	(741, 10),
+	(742, 10),
+	(743, 10),
 	(1, 13),
 	(612, 13),
 	(614, 13),
@@ -7056,7 +7096,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(656, 19),
 	(657, 19),
 	(661, 19),
-	(663, 19),
 	(664, 19),
 	(1, 20),
 	(335, 20),
@@ -7797,7 +7836,6 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(656, 26),
 	(657, 26),
 	(661, 26),
-	(663, 26),
 	(664, 26),
 	(667, 26),
 	(668, 26),
@@ -8149,6 +8187,7 @@ DROP TABLE IF EXISTS `staff`;
 CREATE TABLE IF NOT EXISTS `staff` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `company_id` bigint unsigned NOT NULL,
+  `hotel_id` bigint unsigned DEFAULT NULL,
   `branch_id` bigint unsigned NOT NULL,
   `user_id` bigint DEFAULT NULL,
   `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -8181,19 +8220,20 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.staff: ~8 rows (approximately)
+-- Dumping data for table technopa_hrm.staff: ~9 rows (approximately)
 DELETE FROM `staff`;
-INSERT INTO `staff` (`id`, `company_id`, `branch_id`, `user_id`, `code`, `name`, `short_name`, `designation`, `phone`, `address`, `email`, `national_id`, `joining_date`, `ac_no`, `ac_branch`, `basic_salary`, `house_rent`, `medical_allowance`, `others`, `deducted`, `increment_percent`, `increment_amount`, `total_salary`, `leave_balance`, `currency_code`, `type`, `status`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(52, 1, 1, NULL, '10013', 'Office Sale', 'Modina Hotel', NULL, '017', 'Arab, UAE', NULL, NULL, '2024-02-03', NULL, NULL, 55555, 5555, 55, 55, NULL, NULL, NULL, 6666, 0, NULL, 'sales', 1, 2, 2, 1, '2025-04-28 09:53:34', '2024-02-03 11:09:05', '2025-04-28 09:53:34'),
-	(59, 1, 1, 186, 'Shimul', 'Shimul', 'Al-Kisal Hotel', 'Sr. HR', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', '333333333333333333333', '2025-04-28', 'AC#34334444432', 'Rampura', 5555, 5555, 555, 55, NULL, NULL, 0, 11720, 0, 'SAR', 'general', 1, 1, 1, NULL, NULL, '2025-04-28 08:36:01', '2026-09-13 06:32:32'),
-	(60, 1, 1, NULL, 'Arnob Sur', 'Arnob Sur', 'Royal Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 44444, 555, 555, 55, NULL, NULL, 0, 8888, 3, NULL, 'sales', 1, 1, 1, NULL, NULL, '2025-04-28 08:36:32', '2026-08-04 03:29:48'),
-	(61, 1, 1, NULL, 'C100', 'Shamol', 'Padrib Hotel', 'Sales Office', NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 33333, 555, 55, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', 1, 1, 2, NULL, NULL, '2025-04-28 11:31:36', '2025-06-16 13:33:37'),
-	(62, 1, 1, NULL, 'Dipu', 'Dipu', 'Britol Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-05-10', NULL, NULL, 44444, 5555, 555, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', 1, 159, NULL, NULL, NULL, '2025-05-10 12:24:46', '2025-05-10 12:24:46'),
-	(63, 1, 1, NULL, 'digt233', 'Mozammel', 'Sharina Hotel', 'DME', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', NULL, '2026-05-01', 'AC#34334444432', 'Rampura', 10000, 5000, 3000, 2000, NULL, NULL, 0, 20000, 0, NULL, 'digital', 1, 1, NULL, NULL, NULL, '2026-07-28 05:24:07', '2026-07-28 05:24:07'),
-	(65, 1, 1, 189, '323', 'abc', 'abc Hotel', NULL, '123', 'AUstralia, HKF', NULL, NULL, '2026-09-08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 'general', 1, 1, NULL, NULL, NULL, '2026-09-08 04:15:39', '2026-09-08 04:15:39'),
-	(67, 1, 1, 191, 'STAFFID321', 'Abdullah Al-Wasi', 'Radison Hotel', NULL, '321', 'Dahak, BD', NULL, NULL, '2026-09-08', NULL, NULL, 450, NULL, NULL, NULL, NULL, NULL, 0, 450, 0, 'AED', 'general', 1, 1, 1, NULL, NULL, '2026-09-08 04:35:50', '2026-09-15 05:56:25');
+INSERT INTO `staff` (`id`, `company_id`, `hotel_id`, `branch_id`, `user_id`, `code`, `name`, `short_name`, `designation`, `phone`, `address`, `email`, `national_id`, `joining_date`, `ac_no`, `ac_branch`, `basic_salary`, `house_rent`, `medical_allowance`, `others`, `deducted`, `increment_percent`, `increment_amount`, `total_salary`, `leave_balance`, `currency_code`, `type`, `status`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
+	(52, 1, NULL, 1, NULL, '10013', 'Office Sale', 'Modina Hotel', NULL, '017', 'Arab, UAE', NULL, NULL, '2024-02-03', NULL, NULL, 55555, 5555, 55, 55, NULL, NULL, NULL, 6666, 0, NULL, 'sales', 1, 2, 2, 1, '2025-04-28 09:53:34', '2024-02-03 11:09:05', '2025-04-28 09:53:34'),
+	(59, 1, 4, 1, 186, 'Shimul', 'Shimul', 'Al-Kisal Hotel', 'Sr. HR', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', '333333333333333333333', '2025-04-28', 'AC#34334444432', 'Rampura', 5555, 5555, 555, 55, NULL, NULL, 0, 11720, 0, 'SAR', 'general', 1, 1, 1, NULL, NULL, '2025-04-28 08:36:01', '2026-09-20 07:37:03'),
+	(60, 1, NULL, 1, NULL, 'Arnob Sur', 'Arnob Sur', 'Royal Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 44444, 555, 555, 55, NULL, NULL, 0, 8888, 3, NULL, 'sales', 1, 1, 1, NULL, NULL, '2025-04-28 08:36:32', '2026-08-04 03:29:48'),
+	(61, 1, NULL, 1, NULL, 'C100', 'Shamol', 'Padrib Hotel', 'Sales Office', NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 33333, 555, 55, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', 1, 1, 2, NULL, NULL, '2025-04-28 11:31:36', '2025-06-16 13:33:37'),
+	(62, 1, NULL, 1, NULL, 'Dipu', 'Dipu', 'Britol Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-05-10', NULL, NULL, 44444, 5555, 555, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', 1, 159, NULL, NULL, NULL, '2025-05-10 12:24:46', '2025-05-10 12:24:46'),
+	(63, 1, NULL, 1, NULL, 'digt233', 'Mozammel', 'Sharina Hotel', 'DME', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', NULL, '2026-05-01', 'AC#34334444432', 'Rampura', 10000, 5000, 3000, 2000, NULL, NULL, 0, 20000, 0, NULL, 'digital', 1, 1, NULL, NULL, NULL, '2026-07-28 05:24:07', '2026-07-28 05:24:07'),
+	(65, 1, NULL, 1, 189, '323', 'abc', 'abc Hotel', NULL, '123', 'AUstralia, HKF', NULL, NULL, '2026-09-08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 'general', 1, 1, NULL, NULL, NULL, '2026-09-08 04:15:39', '2026-09-08 04:15:39'),
+	(67, 1, 5, 1, 191, 'STAFFID321', 'Abdullah Al-Wasi', 'Radison Hotel', NULL, '321', 'Dahak, BD', NULL, NULL, '2026-09-08', NULL, NULL, 450, NULL, NULL, NULL, NULL, NULL, 0, 450, 0, 'AED', 'general', 1, 1, 1, NULL, NULL, '2026-09-08 04:35:50', '2026-09-21 08:50:32'),
+	(68, 1, 4, 1, 192, 'code12', 'Mr. Rony', 'Mr. Rony', NULL, '4321', NULL, NULL, NULL, '2026-09-21', NULL, NULL, 350, NULL, NULL, NULL, NULL, NULL, 0, 350, 0, 'BDT', 'general', 1, 1, 1, NULL, NULL, '2026-09-21 08:53:00', '2026-09-21 08:54:51');
 
 -- Dumping structure for table technopa_hrm.static_site_items
 DROP TABLE IF EXISTS `static_site_items`;
@@ -8507,9 +8547,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_user_name_unique` (`user_name`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.users: ~29 rows (approximately)
+-- Dumping data for table technopa_hrm.users: ~30 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `role`, `company_id`, `name`, `user_name`, `email`, `phone`, `address`, `image`, `cover_image`, `area_id`, `branch_id`, `store_id`, `role_status`, `status`, `is_staff`, `staff_id`, `email_verified_at`, `otp`, `otp_expire`, `password`, `remember_token`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	(1, 1, 1, 'Admin', 'admin', 'admin@gmail.com', NULL, NULL, 'backend/images/avatar/profile-IwBtUMDTgMGKw3bCsTpkyPHylMGtgyjL6RR66nRG.jpeg', 'backend/images/avatar/cover-rQ6njzwB14WniZM5k17ASTLX7wB66R2spVUy7der.png', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2023-11-24 11:04:22', '$2a$12$yxZO/Kv/5ANCuMMA/QJD2eVwPNj9BSyDwdTJCdzVpedljgS8qGi0e', NULL, NULL, 1, NULL, NULL, '2023-10-24 06:03:09', '2026-08-13 11:33:13'),
@@ -8537,10 +8577,11 @@ INSERT INTO `users` (`id`, `role`, `company_id`, `name`, `user_name`, `email`, `
 	(181, 1, 1, 'settings', 'settings', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-07-16 15:47:29', '$2y$10$9YPk05fOpDqdD/hi85UTNengxo6q1CZG7UOAIBSzySZPH4MktjZzq', NULL, 1, NULL, NULL, NULL, '2026-07-16 09:47:29', '2026-07-16 09:47:29'),
 	(182, 2, 1, 'fffffffff', '33333', NULL, '33333', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-07-21 13:18:01', '$2y$10$7FfGIcAJoirwX1Ic4KE94ukpQ0G1QVkfyErF4.teqHMNiFgtIDLd.', NULL, 1, NULL, 1, '2026-07-21 09:56:56', '2026-07-21 07:18:01', '2026-07-21 09:56:56'),
 	(185, 2, 1, 'SGS', '019215554555', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-07-21 16:05:00', '$2y$10$OwJTRNDR75EiXiPh2Anv2.5NJv96FyUCVp4iWCkja0zbSJOWCyKJW', NULL, 1, NULL, NULL, NULL, '2026-07-21 10:05:00', '2026-07-21 10:05:52'),
-	(186, 1, 1, 'Basic', 'basic', 'basic@gmail.com', '01303740757', NULL, 'backend/images/avatar/profile-UwrR5g1HptZL7jhhd0Ci8nwLjIDy56dHr7QFtVry.jpeg', 'backend/images/avatar/cover-8mwqRjhBNyve8DI6vaOe8pw9MEjHFQAmehMaXvvu.jpeg', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-08-15 14:07:03', '$2y$10$03GrLS6HcTqjQ2aGW.iZv.pKOpcHUr0TncQob11BMsyqE14OEJX3u', NULL, 1, NULL, NULL, NULL, '2026-08-15 08:07:03', '2026-08-15 08:21:30'),
+	(186, 1, 1, 'Shimul', '01303740757', 'nijer.bazar@gmail.com', '01303740757', NULL, 'backend/images/avatar/profile-UwrR5g1HptZL7jhhd0Ci8nwLjIDy56dHr7QFtVry.jpeg', 'backend/images/avatar/cover-8mwqRjhBNyve8DI6vaOe8pw9MEjHFQAmehMaXvvu.jpeg', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-08-15 14:07:03', '$2y$10$03GrLS6HcTqjQ2aGW.iZv.pKOpcHUr0TncQob11BMsyqE14OEJX3u', NULL, 1, NULL, NULL, NULL, '2026-08-15 08:07:03', '2026-09-20 07:37:03'),
 	(187, 1, 1, 'Advance', 'advance', 'advance@gmail.com', '01303740756', NULL, 'backend/images/avatar/profile-4FwtazuhMUWLPqBK4fi4aPDd7JKZBZyOXfPat4Oh.jpeg', 'backend/images/avatar/cover-pFetVXDKaRM7kqTEIJmp4O8YWXEj3KubbG6gpu1w.jpeg', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-08-15 14:08:11', '$2y$10$eWtxWHMcDUprjU7hawdKL.Ia7Z40zda0M08HaoT0FP.qd96BFzMLu', NULL, 1, 1, NULL, NULL, '2026-08-15 08:08:11', '2026-08-15 08:12:21'),
 	(189, 2, 1, 'abc', '123', NULL, '123', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-09-08 10:15:39', '$2y$10$akKrgHh9j/yeZSFX53q3Qevi4PY.Z2CbvsTvRpMgVFJKPYtM.lgU2', NULL, 1, NULL, NULL, NULL, '2026-09-08 04:15:39', '2026-09-08 04:15:39'),
-	(191, 1, 1, 'Abdullah Al-Wasi', '321', NULL, '321', NULL, 'backend/images/avatar/profile-ygo3AfWy85ViCosmxLUfE1Lw1pyPeTi9hHSLBMSu.png', 'backend/images/avatar/cover-9kP64yxFDSp9co6b4PJFeYO9dIADTHO33gUDA2In.png', NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-08 10:35:50', '$2y$10$TRYyjymt/d70d.4ADXKA4u.fuaM/qaoDfz5KfDeQzdIyAt2Av7YVm', NULL, 1, NULL, NULL, NULL, '2026-09-08 04:35:50', '2026-09-15 05:52:06');
+	(191, 1, 1, 'Abdullah Al-Wasi', '321', NULL, '321', NULL, 'backend/images/avatar/profile-ygo3AfWy85ViCosmxLUfE1Lw1pyPeTi9hHSLBMSu.png', 'backend/images/avatar/cover-9kP64yxFDSp9co6b4PJFeYO9dIADTHO33gUDA2In.png', NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-08 10:35:50', '$2y$10$TRYyjymt/d70d.4ADXKA4u.fuaM/qaoDfz5KfDeQzdIyAt2Av7YVm', NULL, 1, NULL, NULL, NULL, '2026-09-08 04:35:50', '2026-09-15 05:52:06'),
+	(192, 1, 1, 'Mr. Rony', '4321', NULL, '4321', NULL, NULL, NULL, NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-21 14:53:00', '$2y$10$LXqnPtT.LjOMZdUM89INiu/OX/j.xKq9FClKZtQkrRPWzwY2wrr/2', NULL, 1, NULL, NULL, NULL, '2026-09-21 08:53:00', '2026-09-21 08:53:00');
 
 -- Dumping structure for table technopa_hrm.vehicles
 DROP TABLE IF EXISTS `vehicles`;

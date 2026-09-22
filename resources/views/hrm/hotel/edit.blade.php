@@ -28,7 +28,7 @@
         <div class="row">
 
             {{-- Name --}}
-            <div class="col-md-3 mb-3">
+            <div class="col-md-6 mb-3">
 
                 <label class="form-label">
                     Name <span class="text-danger">*</span>
@@ -44,25 +44,9 @@
 
             </div>
 
-            {{-- Phone --}}
-            <div class="col-md-3 mb-3">
-
-                <label class="form-label">
-                    Phone <span class="text-danger">*</span>
-                </label>
-
-                <input
-                    type="text"
-                    name="phone"
-                    class="form-control"
-                    value="{{ old('phone', $hotel->phone) }}"
-                    required
-                >
-
-            </div>
-
+           
             {{-- Address --}}
-            <div class="col-md-3 mb-3">
+            <div class="col-md-6 mb-3">
 
                 <label class="form-label">
                     Address <span class="text-danger">*</span>
@@ -75,6 +59,23 @@
                     value="{{ old('address', $hotel->address) }}"
                     required
                 >
+
+            </div>
+
+            
+
+            {{-- Remarks --}}
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label">
+                    Remarks
+                </label>
+
+                <textarea
+                    name="remarks"
+                    rows="1"
+                    class="form-control"
+                >{{ old('remarks', $hotel->remarks) }}</textarea>
 
             </div>
 
@@ -96,7 +97,7 @@
             </div>
 
             {{-- Status --}}
-            <div class="col-md-6 mb-3">
+            <div class="col-md-3 mb-3">
 
                 <label class="form-label">
                     Status
@@ -115,21 +116,6 @@
                     </option>
 
                 </select>
-
-            </div>
-
-            {{-- Remarks --}}
-            <div class="col-md-6 mb-3">
-
-                <label class="form-label">
-                    Remarks
-                </label>
-
-                <textarea
-                    name="remarks"
-                    rows="1"
-                    class="form-control"
-                >{{ old('remarks', $hotel->remarks) }}</textarea>
 
             </div>
 

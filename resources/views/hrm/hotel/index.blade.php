@@ -27,7 +27,7 @@
             <tr>
                 <th width="50">SL</th>
                 <th>Name</th>
-                <th>Phone</th>
+                <!-- <th>Phone</th> -->
                 <th>Address</th>
                 <th>Entry Date</th>
                 <th>Status</th>
@@ -91,38 +91,34 @@ $('.dataTable').DataTable({
         // Name
         {
             data: 'name',
-            name: 'hotels.name'
+            name: 'name'
         },
 
-        // Phone
-        {
-            data: 'phone',
-            name: 'hotels.phone'
-        },
+       
 
         // Address
         {
             data: 'address',
-            name: 'hotels.address'
+            name: 'address'
         },
 
         // Entry Date
         {
             data: 'entry_date',
-            name: 'hotels.entry_date'
+            name: 'entry_date'
         },
 
         // Status
         {
             data: 'status',
-            name: 'hotels.status',
+            name: 'status',
             searchable: false
         },
 
         // Remarks
         {
             data: 'remarks',
-            name: 'hotels.remarks'
+            name: 'remarks'
         },
 
         // Action

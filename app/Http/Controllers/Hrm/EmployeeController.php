@@ -60,28 +60,7 @@ class EmployeeController extends Controller
         return view('hrm.employee.index', compact('title'));
     }
 
-    public function dashboard()
-    {
-        $total_employee = DB::table('staff')->count();
-        $total_salary = DB::table('staff')->sum('total_salary');
-        $total_disbursed = DB::table('hrm_employee_payrolls')->where('payment_status','Paid')->sum('net_salary');
-        $total_expense = DB::table('hrm_expense')->where('status','Approved')->sum('expense_amount');
-        $total_loan = DB::table('hrm_employee_loan')->where('status','Approved')->sum('loan_amount');
-        $total_installment = DB::table('hrm_employee_loan')->where('status','Approved')->sum('installment_amount');
-        $total_resignation = DB::table('hrm_employee_resignation')->where('status','Approved')->count();
-        $total_termination = DB::table('hrm_employee_termination')->where('status','Approved')->count();
-        
-           return view('hrm.dashboard.dashboard',compact(
-            'total_employee',
-            'total_salary',
-            'total_disbursed',
-            'total_expense',
-            'total_loan',
-            'total_installment',
-            'total_resignation',
-            'total_termination'
-            ));
-    }
+    
 
     /**
      * Show the form for creating a new resource.

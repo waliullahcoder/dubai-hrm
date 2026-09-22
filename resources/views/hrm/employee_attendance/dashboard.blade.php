@@ -736,7 +736,7 @@ blade
         <div class="row g-3 align-items-end">
 
             {{-- HOTEL --}}
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
 
                 <label class="filter-label"
                        for="filterHotel">
@@ -769,9 +769,43 @@ blade
 
             </div>
 
+            {{-- Department --}}
+            <div class="col-12 col-md-2">
+
+                <label class="filter-label"
+                       for="filterHotel">
+
+                    <i class="fas fa-building me-1"></i>
+                    Select Department
+
+                </label>
+
+                <select name="department_id"
+                        id="filterHotel"
+                        class="filter-control">
+
+                    <option value="">
+                        All Department
+                    </option>
+
+                    @foreach($departments as $department)
+
+                        <option value="{{ $hotel->id }}"
+                            {{ (string)$departmentid === (string)$department->id ? 'selected' : '' }}>
+
+                            {{ $department->name }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
+
+            </div>
+
 
             {{-- DATE --}}
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
 
                 <label class="filter-label"
                        for="filterDate">
@@ -791,7 +825,7 @@ blade
 
 
             {{-- MONTH --}}
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-2">
 
                 <label class="filter-label"
                        for="filterMonth">

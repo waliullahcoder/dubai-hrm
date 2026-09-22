@@ -18,6 +18,10 @@ class Category extends Model
     {
         static::addGlobalScope(new CompanyScope);
     }
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class, 'parent_id');
+    }
 
     public function company()
     {

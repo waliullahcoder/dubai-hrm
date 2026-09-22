@@ -94,7 +94,7 @@ class HotelController extends Controller
     {
         $request->validate([
             'name'  => 'required',
-            'phone'   => 'required',
+            'phone'   => 'nullable|string',
             'address'    => 'required',
             'entry_date'      => 'required|date',
             'status'         => 'required|in:Active,Inactive',
@@ -127,7 +127,7 @@ class HotelController extends Controller
     {
          $request->validate([
             'name'  => 'required',
-            'phone'   => 'required',
+            'phone'   => 'nullable|string',
             'address'    => 'required',
             'entry_date'      => 'required|date',
             'status'         => 'required|in:Active,Inactive',

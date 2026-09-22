@@ -62,25 +62,83 @@ class AdminController extends Controller
         if( Auth::user()->role_status==4){
            return view('hrm.dashboard.staff-dashboard');
         }else{
-        $total_employee = DB::table('staff')->count();
-        $total_salary = DB::table('staff')->sum('total_salary');
-        $total_disbursed = DB::table('hrm_employee_payrolls')->where('payment_status','Paid')->sum('net_salary');
-        $total_expense = DB::table('hrm_expense')->where('status','Approved')->sum('expense_amount');
-        $total_loan = DB::table('hrm_employee_loan')->where('status','Approved')->sum('loan_amount');
-        $total_installment = DB::table('hrm_employee_loan')->where('status','Approved')->sum('installment_amount');
-        $total_resignation = DB::table('hrm_employee_resignation')->where('status','Approved')->count();
-        $total_termination = DB::table('hrm_employee_termination')->where('status','Approved')->count();
+        // ==============================
+        // BASIC SUMMARY
+        // ==============================
+
+        // Total Staff
+        $total_staff = DB::table('staff')->count();
+
+        // Total Hotel
+        $total_hotel = DB::table('hrm_hotels')->count();
+
+        // Total Worked Hours
+        $total_hours = DB::table('hrm_employee_attendances')
+            ->where('attendance_status', 'Present')
+            ->sum('worked_hours');
+
+        // Total Earning
+        // Staff total salary
+        $total_earning = DB::table('staff')
+            ->sum('total_salary');
+
+        // Total Payments
+        $total_payments = DB::table('hrm_payments')
+            ->sum('payment_amount');
+
+            // Advance Payments
+        $advance_payments = DB::table('hrm_payments')->where('status', 'Advance')
+            ->sum('payment_amount');
+
+        // Total Expense
+        $total_expense = DB::table('hrm_expense')
+            ->where('status', 'Approved')
+            ->sum('expense_amount');
+
+        // Total Outstanding
+        $total_outstanding = $total_earning - $total_payments;
+
+        if ($total_outstanding < 0) {
+            $total_outstanding = 0;
+        }
+
+
+        // ==============================
+        // MONTHLY CHART DATA
+        // ==============================
+
+        $monthly_payments = [];
+        $monthly_expense = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+
+            // Monthly Payments
+            $monthly_payments[] = DB::table('hrm_payments')
+                ->whereMonth('payment_date', $month)
+                ->whereYear('payment_date', now()->year)
+                ->sum('payment_amount');
+
+            // Monthly Expense
+            $monthly_expense[] = DB::table('hrm_expense')
+                ->where('status', 'Approved')
+                ->whereMonth('expense_date', $month)
+                ->whereYear('expense_date', now()->year)
+                ->sum('expense_amount');
+        }
+
         
-           return view('hrm.dashboard.dashboard',compact(
-            'total_employee',
-            'total_salary',
-            'total_disbursed',
+        return view('hrm.dashboard.dashboard', compact(
+            'total_staff',
+            'total_hotel',
+            'total_hours',
+            'total_earning',
+            'total_payments',
             'total_expense',
-            'total_loan',
-            'total_installment',
-            'total_resignation',
-            'total_termination'
-            ));
+            'total_outstanding',
+            'monthly_payments',
+            'monthly_expense',
+            'advance_payments'
+        ));
         }
         
     }

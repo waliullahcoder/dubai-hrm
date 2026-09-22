@@ -7,6 +7,7 @@ use App\Models\Branch;
 use App\Models\Company;
 use App\Models\Staff;
 use App\Models\Hotel;
+use App\Models\Category;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -37,6 +38,7 @@ public function attendanceDashboard(Request $request)
         : Carbon::today();
 
     $hotelId = $request->hotel_id;
+    $departmentid = $request->department_id;
 
 
     /*
@@ -57,6 +59,9 @@ public function attendanceDashboard(Request $request)
 
     $hotels = Hotel::where('status', 'Active')
         ->orderBy('name')
+        ->get();
+
+     $departments = Category::orderBy('id','desc')
         ->get();
 
 
@@ -359,7 +364,9 @@ public function attendanceDashboard(Request $request)
         'avgHours',
         'selectedDate',
         'selectedMonth',
-        'hotelId'
+        'hotelId',
+        'departmentid',
+        'departments'
     ));
 }
     public function index()
