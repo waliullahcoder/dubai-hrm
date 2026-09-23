@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\SubscriptionController;;
 
 Route::group(['as' => 'frontend.'], function () {
     route::get('/', [FrontpageController::class, 'home'])->name('home');
+    Route::get('/staff-registration',[FrontpageController::class,'staffRegistration'])->name('staff.registration');
+    Route::post('/staff-store',[FrontpageController::class,'staffStore'])->name('staff.store');
     Route::get('/collections', [FrontpageController::class, 'Collections'])->name('collections');
     Route::get('/about', [FrontpageController::class, 'AboutUs'])->name('about');
     Route::get('/contact/{slug?}', [FrontpageController::class, 'ContactUs'])->name('contact');

@@ -12,6 +12,12 @@ use App\Http\Controllers\Controller;
 use App\Models\About;
 use App\Models\Contact;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\Staff;
+use App\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Models\OrderProduct;
 use App\Models\PreOrderSetup;
 use App\Models\SocialWork;
@@ -30,6 +36,110 @@ class FrontpageController extends Controller
         $pre_orders = PreOrderSetup::where('status', 1)->limit(3)->get();
         return view('frontend.home', compact('sliders', 'trending_products', 'pre_orders'));
     }
+    public function staffRegistration(){
+
+        return view('frontend.staff-registration');
+    }
+   public function staffStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'required|unique:users,phone',
+            'email' => 'required|unique:users,email',
+            'address' => 'required',
+            'password' => 'required',
+            'confirm_password' => 'required',
+            'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        if ($request->password != $request->confirm_password) {
+            return redirect()->back()
+                ->withInput($request->except([
+                    'password',
+                    'confirm_password',
+                    'profile_photo'
+                ]))
+                ->with('error', 'Password is mismatch!');
+        }
+
+        DB::transaction(function () use ($request) {
+
+            // =========================
+            // User Image Upload
+            // =========================
+            $profileImagePath = null;
+
+            if ($request->hasFile('profile_photo')) {
+
+                $profile = $request->file('profile_photo');
+
+                $path = 'backend/images/avatar/';
+
+                $file_name = 'profile-' . Str::random(40) . '.' .
+                    $profile->getClientOriginalExtension();
+
+                $profile->move($path, $file_name);
+
+                $profileImagePath = $path . $file_name;
+            }
+
+            // =========================
+            // Create User
+            // =========================
+            $user = User::create([
+                'company_id' => 1,
+                'role' => 1,
+                'role_status' => 4,
+                'name' => $request->name,
+                'user_name' => $request->phone,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'status' => 1,
+                'password' => Hash::make($request->password),
+                'created_by' => 1,
+                'image' => $profileImagePath,
+        ]);
+
+        // =========================
+        // Create Staff
+        // =========================
+        Staff::create([
+            'company_id' => 1,
+            'branch_id' => 1,
+            'user_id' => $user->id,
+            'code' => 'code' . $user->id,
+            'name' => $request->name,
+            'currency_code' => 'USD',
+            'short_name' => $request->name,
+            'designation' => 'general',
+            'joining_date' => date('Y-m-d'),
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'national_id' => null,
+            'ac_no' => null,
+            'ac_branch' => null,
+            'address' => $request->address,
+            'basic_salary' => 100,
+            'house_rent' => 0,
+            'medical_allowance' => 0,
+            'others' => 0,
+            'deducted' => 0,
+            'increment_percent' => 0,
+            'increment_amount' => 0,
+            'total_salary' => 0,
+            'type' => 'active',
+            'created_by' => 1,
+        ]);
+
+        $role = Role::findByName('staff');
+        $user->assignRole($role);
+
+    });
+
+    return redirect()
+        ->route('admin.employee.index')
+        ->withSuccessMessage('Staff Sign-up Successfully!');
+}
 
     public function Collections()
     {

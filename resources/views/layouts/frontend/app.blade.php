@@ -456,6 +456,14 @@
 
                     </form>
 
+                    <div class="d-flex justify-content-between mb-4">
+                            <div>Please fill the data </div>
+
+                            <a href="{{url('staff-registration')}}" class="forgot">
+                                Join as a Staff
+                            </a>
+                    </div>
+
                     <div class="footer">
 
                         <hr>
