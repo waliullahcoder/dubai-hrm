@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Region;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\Hotel;
+use App\Models\Category;
 use App\Models\RetailSale;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -60,7 +62,9 @@ class AdminController extends Controller
     {
 
         if( Auth::user()->role_status==4){
-           return view('hrm.dashboard.staff-dashboard');
+           $hotels= Hotel::where('status', 'Active')->get();
+           $departments= Category::get();
+           return view('hrm.dashboard.staff-dashboard', compact('hotels','departments'));
         }else{
         // ==============================
         // BASIC SUMMARY

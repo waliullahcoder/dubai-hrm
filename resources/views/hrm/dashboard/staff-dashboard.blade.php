@@ -36,9 +36,53 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                 <form action="{{ route('admin.employee-attendance.store') }}" method="POST">
                     @csrf
 
-                    <!-- Check In -->
+                    @if($staff->location_varified == NULL || $staff->location_varified != date('Y-m-d'))
+                     <input type="hidden" name="employee_id" value="{{ $staff->id }}">
+                    <input type="hidden" name="location_varified" value="{{ date('Y-m-d') }}">
+                     <div class="col-lg-12 col-sm-12">
+                        <label for="short_name" class="form-label"><b><i class="fad fa-hotel"></i> Hotel Name <span class="text-danger">*</span></b></label>
+                        <select class="select form-select" id="hotel_id" name="hotel_id" required>
+                            @foreach($hotels as $hotel)
+                            <option value="{{$hotel->id}}" data-address="{{ $hotel->address }}">{{$hotel->name}} </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <br>
+                    <div class="col-lg-12 col-sm-12">
+                        <label for="type" class="form-label"><b><i class="fad fa-house"></i> Department <span class="text-danger">*</span></b></label>
+                        <div class="custom-select">
+                    <select name="department_id" id="department_id" class="select form-select" data-placeholder="Select Department" required>
+                            
+                            @foreach ($departments as $department)
+                                <option value="{{ $department->id }}"
+                                    {{ old('department_id') && old('department_id') == $department->id ? 'selected' : '' }}>
+                                    {{ $department->name }}</option>
+                            @endforeach
+                        </select>            
+                    </div>
+                    </div>
+                    <br>
+                     <div class="mt-3">
+                            <label for="type" class="form-label">
+                                <b>
+                                    <i class="fas fa-map-marker-alt text-danger"></i>
+                                    Current Location
+                                </b>
+                            </label>
 
-                    @if($todayAttendancecheckin==null)
+                            <span id="hotel_address" class="text-muted">
+                               Select Hotel
+                            </span>
+                        </div> <br> <br>
+                    <button class="btn btn-checkin">
+                        <i class="fas fa-map-marker-alt"></i> Confirm Location
+                    </button>
+                    
+                    @endif
+
+
+                    <!-- Check In -->
+                    @if($todayAttendancecheckin == NULL && ($staff->location_varified != NULL || $staff->location_varified == date('Y-m-d')))
                     <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
                     <input type="hidden" name="attendance_date" value="{{ date('Y-m-d') }}">
                     <input type="hidden" name="attendance_status" value="Present">
@@ -52,13 +96,13 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                                     <i class="far fa-circle" style="color:white"></i>
                                 </div> Not yet Checked In
                             </h6>
-                            <p style="text-align:center">Start your work by checking in</p>
+                            <p style="text-align:center"><strong> Location Varified Successfully!</strong></p>
                         </div>
                     </div>
                     <input type="time" name="check_in" id="check_in" class="form-control checktime" step="1"
                         value="{{ date('H:i:s') }}"><br>
                     <button class="btn btn-checkin">
-                        <i class="fas fa-map-marker-alt"></i> Check In
+                        <i class="fas fa-map-marker-alt"></i> Confirm Check In
                     </button>
                     @endif
 
@@ -127,7 +171,7 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                     <input type="time" name="check_out" id="check_out" class="form-control checktime" step="1"
                         value="{{ date('H:i:s') }}"><br>
                     <button class="btn btn-checkout">
-                        <i class="fas fa-sign-out-alt"></i> Check Out
+                        <i class="fas fa-sign-out-alt"></i> Confirm Check Out
                     </button>
                     @endif
 
@@ -197,7 +241,32 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
 @endsection
 
 @push('js')
+<script>
+$(document).ready(function () {
 
+    $('#hotel_id').on('change', function () {
+
+        let address = $(this)
+            .find(':selected')
+            .data('address');
+
+        if (address) {
+
+            $('#hotel_address').html(
+                '<i class="fas fa-map-marker-alt text-danger"></i> ' +
+                address
+            );
+
+        } else {
+
+            $('#hotel_address').html(
+                'Select a hotel'
+            );
+        }
+    });
+
+});
+</script>
 <script>
 // user's device GPS coordinate auto display
 function getCurrentLocation() {

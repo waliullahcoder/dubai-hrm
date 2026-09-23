@@ -465,9 +465,19 @@ public function attendanceDashboard(Request $request)
     {
         $request->validate([
             'employee_id' => 'required',
-            'attendance_date' => 'required',
-            'attendance_status' => 'required',
+            // 'attendance_date' => 'required',
+            // 'attendance_status' => 'required',
         ]);
+
+        if(Auth::user()->role_status==4 && $request->location_varified){
+            $staff = Staff::find($request->employee_id);
+            $staff->update([
+                 'location_varified' => $request->location_varified,
+                 'hotel_id' => $request->hotel_id,
+                 'department_id' => $request->department_id
+            ]);
+             return redirect()->back()->withSuccessMessage('Location varified successfully.');
+        }
 
        
             $checkIn = Carbon::parse($request->check_in);
