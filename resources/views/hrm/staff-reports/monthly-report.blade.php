@@ -195,6 +195,37 @@
     .amount {
         font-weight: 600;
     }
+    /* Signature */
+
+.signature-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 70px;
+    padding: 0 50px 10px;
+    gap: 120px;
+}
+
+.signature-box {
+    width: 260px;
+    text-align: center;
+}
+
+.signature-line {
+    border-top: 1px solid #222;
+    margin-bottom: 10px;
+}
+
+.signature-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.signature-name {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+}
 
     /* Summary */
 
@@ -773,6 +804,42 @@
                 </tr>
 
             </table>
+
+
+
+            {{-- Signature Section --}}
+<div class="signature-section">
+
+    <div class="signature-box">
+
+        <div class="signature-line"></div>
+
+        <div class="signature-title">
+            Employee Signature
+        </div>
+
+        <div class="signature-name">
+            {{ $report['employee']->name }}
+        </div>
+
+    </div>
+
+
+    <div class="signature-box">
+
+        <div class="signature-line"></div>
+
+        <div class="signature-title">
+            Authorized Signature
+        </div>
+
+        <div class="signature-name">
+            Authorized Person
+        </div>
+
+    </div>
+
+</div>
 
 
             {{-- Footer --}}
