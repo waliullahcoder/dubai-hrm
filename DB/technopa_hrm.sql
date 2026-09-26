@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `admin_menus` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=284 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=285 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.admin_menus: ~179 rows (approximately)
 DELETE FROM `admin_menus`;
@@ -350,7 +350,8 @@ INSERT INTO `admin_menus` (`id`, `permission_id`, `parent_id`, `name`, `name_bn`
 	(280, 742, 278, 'Add Hotel', 'Add Hotel', 'admin.hotel.create', NULL, 1, 1, 1, '2026-09-20 06:44:08', '2026-09-20 06:44:08'),
 	(281, 744, 256, 'Manage Department', 'Manage Department', 'admin.category.index', NULL, 1, 1, 1, '2026-09-21 11:50:56', '2026-09-21 11:50:56'),
 	(282, 745, 256, 'New Department', 'New Department', 'admin.category.create', NULL, 1, 1, 1, '2026-09-21 11:51:45', '2026-09-21 11:51:45'),
-	(283, 747, 199, 'Loan Application', 'Loan Application', 'admin.employee-loan.create', NULL, 1, 1, 1, '2026-09-22 05:44:43', '2026-09-22 05:44:43');
+	(283, 747, 199, 'Loan Application', 'Loan Application', 'admin.employee-loan.create', NULL, 1, 1, 1, '2026-09-22 05:44:43', '2026-09-22 05:44:43'),
+	(284, 748, 274, 'Employee Monthly Report', 'Employee Monthly Report', 'admin.monthly.report', NULL, 1, 1, 1, '2026-09-26 09:57:45', '2026-09-26 09:57:45');
 
 -- Dumping structure for table technopa_hrm.admin_menu_actions
 DROP TABLE IF EXISTS `admin_menu_actions`;
@@ -1109,7 +1110,7 @@ CREATE TABLE IF NOT EXISTS `coa_setups` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=314 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=315 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.coa_setups: ~186 rows (approximately)
 DELETE FROM `coa_setups`;
@@ -1300,7 +1301,8 @@ INSERT INTO `coa_setups` (`id`, `company_id`, `parent_id`, `head_code`, `head_na
 	(310, 1, 297, 40307, 'Arko Ghosh', 1, 0, 'E', 1, 1, 159, 159, NULL, NULL, '2026-04-23 09:26:42', '2026-04-23 16:13:42'),
 	(311, 1, 297, 40308, 'Bishwajit Barmon', 1, 0, 'E', 1, 1, 159, NULL, NULL, NULL, '2026-04-23 09:29:14', '2026-04-23 09:29:14'),
 	(312, 1, 4, 404, 'Salary Expenses', 1, 1, 'E', 1, 1, 1, NULL, NULL, NULL, '2026-08-09 06:17:41', '2026-08-09 06:17:41'),
-	(313, 1, 4, 405, 'RTA Bus', 1, 1, 'E', 1, 1, 1, 1, NULL, NULL, '2026-09-13 06:00:27', '2026-09-17 10:44:06');
+	(313, 1, 4, 405, 'To Bus', 1, 1, 'E', 1, 1, 1, 1, NULL, NULL, '2026-09-13 06:00:27', '2026-09-26 10:15:33'),
+	(314, 1, 4, 406, 'From Bus', 1, 1, 'E', 1, 1, 1, NULL, NULL, NULL, '2026-09-26 10:15:48', '2026-09-26 10:15:48');
 
 -- Dumping structure for table technopa_hrm.collections
 DROP TABLE IF EXISTS `collections`;
@@ -1923,6 +1925,11 @@ DROP TABLE IF EXISTS `hrm_employee_attendances`;
 CREATE TABLE IF NOT EXISTS `hrm_employee_attendances` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` bigint unsigned NOT NULL,
+  `hotel_id` bigint DEFAULT NULL,
+  `department_id` bigint DEFAULT NULL,
+  `worked_hours` decimal(20,6) DEFAULT '0.000000',
+  `hour_rate` decimal(20,6) DEFAULT '0.000000',
+  `amount` decimal(20,6) DEFAULT '0.000000',
   `attendance_date` date NOT NULL,
   `check_in` time DEFAULT NULL,
   `check_in_latitude` decimal(20,6) DEFAULT NULL,
@@ -1934,7 +1941,6 @@ CREATE TABLE IF NOT EXISTS `hrm_employee_attendances` (
   `check_out_distance` decimal(20,6) DEFAULT NULL,
   `late_minutes` int DEFAULT '0',
   `overtime_minutes` int DEFAULT '0',
-  `worked_hours` decimal(5,2) DEFAULT '0.00',
   `attendance_status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `remarks` text COLLATE utf8mb4_unicode_ci,
   `created_by` bigint unsigned DEFAULT NULL,
@@ -1945,27 +1951,33 @@ CREATE TABLE IF NOT EXISTS `hrm_employee_attendances` (
   KEY `idx_employee_id` (`employee_id`),
   KEY `idx_attendance_date` (`attendance_date`),
   KEY `idx_status` (`attendance_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_employee_attendances: ~16 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_employee_attendances: ~21 rows (approximately)
 DELETE FROM `hrm_employee_attendances`;
-INSERT INTO `hrm_employee_attendances` (`id`, `employee_id`, `attendance_date`, `check_in`, `check_in_latitude`, `check_in_longitude`, `check_in_distance`, `check_out`, `check_out_latitude`, `check_out_longitude`, `check_out_distance`, `late_minutes`, `overtime_minutes`, `worked_hours`, `attendance_status`, `remarks`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-	(1, 60, '2026-07-28', '09:06:00', NULL, NULL, NULL, '23:18:00', NULL, NULL, NULL, 6, 318, 14.20, 'Present', 'this is', 1, 1, '2026-07-28 11:01:54', '2026-07-28 11:43:28'),
-	(2, 60, '2026-07-29', '10:15:00', NULL, NULL, NULL, '22:14:00', NULL, NULL, NULL, 75, 254, 11.98, 'Present', 'sdasdas', 1, NULL, '2026-07-29 04:14:55', '2026-07-29 04:14:55'),
-	(3, 63, '2026-07-29', '10:15:00', NULL, NULL, NULL, '22:14:00', NULL, NULL, NULL, 75, 254, 11.98, 'Present', 'sdasdas', 1, NULL, '2026-07-29 04:14:55', '2026-07-29 04:14:55'),
-	(4, 62, '2026-07-29', '10:15:00', NULL, NULL, NULL, '22:15:00', NULL, NULL, NULL, 75, 255, 12.00, 'Present', NULL, 1, NULL, '2026-07-29 04:15:18', '2026-07-29 04:15:18'),
-	(5, 62, '2026-07-29', '10:16:00', NULL, NULL, NULL, '22:16:00', NULL, NULL, NULL, 76, 256, 12.00, 'Present', 'ssaa', 1, NULL, '2026-07-29 04:16:27', '2026-07-29 04:16:27'),
-	(6, 62, '2026-07-29', '10:17:00', NULL, NULL, NULL, '22:17:00', NULL, NULL, NULL, 77, 257, 12.00, 'Present', 'aS', 1, NULL, '2026-07-29 04:17:09', '2026-07-29 04:17:09'),
-	(7, 61, '2026-07-29', '11:47:00', NULL, NULL, NULL, '23:48:00', NULL, NULL, NULL, 167, 348, 12.02, 'Leave', 'ssaa', 1, 1, '2026-07-29 06:01:35', '2026-08-04 11:52:21'),
-	(8, 59, '2026-07-29', '11:47:00', NULL, NULL, NULL, '23:48:00', NULL, NULL, NULL, 167, 348, 12.02, 'Absent', 'ssaa', 1, 1, '2026-07-29 06:01:37', '2026-08-04 11:52:06'),
-	(9, 67, '2026-09-08', '09:26:09', NULL, NULL, NULL, '16:48:06', NULL, NULL, NULL, 26, 0, 6.00, 'Present', NULL, 191, NULL, '2026-09-08 09:26:53', '2026-09-08 10:48:06'),
-	(10, 67, '2026-09-10', '16:57:14', NULL, NULL, NULL, '16:58:43', NULL, NULL, NULL, 477, 0, 0.00, 'Present', NULL, 191, NULL, '2026-09-10 10:57:18', '2026-09-10 10:58:43'),
-	(11, 67, '2026-09-13', '08:59:00', 23.760000, 90.410000, 0.029361, '16:59:00', 23.760000, 90.410000, 0.029361, 0, 0, 8.00, 'Present', NULL, 1, NULL, '2026-09-13 10:59:10', '2026-09-14 03:45:57'),
-	(16, 67, '2026-09-14', '17:35:26', 23.410000, 91.420000, 3.427601, '17:36:18', 23.410000, 91.420000, 315.498417, 515, 0, 0.00, 'Present', NULL, 191, NULL, '2026-09-14 11:36:17', '2026-09-14 11:36:55'),
-	(18, 67, '2026-09-17', '09:00:00', 23.410000, 91.420000, 3.427601, '16:28:00', NULL, NULL, 3.427601, 0, 0, 7.00, 'Present', NULL, 191, NULL, '2026-09-17 10:28:00', '2026-09-17 10:28:00'),
-	(19, 67, '2026-09-19', '09:00:30', 23.410000, 91.420000, 3.427601, '18:00:00', 23.410000, 91.420000, 315.498417, 0, 0, 8.00, 'Present', NULL, 191, NULL, '2026-09-19 04:47:16', '2026-09-19 09:06:54'),
-	(20, 67, '2026-09-21', '08:49:05', 23.410000, 91.420000, 3.427601, '18:49:19', 23.410000, 91.420000, 315.498417, 0, 49, 10.00, 'Present', NULL, 191, NULL, '2026-09-21 08:49:18', '2026-09-21 08:49:31'),
-	(21, 68, '2026-09-21', '10:53:35', 23.410000, 91.420000, 3.427601, '14:53:43', 23.410000, 91.420000, 315.498417, 113, 0, 4.00, 'Present', NULL, 192, NULL, '2026-09-21 08:53:42', '2026-09-21 08:53:47');
+INSERT INTO `hrm_employee_attendances` (`id`, `employee_id`, `hotel_id`, `department_id`, `worked_hours`, `hour_rate`, `amount`, `attendance_date`, `check_in`, `check_in_latitude`, `check_in_longitude`, `check_in_distance`, `check_out`, `check_out_latitude`, `check_out_longitude`, `check_out_distance`, `late_minutes`, `overtime_minutes`, `attendance_status`, `remarks`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+	(1, 60, NULL, NULL, 14.200000, 0.000000, 0.000000, '2026-07-28', '09:06:00', NULL, NULL, NULL, '23:18:00', NULL, NULL, NULL, 6, 318, 'Present', 'this is', 1, 1, '2026-07-28 11:01:54', '2026-07-28 11:43:28'),
+	(2, 60, NULL, NULL, 11.980000, 0.000000, 0.000000, '2026-07-29', '10:15:00', NULL, NULL, NULL, '22:14:00', NULL, NULL, NULL, 75, 254, 'Present', 'sdasdas', 1, NULL, '2026-07-29 04:14:55', '2026-07-29 04:14:55'),
+	(3, 63, NULL, NULL, 11.980000, 0.000000, 0.000000, '2026-07-29', '10:15:00', NULL, NULL, NULL, '22:14:00', NULL, NULL, NULL, 75, 254, 'Present', 'sdasdas', 1, NULL, '2026-07-29 04:14:55', '2026-07-29 04:14:55'),
+	(4, 62, NULL, NULL, 12.000000, 0.000000, 0.000000, '2026-07-29', '10:15:00', NULL, NULL, NULL, '22:15:00', NULL, NULL, NULL, 75, 255, 'Present', NULL, 1, NULL, '2026-07-29 04:15:18', '2026-07-29 04:15:18'),
+	(5, 62, NULL, NULL, 12.000000, 0.000000, 0.000000, '2026-07-29', '10:16:00', NULL, NULL, NULL, '22:16:00', NULL, NULL, NULL, 76, 256, 'Present', 'ssaa', 1, NULL, '2026-07-29 04:16:27', '2026-07-29 04:16:27'),
+	(6, 62, NULL, NULL, 12.000000, 0.000000, 0.000000, '2026-07-29', '10:17:00', NULL, NULL, NULL, '22:17:00', NULL, NULL, NULL, 77, 257, 'Present', 'aS', 1, NULL, '2026-07-29 04:17:09', '2026-07-29 04:17:09'),
+	(7, 61, NULL, NULL, 12.020000, 0.000000, 0.000000, '2026-07-29', '11:47:00', NULL, NULL, NULL, '23:48:00', NULL, NULL, NULL, 167, 348, 'Leave', 'ssaa', 1, 1, '2026-07-29 06:01:35', '2026-08-04 11:52:21'),
+	(8, 59, NULL, NULL, 12.020000, 0.000000, 0.000000, '2026-07-29', '11:47:00', NULL, NULL, NULL, '23:48:00', NULL, NULL, NULL, 167, 348, 'Absent', 'ssaa', 1, 1, '2026-07-29 06:01:37', '2026-08-04 11:52:06'),
+	(9, 67, NULL, NULL, 6.000000, 0.000000, 0.000000, '2026-09-08', '09:26:09', NULL, NULL, NULL, '16:48:06', NULL, NULL, NULL, 26, 0, 'Present', NULL, 191, NULL, '2026-09-08 09:26:53', '2026-09-08 10:48:06'),
+	(10, 67, NULL, NULL, 0.000000, 0.000000, 0.000000, '2026-09-10', '16:57:14', NULL, NULL, NULL, '16:58:43', NULL, NULL, NULL, 477, 0, 'Present', NULL, 191, NULL, '2026-09-10 10:57:18', '2026-09-10 10:58:43'),
+	(11, 67, NULL, NULL, 8.000000, 0.000000, 0.000000, '2026-09-13', '08:59:00', 23.760000, 90.410000, 0.029361, '16:59:00', 23.760000, 90.410000, 0.029361, 0, 0, 'Present', NULL, 1, NULL, '2026-09-13 10:59:10', '2026-09-14 03:45:57'),
+	(16, 67, NULL, NULL, 0.000000, 0.000000, 0.000000, '2026-09-14', '17:35:26', 23.410000, 91.420000, 3.427601, '17:36:18', 23.410000, 91.420000, 315.498417, 515, 0, 'Present', NULL, 191, NULL, '2026-09-14 11:36:17', '2026-09-14 11:36:55'),
+	(18, 67, NULL, NULL, 7.000000, 0.000000, 0.000000, '2026-09-17', '09:00:00', 23.410000, 91.420000, 3.427601, '16:28:00', NULL, NULL, 3.427601, 0, 0, 'Present', NULL, 191, NULL, '2026-09-17 10:28:00', '2026-09-17 10:28:00'),
+	(19, 67, NULL, NULL, 8.000000, 0.000000, 0.000000, '2026-09-19', '09:00:30', 23.410000, 91.420000, 3.427601, '18:00:00', 23.410000, 91.420000, 315.498417, 0, 0, 'Present', NULL, 191, NULL, '2026-09-19 04:47:16', '2026-09-19 09:06:54'),
+	(20, 67, NULL, NULL, 10.000000, 0.000000, 0.000000, '2026-09-21', '08:49:05', 23.410000, 91.420000, 3.427601, '18:49:19', 23.410000, 91.420000, 315.498417, 0, 49, 'Present', NULL, 191, NULL, '2026-09-21 08:49:18', '2026-09-21 08:49:31'),
+	(21, 68, NULL, NULL, 4.000000, 0.000000, 0.000000, '2026-09-21', '10:53:35', 23.410000, 91.420000, 3.427601, '14:53:43', 23.410000, 91.420000, 315.498417, 113, 0, 'Present', NULL, 192, NULL, '2026-09-21 08:53:42', '2026-09-21 08:53:47'),
+	(24, 67, NULL, NULL, 5.000000, 0.000000, 0.000000, '2026-09-23', '08:07:34', 23.410000, 91.420000, 3.427601, '13:07:53', 23.410000, 91.420000, 315.498417, 0, 0, 'Present', NULL, 191, NULL, '2026-09-23 07:07:52', '2026-09-23 07:08:02'),
+	(26, 67, 4, 216, 11.000000, 0.000000, 0.000000, '2026-09-24', '07:00:00', 23.410000, 91.420000, 3.427601, '18:00:00', 23.410000, 91.420000, 315.498417, 0, 0, 'Present', NULL, 191, NULL, '2026-09-24 09:50:57', '2026-09-26 06:02:22'),
+	(27, 67, 5, 216, 6.000000, 450.000000, 2700.000000, '2026-09-24', '06:00:00', 23.410000, 91.420000, 3.427601, '01:00:00', 23.410000, 91.420000, 315.498417, 0, 0, 'Present', NULL, 191, NULL, '2026-09-24 10:46:59', '2026-09-24 11:40:40'),
+	(28, 67, 5, 214, 12.000000, 450.000000, 5400.000000, '2026-09-26', '09:00:00', 23.410000, 91.420000, 3.427601, '21:00:00', 23.410000, 91.420000, 315.498417, 0, 180, 'Present', NULL, 191, NULL, '2026-09-26 03:43:49', '2026-09-26 03:44:03'),
+	(29, 67, 7, 216, 12.000000, 450.000000, 5400.000000, '2026-09-26', '08:00:00', 23.410000, 91.420000, 3.427601, '21:00:00', 23.410000, 91.420000, 315.498417, 0, 180, 'Present', NULL, 191, NULL, '2026-09-26 07:29:40', '2026-09-26 07:31:27'),
+	(30, 67, 5, 216, 11.000000, 450.000000, 4950.000000, '2026-09-26', '07:00:00', 23.410000, 91.420000, 3.427601, '20:00:00', 23.410000, 91.420000, 315.498417, 0, 120, 'Present', NULL, 191, NULL, '2026-09-26 07:32:15', '2026-09-26 07:32:27');
 
 -- Dumping structure for table technopa_hrm.hrm_employee_bonuses
 DROP TABLE IF EXISTS `hrm_employee_bonuses`;
@@ -2132,16 +2144,17 @@ CREATE TABLE IF NOT EXISTS `hrm_employee_loan` (
   KEY `payroll_month` (`payroll_month`),
   KEY `payroll_year` (`payroll_year`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_employee_loan: ~5 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_employee_loan: ~6 rows (approximately)
 DELETE FROM `hrm_employee_loan`;
 INSERT INTO `hrm_employee_loan` (`id`, `employee_id`, `loan_type`, `payroll_month`, `payroll_year`, `loan_amount`, `installment_amount`, `total_installments`, `loan_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(2, 63, 'Personal Loan', '1', '2026', 555.00, 6.00, 350.00, '2026-08-06', 'fgdfd', 'Pending', 1, 1, '2026-08-06 06:37:19', '2026-08-06 10:47:22'),
 	(3, 63, 'Personal Loan', '1', '2026', 444.00, 8.00, 0.00, '2026-08-06', 'sdfsdf', 'Approved', 1, 1, '2026-08-06 06:43:34', '2026-08-10 05:54:20'),
 	(4, 60, 'Personal Loan', '1', '2026', 333.00, 33.00, 33.00, '2026-08-06', 'fdsfsdfs', 'Pending', 1, 1, '2026-08-06 07:01:16', '2026-08-06 07:01:43'),
 	(5, 63, 'Personal Loan', '4', '2026', 30.00, 10.00, 360.00, '2026-08-06', 'ddd', 'Approved', 1, NULL, '2026-08-06 10:48:13', '2026-08-10 05:54:32'),
-	(6, 60, 'Salary Advance', '1', '2026', 55.00, 34.00, 67.00, '2026-08-09', NULL, 'Pending', 1, NULL, '2026-08-09 04:14:38', '2026-08-09 04:14:38');
+	(6, 60, 'Salary Advance', '1', '2026', 55.00, 34.00, 67.00, '2026-08-09', NULL, 'Pending', 1, NULL, '2026-08-09 04:14:38', '2026-08-09 04:14:38'),
+	(7, 65, 'Salary Advance', '9', '2026', 33.00, 3.00, 6.00, '2026-09-23', 'asada', 'Pending', 1, 1, '2026-09-23 05:33:14', '2026-09-23 05:34:01');
 
 -- Dumping structure for table technopa_hrm.hrm_employee_overtime
 DROP TABLE IF EXISTS `hrm_employee_overtime`;
@@ -2346,13 +2359,17 @@ CREATE TABLE IF NOT EXISTS `hrm_expense` (
   KEY `expense_month` (`expense_month`),
   KEY `expense_year` (`expense_year`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_expense: ~1 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_expense: ~6 rows (approximately)
 DELETE FROM `hrm_expense`;
 INSERT INTO `hrm_expense` (`id`, `expense_head_id`, `employee_id`, `expense_month`, `expense_year`, `expense_amount`, `expense_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(2, 126, 61, '1', '2026', 66.00, '2026-08-09', 'sdasdasd', 'Approved', 1, 1, '2026-08-09 06:10:19', '2026-09-13 04:47:56'),
-	(3, 313, 67, '1', '2026', 34.00, '2026-09-15', 'sddsf', 'Pending', 191, NULL, '2026-09-15 11:49:18', '2026-09-15 11:49:18');
+	(3, 313, 67, '1', '2026', 34.00, '2026-09-15', 'sddsf', 'Pending', 191, NULL, '2026-09-15 11:49:18', '2026-09-15 11:49:18'),
+	(4, 313, 52, '9', '2026', 65.00, '2026-09-26', NULL, 'Approved', 1, NULL, '2026-09-26 09:53:30', '2026-09-26 09:53:30'),
+	(5, 313, 67, '9', '2026', 80.00, '2026-09-26', NULL, 'Approved', 1, NULL, '2026-09-26 09:56:49', '2026-09-26 09:56:49'),
+	(6, 314, 67, '9', '2026', 40.00, '2026-09-26', NULL, 'Approved', 1, NULL, '2026-09-26 10:16:39', '2026-09-26 10:16:39'),
+	(7, 313, 67, '9', '2026', 60.00, '2026-09-26', NULL, 'Approved', 1, NULL, '2026-09-26 10:17:06', '2026-09-26 10:17:06');
 
 -- Dumping structure for table technopa_hrm.hrm_hotels
 DROP TABLE IF EXISTS `hrm_hotels`;
@@ -2405,7 +2422,7 @@ CREATE TABLE IF NOT EXISTS `hrm_payments` (
   KEY `status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.hrm_payments: ~3 rows (approximately)
+-- Dumping data for table technopa_hrm.hrm_payments: ~4 rows (approximately)
 DELETE FROM `hrm_payments`;
 INSERT INTO `hrm_payments` (`id`, `payment_head_id`, `employee_id`, `payment_month`, `payment_year`, `hours`, `hour_rate`, `payment_amount`, `payment_date`, `remarks`, `status`, `created_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 	(3, 313, 52, '1', '2026', NULL, NULL, 65.00, '2026-09-15', 'sdfs', 'Payment', 1, 1, '2026-09-15 05:31:11', '2026-09-15 05:40:53'),
@@ -4218,7 +4235,9 @@ INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 	(27, 'App\\Models\\User', 186),
 	(26, 'App\\Models\\User', 187),
 	(27, 'App\\Models\\User', 191),
-	(27, 'App\\Models\\User', 192);
+	(27, 'App\\Models\\User', 192),
+	(27, 'App\\Models\\User', 197),
+	(27, 'App\\Models\\User', 198);
 
 -- Dumping structure for table technopa_hrm.online_deliveries
 DROP TABLE IF EXISTS `online_deliveries`;
@@ -4404,7 +4423,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=748 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=749 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table technopa_hrm.permissions: ~496 rows (approximately)
 DELETE FROM `permissions`;
@@ -4891,7 +4910,8 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(744, 'Manage Department', 'web', '2026-09-21 11:50:55', '2026-09-21 11:50:55'),
 	(745, 'New Department', 'web', '2026-09-21 11:51:45', '2026-09-21 11:51:45'),
 	(746, 'admin.category.edit', 'web', '2026-09-21 11:59:15', '2026-09-21 11:59:15'),
-	(747, 'Loan Application', 'web', '2026-09-22 05:44:42', '2026-09-22 05:44:42');
+	(747, 'Loan Application', 'web', '2026-09-22 05:44:42', '2026-09-22 05:44:42'),
+	(748, 'Employee Monthly Report', 'web', '2026-09-26 09:57:44', '2026-09-26 09:57:44');
 
 -- Dumping structure for table technopa_hrm.personal_access_tokens
 DROP TABLE IF EXISTS `personal_access_tokens`;
@@ -6315,6 +6335,7 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(745, 10),
 	(746, 10),
 	(747, 10),
+	(748, 10),
 	(1, 13),
 	(612, 13),
 	(614, 13),
@@ -7851,6 +7872,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `company_id` bigint unsigned NOT NULL,
   `hotel_id` bigint unsigned DEFAULT NULL,
+  `department_id` bigint unsigned DEFAULT NULL,
   `branch_id` bigint unsigned NOT NULL,
   `user_id` bigint DEFAULT NULL,
   `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -7875,6 +7897,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `leave_balance` double DEFAULT '0',
   `currency_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `location_varified` date DEFAULT NULL,
   `status` tinyint NOT NULL DEFAULT '1',
   `created_by` bigint unsigned DEFAULT NULL,
   `updated_by` bigint unsigned DEFAULT NULL,
@@ -7883,20 +7906,23 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.staff: ~9 rows (approximately)
+-- Dumping data for table technopa_hrm.staff: ~12 rows (approximately)
 DELETE FROM `staff`;
-INSERT INTO `staff` (`id`, `company_id`, `hotel_id`, `branch_id`, `user_id`, `code`, `name`, `short_name`, `designation`, `phone`, `address`, `email`, `national_id`, `joining_date`, `ac_no`, `ac_branch`, `basic_salary`, `house_rent`, `medical_allowance`, `others`, `deducted`, `increment_percent`, `increment_amount`, `total_salary`, `leave_balance`, `currency_code`, `type`, `status`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
-	(52, 1, NULL, 1, NULL, '10013', 'Office Sale', 'Modina Hotel', NULL, '017', 'Arab, UAE', NULL, NULL, '2024-02-03', NULL, NULL, 55555, 5555, 55, 55, NULL, NULL, NULL, 6666, 0, NULL, 'sales', 1, 2, 2, 1, '2025-04-28 09:53:34', '2024-02-03 11:09:05', '2025-04-28 09:53:34'),
-	(59, 1, 4, 1, 186, 'Shimul', 'Shimul', 'Al-Kisal Hotel', 'Sr. HR', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', '333333333333333333333', '2025-04-28', 'AC#34334444432', 'Rampura', 5555, 5555, 555, 55, NULL, NULL, 0, 11720, 0, 'SAR', 'general', 1, 1, 1, NULL, NULL, '2025-04-28 08:36:01', '2026-09-20 07:37:03'),
-	(60, 1, NULL, 1, NULL, 'Arnob Sur', 'Arnob Sur', 'Royal Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 44444, 555, 555, 55, NULL, NULL, 0, 8888, 3, NULL, 'sales', 1, 1, 1, NULL, NULL, '2025-04-28 08:36:32', '2026-08-04 03:29:48'),
-	(61, 1, NULL, 1, NULL, 'C100', 'Shamol', 'Padrib Hotel', 'Sales Office', NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 33333, 555, 55, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', 1, 1, 2, NULL, NULL, '2025-04-28 11:31:36', '2025-06-16 13:33:37'),
-	(62, 1, NULL, 1, NULL, 'Dipu', 'Dipu', 'Britol Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-05-10', NULL, NULL, 44444, 5555, 555, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', 1, 159, NULL, NULL, NULL, '2025-05-10 12:24:46', '2025-05-10 12:24:46'),
-	(63, 1, NULL, 1, NULL, 'digt233', 'Mozammel', 'Sharina Hotel', 'DME', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', NULL, '2026-05-01', 'AC#34334444432', 'Rampura', 10000, 5000, 3000, 2000, NULL, NULL, 0, 20000, 0, NULL, 'digital', 1, 1, NULL, NULL, NULL, '2026-07-28 05:24:07', '2026-07-28 05:24:07'),
-	(65, 1, NULL, 1, 189, '323', 'abc', 'abc Hotel', NULL, '123', 'AUstralia, HKF', NULL, NULL, '2026-09-08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 'general', 1, 1, NULL, NULL, NULL, '2026-09-08 04:15:39', '2026-09-08 04:15:39'),
-	(67, 1, 5, 1, 191, 'STAFFID321', 'Abdullah Al-Wasi', 'Radison Hotel', NULL, '321', 'Dahak, BD', NULL, NULL, '2026-09-08', NULL, NULL, 450, NULL, NULL, NULL, NULL, NULL, 0, 450, 0, 'AED', 'general', 1, 1, 1, NULL, NULL, '2026-09-08 04:35:50', '2026-09-21 08:50:32'),
-	(68, 1, 4, 1, 192, 'code12', 'Mr. Rony', 'Mr. Rony', NULL, '4321', NULL, NULL, NULL, '2026-09-21', NULL, NULL, 350, NULL, NULL, NULL, NULL, NULL, 0, 350, 0, 'BDT', 'general', 1, 1, 1, NULL, NULL, '2026-09-21 08:53:00', '2026-09-21 08:54:51');
+INSERT INTO `staff` (`id`, `company_id`, `hotel_id`, `department_id`, `branch_id`, `user_id`, `code`, `name`, `short_name`, `designation`, `phone`, `address`, `email`, `national_id`, `joining_date`, `ac_no`, `ac_branch`, `basic_salary`, `house_rent`, `medical_allowance`, `others`, `deducted`, `increment_percent`, `increment_amount`, `total_salary`, `leave_balance`, `currency_code`, `type`, `location_varified`, `status`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
+	(52, 1, NULL, NULL, 1, NULL, '10013', 'Office Sale', 'Modina Hotel', NULL, '017', 'Arab, UAE', NULL, NULL, '2024-02-03', NULL, NULL, 55555, 5555, 55, 55, NULL, NULL, NULL, 6666, 0, NULL, 'sales', NULL, 1, 2, 2, 1, '2025-04-28 09:53:34', '2024-02-03 11:09:05', '2025-04-28 09:53:34'),
+	(59, 1, 4, 219, 1, 186, 'Shimul', 'Shimul', 'Al-Kisal Hotel', 'Sr. HR', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', '333333333333333333333', '2025-04-28', 'AC#34334444432', 'Rampura', 5555, 5555, 555, 55, NULL, NULL, 0, 11720, 0, 'SAR', 'active', NULL, 1, 1, 1, NULL, NULL, '2025-04-28 08:36:01', '2026-09-22 11:26:13'),
+	(60, 1, NULL, NULL, 1, NULL, 'Arnob Sur', 'Arnob Sur', 'Royal Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 44444, 555, 555, 55, NULL, NULL, 0, 8888, 3, NULL, 'sales', NULL, 1, 1, 1, NULL, NULL, '2025-04-28 08:36:32', '2026-08-04 03:29:48'),
+	(61, 1, NULL, NULL, 1, NULL, 'C100', 'Shamol', 'Padrib Hotel', 'Sales Office', NULL, 'Arab, UAE', NULL, NULL, '2025-04-28', NULL, NULL, 33333, 555, 55, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', NULL, 1, 1, 2, NULL, NULL, '2025-04-28 11:31:36', '2025-06-16 13:33:37'),
+	(62, 1, NULL, NULL, 1, NULL, 'Dipu', 'Dipu', 'Britol Hotel', NULL, NULL, 'Arab, UAE', NULL, NULL, '2025-05-10', NULL, NULL, 44444, 5555, 555, 55, NULL, NULL, NULL, 88888, 0, NULL, 'sales', NULL, 1, 159, NULL, NULL, NULL, '2025-05-10 12:24:46', '2025-05-10 12:24:46'),
+	(63, 1, NULL, NULL, 1, NULL, 'digt233', 'Mozammel', 'Sharina Hotel', 'DME', '01303740757', '316/2, Rampura Dhaka', 'nijer.bazar@gmail.com', NULL, '2026-05-01', 'AC#34334444432', 'Rampura', 10000, 5000, 3000, 2000, NULL, NULL, 0, 20000, 0, NULL, 'digital', NULL, 1, 1, NULL, NULL, NULL, '2026-07-28 05:24:07', '2026-07-28 05:24:07'),
+	(65, 1, NULL, NULL, 1, 189, '323', 'abc', 'abc Hotel', NULL, '123', 'AUstralia, HKF', NULL, NULL, '2026-09-08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 'general', NULL, 1, 1, NULL, NULL, NULL, '2026-09-08 04:15:39', '2026-09-08 04:15:39'),
+	(67, 1, 5, 216, 1, 191, 'STAFFID321', 'Abdullah Al-Wasi', 'Radison Hotel', NULL, '321', 'Dahak, BD', NULL, NULL, '2026-09-08', NULL, NULL, 450, NULL, NULL, NULL, NULL, NULL, 0, 450, 0, 'AED', 'general', NULL, 1, 1, 1, NULL, NULL, '2026-09-08 04:35:50', '2026-09-26 07:32:27'),
+	(68, 1, 4, NULL, 1, 192, 'code12', 'Mr. Rony', 'Mr. Rony', NULL, '4321', NULL, NULL, NULL, '2026-09-21', NULL, NULL, 350, NULL, NULL, NULL, NULL, NULL, 0, 350, 0, 'BDT', 'general', NULL, 1, 1, 1, NULL, NULL, '2026-09-21 08:53:00', '2026-09-21 08:54:51'),
+	(70, 1, NULL, NULL, 1, 196, 'code196', 'ww', 'ww', 'general', '333', '316/2, Rampura Dhaka', 'bazar@gmail.com', NULL, '2026-09-23', NULL, NULL, 100, 0, 0, 0, 0, 0, 0, 0, 0, 'USD', 'active', NULL, 1, 1, NULL, NULL, NULL, '2026-09-23 09:48:28', '2026-09-23 09:48:28'),
+	(71, 1, NULL, NULL, 1, 197, 'code197', 'tt', 'tt', 'general', '444', '316/2, Rampura Dhaka', 'nijebazar@gmail.com', NULL, '2026-09-23', NULL, NULL, 100, 0, 0, 0, 0, 0, 0, 0, 0, 'USD', 'active', NULL, 1, 1, NULL, NULL, NULL, '2026-09-23 09:53:35', '2026-09-23 09:53:35'),
+	(72, 1, NULL, NULL, 1, 198, 'code198', 'Wasim', 'Wasim', 'general', '5', 'dddd', 'five@gmail.com', NULL, '2026-09-23', NULL, NULL, 100, 0, 0, 0, 0, 0, 0, 0, 0, 'USD', 'active', NULL, 1, 1, NULL, NULL, NULL, '2026-09-23 09:58:45', '2026-09-23 09:58:45');
 
 -- Dumping structure for table technopa_hrm.static_site_items
 DROP TABLE IF EXISTS `static_site_items`;
@@ -8210,9 +8236,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_user_name_unique` (`user_name`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=193 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=199 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table technopa_hrm.users: ~29 rows (approximately)
+-- Dumping data for table technopa_hrm.users: ~33 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `role`, `company_id`, `name`, `user_name`, `email`, `phone`, `address`, `image`, `cover_image`, `area_id`, `branch_id`, `store_id`, `role_status`, `status`, `is_staff`, `staff_id`, `email_verified_at`, `otp`, `otp_expire`, `password`, `remember_token`, `created_by`, `updated_by`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES
 	(1, 1, 1, 'Admin', 'admin', 'admin@gmail.com', NULL, NULL, 'backend/images/avatar/profile-fzfBNxUwXUwZg5j1fkRrXlLs1nUiFGSHme6aktgN.jpeg', 'backend/images/avatar/cover-nc4lyhtFLr8Bd5pxxqXkOh0NojguAjXPJe9GW79B.png', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2023-11-24 11:04:22', '$2a$12$yxZO/Kv/5ANCuMMA/QJD2eVwPNj9BSyDwdTJCdzVpedljgS8qGi0e', NULL, NULL, 1, NULL, NULL, '2023-10-24 06:03:09', '2026-09-21 11:29:47'),
@@ -8244,7 +8270,10 @@ INSERT INTO `users` (`id`, `role`, `company_id`, `name`, `user_name`, `email`, `
 	(187, 1, 1, 'Advance', 'advance', 'advance@gmail.com', '01303740756', NULL, 'backend/images/avatar/profile-4FwtazuhMUWLPqBK4fi4aPDd7JKZBZyOXfPat4Oh.jpeg', 'backend/images/avatar/cover-pFetVXDKaRM7kqTEIJmp4O8YWXEj3KubbG6gpu1w.jpeg', NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-08-15 14:08:11', '$2y$10$eWtxWHMcDUprjU7hawdKL.Ia7Z40zda0M08HaoT0FP.qd96BFzMLu', NULL, 1, 1, NULL, NULL, '2026-08-15 08:08:11', '2026-08-15 08:12:21'),
 	(189, 2, 1, 'abc', '123', NULL, '123', NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, NULL, NULL, NULL, '2026-09-08 10:15:39', '$2y$10$akKrgHh9j/yeZSFX53q3Qevi4PY.Z2CbvsTvRpMgVFJKPYtM.lgU2', NULL, 1, NULL, NULL, NULL, '2026-09-08 04:15:39', '2026-09-08 04:15:39'),
 	(191, 1, 1, 'Abdullah Al-Wasi', '321', NULL, '321', NULL, 'backend/images/avatar/profile-ygo3AfWy85ViCosmxLUfE1Lw1pyPeTi9hHSLBMSu.png', 'backend/images/avatar/cover-9kP64yxFDSp9co6b4PJFeYO9dIADTHO33gUDA2In.png', NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-08 10:35:50', '$2y$10$TRYyjymt/d70d.4ADXKA4u.fuaM/qaoDfz5KfDeQzdIyAt2Av7YVm', NULL, 1, NULL, NULL, NULL, '2026-09-08 04:35:50', '2026-09-15 05:52:06'),
-	(192, 1, 1, 'Mr. Rony', '4321', NULL, '4321', NULL, NULL, NULL, NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-21 14:53:00', '$2y$10$LXqnPtT.LjOMZdUM89INiu/OX/j.xKq9FClKZtQkrRPWzwY2wrr/2', NULL, 1, NULL, NULL, NULL, '2026-09-21 08:53:00', '2026-09-21 08:53:00');
+	(192, 1, 1, 'Mr. Rony', '4321', NULL, '4321', NULL, NULL, NULL, NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-21 14:53:00', '$2y$10$LXqnPtT.LjOMZdUM89INiu/OX/j.xKq9FClKZtQkrRPWzwY2wrr/2', NULL, 1, NULL, NULL, NULL, '2026-09-21 08:53:00', '2026-09-21 08:53:00'),
+	(196, 1, 1, 'ww', '333', 'bazar@gmail.com', '333', NULL, 'backend/images/avatar/profile-ktSjKnHuL4A4mjYjSjPL0PuTvuox4xYRUmGMHEXe.png', NULL, NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-23 15:48:28', '$2y$10$kn5eqUpFz3GEGzxbjICtj.ZqmHEvHYtfYo/rFUYNfq/hD9WF61t3m', NULL, 1, NULL, NULL, NULL, '2026-09-23 09:48:28', '2026-09-23 09:48:28'),
+	(197, 1, 1, 'tt', '444', 'nijebazar@gmail.com', '444', NULL, 'backend/images/avatar/profile-iwVps1puodeWfW3qTXkT1zW4XVtvNBgPkIMhgyaM.png', NULL, NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-23 15:53:35', '$2y$10$dYe3cdI/Y0aaOF0trPKy8uv0FgpdZ5NXdsBez3Dq/xF9Q.ccJY8ou', NULL, 1, NULL, NULL, NULL, '2026-09-23 09:53:35', '2026-09-23 09:53:35'),
+	(198, 1, 1, 'Wasim', '5', 'five@gmail.com', '5', NULL, 'backend/images/avatar/profile-eUxYq24aHW9K8dOoYUXCCMKkyAPKpO3h0Gy2JUJh.webp', NULL, NULL, NULL, NULL, 4, 1, 0, NULL, NULL, NULL, '2026-09-23 15:58:45', '$2y$10$rbdlJjm7cSwVKk9lLSPXJ.zSsSsc4rkLHuC/K6M0F/GyH2/NPcvou', NULL, 1, NULL, NULL, NULL, '2026-09-23 09:58:45', '2026-09-23 09:58:45');
 
 -- Dumping structure for table technopa_hrm.vehicles
 DROP TABLE IF EXISTS `vehicles`;
