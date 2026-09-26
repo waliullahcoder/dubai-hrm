@@ -77,7 +77,7 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     @endif
 
                     <!-- Check In -->
-                    @if($todayAttendancecheck?->check_in == null && $staff->location_varified == date('Y-m-d'))
+                    @if($staff->location_varified == date('Y-m-d') && $todayAttendancecheck?->check_out != null)
                     <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
                     <input type="hidden" name="attendance_date" value="{{ date('Y-m-d') }}">
                     <input type="hidden" name="attendance_status" value="Present">

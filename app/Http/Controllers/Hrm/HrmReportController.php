@@ -218,7 +218,7 @@ class HrmReportController extends Controller
                 ->leftJoin('hrm_hotels as h', 'h.id', '=', 'atd.hotel_id')
                 ->select(
                     'atd.id',
-                    'atd.id as hotel_id',
+                    'atd.hotel_id', // FIXED
                     'h.name as hotel_name',
                     's.code as employee_code',
                     's.name as employee_name',
@@ -229,10 +229,10 @@ class HrmReportController extends Controller
                     'atd.remarks'
                 );
 
-                 // ================= Hotel FILTER =================
+            // ================= HOTEL FILTER =================
             if (request()->filled('hotel_id')) {
                 $model->where(
-                    'atd.id',
+                    'atd.hotel_id',
                     request('hotel_id')
                 );
             }
@@ -270,14 +270,16 @@ class HrmReportController extends Controller
 
                 ->addIndexColumn()
 
+                // ================= HOTEL =================
+                ->editColumn('hotel_name', function ($row) {
+                    return $row->hotel_name ?? '-';
+                })
+
                 // ================= ATTENDANCE DATE =================
                 ->editColumn('attendance_date', function ($row) {
 
                     return $row->attendance_date
-                        ? date(
-                            'F j, Y',
-                            strtotime($row->attendance_date)
-                        )
+                        ? date('F j, Y', strtotime($row->attendance_date))
                         : '-';
                 })
 
@@ -342,6 +344,8 @@ class HrmReportController extends Controller
             ->where('status', 1)
             ->orderBy('name')
             ->get();
+
+        // ================= HOTELS =================
         $hotels = DB::table('hrm_hotels')
             ->where('status', 'Active')
             ->orderBy('name')
@@ -349,7 +353,7 @@ class HrmReportController extends Controller
 
         return view(
             'hrm.reports.workinghour',
-            compact('employees','hotels')
+            compact('employees', 'hotels')
         );
     }
 
