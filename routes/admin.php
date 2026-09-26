@@ -184,6 +184,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/payment-report',[HrmReportController::class,'paymentReport'])->name('payment.report');
     Route::get('/expense-report',[HrmReportController::class,'expenseReport'])->name('expense.report');
     Route::get('/working-hour-report',[HrmReportController::class,'workinghourReport'])->name('workinghour.report');
+    Route::get('/monthly-report',[HrmReportController::class,'monthlyReport'])->name('monthly.report');
 
     //Staff Report
     Route::get('/staff-advance',[StaffReportController::class,'staffAdvance'])->name('advance.report');

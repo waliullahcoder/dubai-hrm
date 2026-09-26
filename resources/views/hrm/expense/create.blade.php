@@ -181,7 +181,7 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
                         @foreach($hotels as $hotel)
                         <option value="{{ $hotel->id }}">
-                            {{ $hotel->short_name }} ({{ $hotel->address }})
+                            {{ $hotel->name }}, ({{ $hotel->address }})
                         </option>
                         @endforeach
 

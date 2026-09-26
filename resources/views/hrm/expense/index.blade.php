@@ -27,6 +27,7 @@
                 <tr>
 
                     <th width="50">SL</th>
+                    <th>Employee</th>
                     <th>Expense Head</th>
                     <th>Expense Month</th>
                     <th>Year</th>
@@ -82,6 +83,7 @@ $('.dataTable').DataTable({
             return meta.row + meta.settings._iDisplayStart + 1;
         }
     },
+     {data:'employee_name',name:'s.name'},
     {data:'head_name',name:'c.head_name'},
     {data:'expense_month',name:'exp.expense_month'},
     {data:'expense_year',name:'exp.expense_year'},

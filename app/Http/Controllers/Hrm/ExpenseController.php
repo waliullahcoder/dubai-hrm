@@ -27,8 +27,10 @@ class ExpenseController extends Controller
         if (request()->ajax()) {
             $model = DB::table('hrm_expense as exp')
                 ->leftJoin('coa_setups as c', 'c.id', '=', 'exp.expense_head_id')
+                ->leftJoin('staff as s', 's.id', '=', 'exp.employee_id')
                 ->select(
                     'exp.id',
+                    's.name as employee_name',
                     'c.head_name',
                     'exp.expense_month',
                     'exp.expense_year',
