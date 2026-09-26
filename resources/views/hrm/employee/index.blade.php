@@ -11,10 +11,7 @@
             <thead>
                 <tr class="text-nowrap">
                     <th width="3"></th>
-                    <!-- @if (Auth::user()->hasRole('Software Admin'))
-                        <th>Company</th>
-                    @endif
-                    <th>Branch Name</th> -->
+                    <th>Code</th>
                     <th>Name</th>
                     <th>Contact</th>
                     <th><i class="fad fa-hotel"></i> Hotel</th>
@@ -75,6 +72,10 @@
                         orderable: false,
                         searchable: false,
                         width: '3'
+                    },
+                     {
+                        data: 'code',
+                        name: 'code'
                     },
                    
                     {

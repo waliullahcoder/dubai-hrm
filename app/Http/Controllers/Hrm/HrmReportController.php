@@ -215,8 +215,11 @@ class HrmReportController extends Controller
 
             $model = DB::table('hrm_employee_attendances as atd')
                 ->leftJoin('staff as s', 's.id', '=', 'atd.employee_id')
+                ->leftJoin('hrm_hotels as h', 'h.id', '=', 'atd.hotel_id')
                 ->select(
                     'atd.id',
+                    'atd.id as hotel_id',
+                    'h.name as hotel_name',
                     's.code as employee_code',
                     's.name as employee_name',
                     'atd.attendance_date',
@@ -225,6 +228,14 @@ class HrmReportController extends Controller
                     'atd.worked_hours',
                     'atd.remarks'
                 );
+
+                 // ================= Hotel FILTER =================
+            if (request()->filled('hotel_id')) {
+                $model->where(
+                    'atd.id',
+                    request('hotel_id')
+                );
+            }
 
             // ================= EMPLOYEE FILTER =================
             if (request()->filled('employee_id')) {
@@ -331,10 +342,14 @@ class HrmReportController extends Controller
             ->where('status', 1)
             ->orderBy('name')
             ->get();
+        $hotels = DB::table('hrm_hotels')
+            ->where('status', 'Active')
+            ->orderBy('name')
+            ->get();
 
         return view(
             'hrm.reports.workinghour',
-            compact('employees')
+            compact('employees','hotels')
         );
     }
 

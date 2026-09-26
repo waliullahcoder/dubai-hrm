@@ -55,9 +55,37 @@
 
                     </div>
 
+                    {{-- Hotel --}}
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="filter-label">
+
+                            <i class="fas fa-user text-success"></i>
+                            Hotel
+
+                        </label>
+
+                        <select id="hotel_id" class="form-select">
+
+                            <option value="">
+                                All Hotel
+                            </option>
+
+                            @foreach($hotels as $hotel)
+                            <option value="{{ $hotel->id }}">
+                                {{ $hotel->name }}
+
+                            </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
 
                     {{-- Employee --}}
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-3 col-md-6">
 
                         <label class="filter-label">
 
@@ -66,7 +94,7 @@
 
                         </label>
 
-                        <select id="employee_id" class="form-select">
+                        <select id="employee_id" class="form-select select2">
 
                             <option value="">
                                 All Employee
@@ -75,9 +103,7 @@
                             @foreach($employees as $employee)
 
                             <option value="{{ $employee->id }}">
-
-                                {{ $employee->code }} -
-                                {{ $employee->name }}
+                                {{ $employee->name }} [{{ $employee->phone }}]
 
                             </option>
 
@@ -89,7 +115,7 @@
 
 
                     {{-- Buttons --}}
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-3 col-md-6">
 
                         <div class="d-flex gap-2">
 
@@ -129,7 +155,7 @@
                             <tr>
 
                                 <th>SL</th>
-
+                                <th>Hotel</th>
                                 <th>Employee Code</th>
 
                                 <th>Employee Name</th>
@@ -144,7 +170,7 @@
                                     Working Hour
                                 </th>
 
-                                <th style="min-width:250px;">
+                                <th>
                                     Remark
                                 </th>
 
@@ -160,7 +186,7 @@
 
                             <tr>
 
-                                <th colspan="6" class="text-end">
+                                <th colspan="7" class="text-end">
 
                                     Page Total Working Hour :
 
@@ -235,7 +261,8 @@ $(function() {
                         4,
                         5,
                         6,
-                        7
+                        7,
+                        8
                     ]
 
                 }
@@ -262,6 +289,9 @@ $(function() {
                 d.employee_id =
                     $('#employee_id').val();
 
+                    d.hotel_id =
+                    $('#hotel_id').val();
+
             }
 
         },
@@ -277,7 +307,10 @@ $(function() {
                 orderable: false,
                 searchable: false
             },
-
+            {
+                data: 'hotel_name',
+                name: 'h.name'
+            },
 
             {
                 data: 'employee_code',
@@ -343,7 +376,7 @@ $(function() {
 
     var totalMinutes = 0;
 
-    api.column(6, { page: 'current' }).data().each(function (value) {
+    api.column(7, { page: 'current' }).data().each(function (value) {
 
         if (!value) {
             return;
@@ -404,7 +437,7 @@ $(function() {
 
     // ================= AUTO FILTER =================
 
-    $('#from_date, #to_date, #employee_id')
+    $('#from_date, #to_date, #employee_id, #hotel_id')
         .on(
             'change',
             function() {
@@ -424,6 +457,7 @@ $(function() {
             $('#from_date').val('');
             $('#to_date').val('');
             $('#employee_id').val('');
+            $('#hotel_id').val('');
 
             table.ajax.reload();
 

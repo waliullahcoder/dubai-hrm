@@ -10,16 +10,12 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 $todayAttendance = null;
 
 if ($staff) {
-$todayAttendancecheckin = DB::table('hrm_employee_attendances')
+$todayAttendancecheck = DB::table('hrm_employee_attendances')
 ->where('employee_id', $staff->id)
-->whereNotNull('check_in')
 ->whereDate('attendance_date', today())
+->orderBy('id','desc')
 ->first();
-$todayAttendancecheckout = DB::table('hrm_employee_attendances')
-->where('employee_id', $staff->id)
-->whereNotNull('check_out')
-->whereDate('attendance_date', today())
-->first();
+
 }
 @endphp
 <div class="container py-4">
@@ -36,7 +32,7 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                 <form action="{{ route('admin.employee-attendance.store') }}" method="POST">
                     @csrf
 
-                    @if($staff->location_varified == NULL || $staff->location_varified != date('Y-m-d'))
+                    @if(($staff->location_varified == NULL || $staff->location_varified != date('Y-m-d')))
                      <input type="hidden" name="employee_id" value="{{ $staff->id }}">
                     <input type="hidden" name="location_varified" value="{{ date('Y-m-d') }}">
                      <div class="col-lg-12 col-sm-12">
@@ -80,9 +76,8 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                     
                     @endif
 
-
                     <!-- Check In -->
-                    @if($todayAttendancecheckin == NULL && ($staff->location_varified != NULL || $staff->location_varified == date('Y-m-d')))
+                    @if($todayAttendancecheck?->check_in == null && $staff->location_varified == date('Y-m-d'))
                     <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
                     <input type="hidden" name="attendance_date" value="{{ date('Y-m-d') }}">
                     <input type="hidden" name="attendance_status" value="Present">
@@ -99,15 +94,36 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                             <p style="text-align:center"><strong> Location Varified Successfully!</strong></p>
                         </div>
                     </div>
-                    <input type="time" name="check_in" id="check_in" class="form-control checktime" step="1"
-                        value="{{ date('H:i:s') }}"><br>
+                  <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Check In</label>
+
+                                <select id="check_in_hour" class="form-control">
+                                    @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">&nbsp;</label>
+
+                                <select id="check_in_ampm" class="form-control">
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Actual value that will be submitted --}}
+                        <input type="hidden" name="check_in" id="check_in"><br>
                     <button class="btn btn-checkin">
                         <i class="fas fa-map-marker-alt"></i> Confirm Check In
                     </button>
                     @endif
 
                     <!-- Check Out -->
-                    @if($todayAttendancecheckin != null && $todayAttendancecheckout == null)
+                    @if($todayAttendancecheck?->check_in != null && $todayAttendancecheck?->check_out == null)
                     <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
                     <input type="hidden" name="attendance_date" value="{{ date('Y-m-d') }}">
                     <input type="hidden" name="attendance_status" value="Present">
@@ -130,13 +146,13 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                             <div class="location-status">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <span>
-                                    You checked in {{number_format($todayAttendancecheckin->check_in_distance, 2)}}
+                                    You checked in {{number_format($todayAttendancecheck?->check_in_distance, 2)}}
                                     Meters • Allowed 200 meters
                                 </span>
                             </div>
 
                             <!-- Check In Time -->
-                            @if($todayAttendancecheckin && $todayAttendancecheckin->check_in)
+                            @if($todayAttendancecheck && $todayAttendancecheck?->check_in)
                             <i class="far fa-clock" style="font-size:2em"></i>
 
                             <div class="checkin-time">
@@ -144,8 +160,8 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                                 <h3>
                                     Check In Time<br>
                                     <strong>
-                                        {{ $todayAttendancecheckin->check_in 
-                                            ? \Carbon\Carbon::parse($todayAttendancecheckin->check_in)->format('h:i A') 
+                                        {{ $todayAttendancecheck?->check_in 
+                                            ? \Carbon\Carbon::parse($todayAttendancecheck?->check_in)->format('h:i A') 
                                             : '--:--' 
                                         }}
                                     </strong>
@@ -168,8 +184,34 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                         </div>
 
                     </div>
-                    <input type="time" name="check_out" id="check_out" class="form-control checktime" step="1"
-                        value="{{ date('H:i:s') }}"><br>
+                      {{-- Check Out --}}
+                    <div class="col-md-12">
+                        <label class="form-label">
+                            <i class="fas fa-sign-out-alt"></i> Check Out
+                        </label>
+
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <select id="check_out_hour" class="form-control">
+                                    @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}">
+                                            {{ $i }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div class="col-6">
+                                <select id="check_out_ampm" class="form-control">
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                </select>
+                            </div>
+                        </div><br>
+
+                        <input type="hidden" name="check_out" id="check_out">
+                    </div><br>
+
                     <button class="btn btn-checkout">
                         <i class="fas fa-sign-out-alt"></i> Confirm Check Out
                     </button>
@@ -179,7 +221,7 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
 
                     <!-- Checked In and Checked Out Both Done -->
 
-                    @if($todayAttendancecheckin != null && $todayAttendancecheckout != null)
+                    @if($todayAttendancecheck?->check_in != null && $todayAttendancecheck?->check_out != null)
                     <div class="status-box">
                         <!-- Big Status Icon -->
                         <div class="status-info" style="text-align:center">
@@ -192,23 +234,23 @@ $todayAttendancecheckout = DB::table('hrm_employee_attendances')
                                 Today Working Summary
                             </p>
                             <!-- Check In Time -->
-                            @if($todayAttendancecheckin && $todayAttendancecheckin->check_in)
+                            @if($todayAttendancecheck && $todayAttendancecheck?->check_in)
                             <i class="far fa-clock" style="font-size:2em"></i>
                             <div class="checkin-time">
                                 <table class="attendance-table">
                                     <tr>
                                         <td>Check In</td>
-                                        <td><strong>{{ $todayAttendancecheckin->check_in ?? '--:--' }}</strong></td>
+                                        <td><strong>{{ $todayAttendancecheck?->check_in ?? '--:--' }}</strong></td>
                                     </tr>
 
                                     <tr>
                                         <td>Check Out</td>
-                                        <td><strong>{{ $todayAttendancecheckin->check_out ?? '--:--' }}</strong></td>
+                                        <td><strong>{{ $todayAttendancecheck?->check_out ?? '--:--' }}</strong></td>
                                     </tr>
 
                                     <tr>
                                         <td>Worked Hours</td>
-                                        <td><strong>{{ $todayAttendancecheckin->worked_hours ?? '0' }}</strong></td>
+                                        <td><strong>{{ $todayAttendancecheck?->worked_hours ?? '0' }}</strong></td>
                                     </tr>
 
                                     <tr>
@@ -340,5 +382,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+<script>
+    function convertTo24Hour(hour, ampm) {
 
+        hour = parseInt(hour);
+
+        if (ampm === 'AM') {
+            if (hour === 12) {
+                hour = 0;
+            }
+        } else {
+            if (hour !== 12) {
+                hour += 12;
+            }
+        }
+
+        return String(hour).padStart(2, '0') + ':00:00';
+    }
+
+
+    function updateCheckIn() {
+
+        let hour = $('#check_in_hour').val();
+        let ampm = $('#check_in_ampm').val();
+
+        $('#check_in').val(
+            convertTo24Hour(hour, ampm)
+        );
+    }
+
+
+    function updateCheckOut() {
+
+        let hour = $('#check_out_hour').val();
+        let ampm = $('#check_out_ampm').val();
+
+        $('#check_out').val(
+            convertTo24Hour(hour, ampm)
+        );
+    }
+
+
+    $('#check_in_hour, #check_in_ampm').on('change', function () {
+        updateCheckIn();
+    });
+
+
+    $('#check_out_hour, #check_out_ampm').on('change', function () {
+        updateCheckOut();
+    });
+
+
+    // Initial value
+    updateCheckIn();
+    updateCheckOut();
+</script>
 @endpush

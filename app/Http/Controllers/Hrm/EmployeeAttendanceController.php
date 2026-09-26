@@ -463,6 +463,13 @@ public function attendanceDashboard(Request $request)
    
     public function store(Request $request)
     {
+        //  $staff = Staff::where('id', $request->employee_id)->first();
+        //                 if ($staff) {
+        //                     $staff->update([
+        //                         'location_varified' => null
+        //                     ]);
+        //                 }
+        //                 dd("ddd");
         $request->validate([
             'employee_id' => 'required',
             // 'attendance_date' => 'required',
@@ -619,9 +626,15 @@ public function attendanceDashboard(Request $request)
 
             }
 
-              $todayAttendance = DB::table('hrm_employee_attendances')->where('employee_id', $request->employee_id ?? null)->whereDate('attendance_date', today())->first();
+              $todayAttendance = DB::table('hrm_employee_attendances')->where('employee_id', $request->employee_id ?? null)->whereDate('attendance_date', today())->orderBy('id','desc')->first();
 
             if (Auth::user()->role_status==4 && $todayAttendance && $todayAttendance->check_in != null && $todayAttendance->check_out == null) {
+                  $staff = Staff::where('id', $request->employee_id)->first();
+                        if ($staff) {
+                            $staff->update([
+                                'location_varified' => null
+                            ]);
+                        }
                     DB::table('hrm_employee_attendances')
                         ->where('id', $todayAttendance->id)
                         ->update([
@@ -632,19 +645,26 @@ public function attendanceDashboard(Request $request)
                             'late_minutes'         => $lateMinutes,
                             'overtime_minutes'     => $overtimeMinutes,
                             'worked_hours'         => $workedHours,
+                            'amount'         => $staff->basic_salary*$workedHours,
                         ]);
 
+                      
 
                    return redirect()->back()->withSuccessMessage('Attendance Check Out successfully.');
                 }
 
-                 return redirect()->back()->withErrors('Already Exist attendance!');
+                // return redirect()->back()->withErrors('Already Exist attendance!');
               }
 
 
             
            foreach ($request->employee_id as $key => $employeeId) {
+                $staff= Staff::find($employeeId);
                 DB::table('hrm_employee_attendances')->insert([
+                    'employee_id'       => $employeeId,
+                    'hotel_id'       => $staff->hotel_id,
+                    'department_id'       => $staff->department_id,
+                    'hour_rate'       => $staff->basic_salary,
                     'employee_id'       => $employeeId,
                     'attendance_date'   => $request->attendance_date,
                     'check_in'          => $request->check_in,
