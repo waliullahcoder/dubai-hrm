@@ -3,6 +3,26 @@
 @section('title', 'Generate Payroll')
 
 @section('content')
+<style>
+     /* PRINT */
+
+    @media print {
+
+       
+
+        .no-print,
+        .sidebar,
+        .navbar,
+        .app-header,
+        .main-header,
+        footer,.navbar-header,.formsec {
+            display: none !important;
+        }
+
+        
+    }
+
+</style>
 
 <div class="container-fluid py-4">
 
@@ -11,7 +31,7 @@
         <i class="fa-regular fa-calendar"></i>
         <span>Payroll Management</span>
         <span>›</span>
-        <span class="fw-semibold text-dark">Generate Payroll</span>
+        <span class="fw-semibold text-dark">Generate Payroll Sheet</span>
     </div>
 
 
@@ -25,7 +45,7 @@
                 </div>
 
                 <div>
-                    <h4 class="fw-bold mb-1">Generate Payroll</h4>
+                    <h4 class="fw-bold mb-1">Generate Payroll Sheet</h4>
                     <p class="text-muted mb-0">
                         Create salary for your staff based on attendance and hourly rate
                     </p>
@@ -37,7 +57,7 @@
 
 
     {{-- Filters --}}
-    <form method="GET" action="{{route('admin.sheet.report')}}" class="card border-0 shadow-sm mb-4">
+    <form method="GET" action="{{route('admin.sheet.report')}}" class="card border-0 shadow-sm mb-4 formsec">
         @csrf
 
         <div class="card-header bg-white border-bottom">
@@ -174,25 +194,25 @@
                         <tr>
 
                             <th class="text-center">SL</th>
-                            <th>Employee Name</th>
+                            <th>Employee</th>
 
-                            <th>Employee ID</th>
+                            <th>ID</th>
 
-                            <th>Hotel / Outlet</th>
+                            <th>Hotel</th>
 
                             <th>Department</th>
 
-                            <th class="text-end">Working Days</th>
+                            <th class="text-end">Days</th>
 
-                            <th class="text-end">Total Hours</th>
+                            <th class="text-end">Hours</th>
 
                             <th class="text-end">Rate</th>
 
-                            <th class="text-end">Total Amount</th>
+                            <th class="text-end">Amount</th>
 
-                            <th class="text-end">Advance Recovery</th>
+                            <th class="text-end">Advance</th>
 
-                            <th class="text-end">Other Deduction</th>
+                            <th class="text-end">Deduction</th>
 
                             <th class="text-end bg-success-subtle text-success">
                                 Final Payable
@@ -218,6 +238,7 @@
                                 <td>
 
                                     <div class="d-flex align-items-center">
+                                        @if(!empty($emp->user_image))
                                         <img src="{{ !empty($emp->user_image)
                                                 ? asset($emp->user_image)
                                                 : asset('images/avatar-placeholder.png') }}"
@@ -226,6 +247,9 @@
                                             height="38"
                                             style="object-fit: cover;"
                                             alt="{{ $emp->name }}">
+                                            @else
+                                            -
+                                            @endif
 
                                         <span class="fw-semibold">
                                             {{ $emp->name }}
@@ -517,7 +541,7 @@
 
 
         {{-- Final Payable --}}
-        <div class="col-12 col-md-4 col-lg">
+        <div class="col-12 col-md-12 col-lg">
 
             <div class="card border-0 bg-success-subtle shadow-sm h-100">
 
@@ -538,36 +562,16 @@
 
         </div>
 
-    </div>
+       
 
-
-    {{-- Remarks --}}
-    <div class="card border-0 shadow-sm mb-4">
-
-        <div class="card-body">
-
-            <label class="form-label fw-semibold">
-
-                <i class="fa-regular fa-comment text-primary me-1"></i>
-
-                Remarks (Optional)
-
-            </label>
-
-            <textarea name="remarks"
-                      rows="3"
-                      class="form-control"
-                      placeholder="Add remarks here...">{{ old('remarks') }}</textarea>
-
-        </div>
-
-    </div>
+     
+    
 
 
     {{-- Action Buttons --}}
-    <div class="d-flex flex-column flex-sm-row gap-2 mb-4">
+    <div class="d-flex flex-column flex-sm-row gap-2 mb-4 formsec">
 
-        <button type="submit"
+        <!-- <button type="submit"
                 form="payrollForm"
                 class="btn btn-success px-4">
 
@@ -575,7 +579,7 @@
 
             GENERATE PAYROLL
 
-        </button>
+        </button> -->
 
 
         <button type="button"
