@@ -37,7 +37,7 @@
 
 
     {{-- Filters --}}
-    <form method="POST" action="" class="card border-0 shadow-sm mb-4">
+    <form method="GET" action="{{route('admin.sheet.report')}}" class="card border-0 shadow-sm mb-4">
         @csrf
 
         <div class="card-header bg-white border-bottom">
@@ -174,13 +174,6 @@
                         <tr>
 
                             <th class="text-center">SL</th>
-
-                            <th class="text-center">
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       id="selectAll">
-                            </th>
-
                             <th>Employee Name</th>
 
                             <th>Employee ID</th>
@@ -193,16 +186,16 @@
 
                             <th class="text-end">Total Hours</th>
 
-                            <th class="text-end">Rate / Hour (AED)</th>
+                            <th class="text-end">Rate</th>
 
-                            <th class="text-end">Total Amount (AED)</th>
+                            <th class="text-end">Total Amount</th>
 
-                            <th class="text-end">Advance Recovery (AED)</th>
+                            <th class="text-end">Advance Recovery</th>
 
-                            <th class="text-end">Other Deduction (AED)</th>
+                            <th class="text-end">Other Deduction</th>
 
                             <th class="text-end bg-success-subtle text-success">
-                                Final Payable (AED)
+                                Final Payable
                             </th>
 
                         </tr>
@@ -220,28 +213,19 @@
                                     {{ $index + 1 }}
                                 </td>
 
-                                <td class="text-center">
-
-                                    <input type="checkbox"
-                                           class="form-check-input employee-checkbox"
-                                           name="employee_ids[]"
-                                           value="{{ $emp->id }}"
-                                           checked>
-
-                                </td>
-
 
                                 {{-- Employee --}}
                                 <td>
 
                                     <div class="d-flex align-items-center">
-
-                                        <img src="{{ $emp->photo_url ?? asset('images/avatar-placeholder.png') }}"
-                                             class="rounded-circle me-2"
-                                             width="38"
-                                             height="38"
-                                             style="object-fit: cover;"
-                                             alt="{{ $emp->name }}">
+                                        <img src="{{ !empty($emp->user_image)
+                                                ? asset($emp->user_image)
+                                                : asset('images/avatar-placeholder.png') }}"
+                                            class="rounded-circle me-2"
+                                            width="38"
+                                            height="38"
+                                            style="object-fit: cover;"
+                                            alt="{{ $emp->name }}">
 
                                         <span class="fw-semibold">
                                             {{ $emp->name }}
@@ -310,7 +294,7 @@
 
                             <tr>
 
-                                <td colspan="13"
+                                <td colspan="12"
                                     class="text-center text-muted py-5">
 
                                     <i class="fa-regular fa-folder-open fs-3 d-block mb-2"></i>
@@ -335,7 +319,7 @@
 
                             <tr class="table-primary fw-bold">
 
-                                <td colspan="2"></td>
+                                <td colspan="1"></td>
 
                                 <td colspan="2">
                                     Total

@@ -584,19 +584,166 @@ public function payslipReport(Request $request){
 public function certificateReport(Request $request){
     return view('hrm.staff-reports.certificate');
 }
-public function sheetReport(Request $request){
-    $hotels      = Hotel::orderBy('name')->get();
-        $departments = Category::orderBy('name')->get();
- 
-        return view('hrm.staff-reports.sheet', [
-            'hotels'        => $hotels,
-            'departments'   => $departments,
-            'employees'     => collect(), // empty until "Load Attendance Data" is clicked
-            'selectedMonth' => now()->format('F'),
-            'selectedYear'  => now()->year,
-        ]);
-   // return view('hrm.staff-reports.sheet');
-    
+
+public function sheetReport(Request $request)
+{
+    // Hotels
+    $hotels = Hotel::orderBy('name')->get();
+
+    // Departments
+    $departments = Category::orderBy('name')->get();
+
+    // Default empty collection
+    $employees = collect();
+
+    // Default month/year
+    $selectedMonth = $request->get('payroll_month', now()->format('F'));
+    $selectedYear  = $request->get('payroll_year', now()->year);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Load Attendance Data
+    |--------------------------------------------------------------------------
+    */
+    if ($request->isMethod('post') || $request->has('payroll_month')) {
+
+        $monthNumber = Carbon::parse("1 {$selectedMonth} {$selectedYear}")->month;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Attendance Query
+        |--------------------------------------------------------------------------
+        */
+
+        $query = DB::table('hrm_employee_attendances as atd')
+            ->leftJoin('staff as s', 's.id', '=', 'atd.employee_id')
+            ->leftJoin('hrm_hotels as h', 'h.id', '=', 'atd.hotel_id')
+            ->leftJoin('categories as c', 'c.id', '=', 's.department_id')
+            ->leftJoin('users as u', 'u.id', '=', 's.user_id')
+            ->whereMonth('atd.attendance_date', $monthNumber)
+            ->whereYear('atd.attendance_date', $selectedYear)
+
+            ->select(
+                's.id',
+                's.user_id',
+                's.code as employee_id',
+                's.name',
+                'u.image as user_image',
+
+                's.department_id',
+
+                'h.name as hotel',
+                'c.name as department',
+
+                // Working days
+                DB::raw('COUNT(DISTINCT DATE(atd.attendance_date)) as working_days'),
+
+                // Total worked hours
+                DB::raw('SUM(COALESCE(atd.worked_hours, 0)) as total_hours'),
+
+                // Hourly rate
+                DB::raw('COALESCE(atd.hour_rate, 0) as rate_per_hour')
+            )
+
+            ->groupBy(
+                's.id',
+                's.name',
+                's.department_id',
+                'h.name',
+                'c.name',
+                'atd.hour_rate'
+            );
+            
+
+        /*
+        |--------------------------------------------------------------------------
+        | Hotel Filter
+        |--------------------------------------------------------------------------
+        */
+        if ($request->filled('hotel_id')) {
+            $query->where('atd.hotel_id', $request->hotel_id);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Department Filter
+        |--------------------------------------------------------------------------
+        */
+        if ($request->filled('department_id')) {
+            $query->where('s.department_id', $request->department_id);
+        }
+
+        $employees = $query->get();
+        /*
+        |--------------------------------------------------------------------------
+        | Calculate Salary
+        |--------------------------------------------------------------------------
+        */
+
+        $employees = $employees->map(function ($employee) {
+
+            $employee->working_days = (int) $employee->working_days;
+
+            $employee->total_hours = (float) $employee->total_hours;
+
+            $employee->rate_per_hour = (float) $employee->rate_per_hour;
+
+            // Total salary
+            $employee->total_amount =
+                $employee->total_hours * $employee->rate_per_hour;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Advance Recovery
+            |--------------------------------------------------------------------------
+            |
+            | এখানে আপনার advance/payment table অনুযায়ী query দিতে হবে।
+            | আপাতত 0 রাখা হয়েছে।
+            |
+            */
+            $employee->advance_recovery = 0;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Other Deduction
+            |--------------------------------------------------------------------------
+            */
+            $employee->other_deduction = 0;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Final Payable
+            |--------------------------------------------------------------------------
+            */
+            $employee->final_payable =
+                $employee->total_amount
+                - $employee->advance_recovery
+                - $employee->other_deduction;
+
+            /*
+            |--------------------------------------------------------------------------
+            | Employee Photo
+            |--------------------------------------------------------------------------
+            */
+            $employee->photo_url = !empty($employee->photo)
+                ? asset($employee->photo)
+                : asset('images/avatar-placeholder.png');
+
+            return $employee;
+        });
+    }
+
+    return view('hrm.staff-reports.sheet', [
+        'hotels'        => $hotels,
+        'departments'   => $departments,
+        'employees'     => $employees,
+
+        'selectedMonth' => $selectedMonth,
+        'selectedYear'  => $selectedYear,
+
+        'selectedHotel'      => $request->hotel_id,
+        'selectedDepartment' => $request->department_id,
+    ]);
 }
 
 
