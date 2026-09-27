@@ -587,163 +587,722 @@ public function certificateReport(Request $request){
 
 public function sheetReport(Request $request)
 {
-    // Hotels
+    /*
+    |--------------------------------------------------------------------------
+    | Hotels & Departments
+    |--------------------------------------------------------------------------
+    */
+
     $hotels = Hotel::orderBy('name')->get();
 
-    // Departments
     $departments = Category::orderBy('name')->get();
 
-    // Default empty collection
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Values
+    |--------------------------------------------------------------------------
+    */
+
     $employees = collect();
 
-    // Default month/year
-    $selectedMonth = $request->get('payroll_month', now()->format('F'));
-    $selectedYear  = $request->get('payroll_year', now()->year);
+    $selectedMonth = $request->get(
+        'payroll_month',
+        now()->format('F')
+    );
+
+    $selectedYear = (int) $request->get(
+        'payroll_year',
+        now()->year
+    );
+
+    $selectedHotel = $request->get('hotel_id');
+
+    $selectedDepartment = $request->get('department_id');
+
 
     /*
     |--------------------------------------------------------------------------
     | Load Attendance Data
     |--------------------------------------------------------------------------
     */
-    if ($request->isMethod('post') || $request->has('payroll_month')) {
 
-        $monthNumber = Carbon::parse("1 {$selectedMonth} {$selectedYear}")->month;
+    if ($request->isMethod('post') || $request->has('payroll_month')) {
 
         /*
         |--------------------------------------------------------------------------
-        | Attendance Query
+        | Month Number
         |--------------------------------------------------------------------------
         */
 
-        $query = DB::table('hrm_employee_attendances as atd')
-            ->leftJoin('staff as s', 's.id', '=', 'atd.employee_id')
-            ->leftJoin('hrm_hotels as h', 'h.id', '=', 'atd.hotel_id')
-            ->leftJoin('categories as c', 'c.id', '=', 's.department_id')
-            ->leftJoin('users as u', 'u.id', '=', 's.user_id')
-            ->whereMonth('atd.attendance_date', $monthNumber)
-            ->whereYear('atd.attendance_date', $selectedYear)
+        $monthNumber = Carbon::parse(
+            "1 {$selectedMonth} {$selectedYear}"
+        )->month;
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Expense Sub Query
+        |--------------------------------------------------------------------------
+        |
+        | Employee wise monthly expense.
+        | This is aggregated BEFORE joining with attendance.
+        |
+        */
+
+        $expenseQuery = DB::table('hrm_expense')
             ->select(
+                'employee_id',
+
+                DB::raw('
+                    SUM(
+                        COALESCE(expense_amount, 0)
+                    ) as expense_amount
+                ')
+            )
+            ->whereMonth(
+                'expense_date',
+                $monthNumber
+            )
+            ->whereYear(
+                'expense_date',
+                $selectedYear
+            )
+            ->groupBy('employee_id');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Payment Sub Query
+        |--------------------------------------------------------------------------
+        |
+        | Advance:
+        | status = Advance
+        |
+        | Other Deduction:
+        | status = Payment
+        |
+        */
+
+        $paymentQuery = DB::table('hrm_payments')
+            ->select(
+                'employee_id',
+
+                /*
+                |--------------------------------------------------------------------------
+                | Advance Recovery
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    SUM(
+                        CASE
+                            WHEN status = 'Advance'
+                            THEN COALESCE(payment_amount, 0)
+                            ELSE 0
+                        END
+                    ) as advance_recovery
+                "),
+
+                /*
+                |--------------------------------------------------------------------------
+                | Other Deduction
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    SUM(
+                        CASE
+                            WHEN status = 'Payment'
+                            THEN COALESCE(payment_amount, 0)
+                            ELSE 0
+                        END
+                    ) as other_deduction
+                ")
+            )
+            ->whereMonth(
+                'payment_date',
+                $monthNumber
+            )
+            ->whereYear(
+                'payment_date',
+                $selectedYear
+            )
+            ->groupBy('employee_id');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Main Attendance Query
+        |--------------------------------------------------------------------------
+        |
+        | One employee = One row
+        |
+        */
+
+        $query = DB::table('hrm_employee_attendances as atd')
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Employee
+            |--------------------------------------------------------------------------
+            */
+
+            ->leftJoin(
+                'staff as s',
                 's.id',
-                's.user_id',
-                's.code as employee_id',
-                's.name',
-                'u.image as user_image',
-
-                's.department_id',
-
-                'h.name as hotel',
-                'c.name as department',
-
-                // Working days
-                DB::raw('COUNT(DISTINCT DATE(atd.attendance_date)) as working_days'),
-
-                // Total worked hours
-                DB::raw('SUM(COALESCE(atd.worked_hours, 0)) as total_hours'),
-
-                // Hourly rate
-                DB::raw('COALESCE(atd.hour_rate, 0) as rate_per_hour')
+                '=',
+                'atd.employee_id'
             )
 
-            ->groupBy(
-                's.id',
-                's.name',
-                's.department_id',
-                'h.name',
-                'c.name',
-                'atd.hour_rate'
+
+            /*
+            |--------------------------------------------------------------------------
+            | User / Profile Image
+            |--------------------------------------------------------------------------
+            */
+
+            ->leftJoin(
+                'users as u',
+                'u.id',
+                '=',
+                's.user_id'
+            )
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hotel
+            |--------------------------------------------------------------------------
+            */
+
+            ->leftJoin(
+                'hrm_hotels as h',
+                'h.id',
+                '=',
+                'atd.hotel_id'
+            )
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Department
+            |--------------------------------------------------------------------------
+            */
+
+            ->leftJoin(
+                'categories as c',
+                'c.id',
+                '=',
+                's.department_id'
+            )
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Employee Wise Expense
+            |--------------------------------------------------------------------------
+            */
+
+            ->leftJoinSub(
+                $expenseQuery,
+                'exp',
+                function ($join) {
+
+                    $join->on(
+                        'exp.employee_id',
+                        '=',
+                        's.id'
+                    );
+                }
+            )
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Employee Wise Payments
+            |--------------------------------------------------------------------------
+            */
+
+            ->leftJoinSub(
+                $paymentQuery,
+                'pmnt',
+                function ($join) {
+
+                    $join->on(
+                        'pmnt.employee_id',
+                        '=',
+                        's.id'
+                    );
+                }
+            )
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Attendance Month / Year
+            |--------------------------------------------------------------------------
+            */
+
+            ->whereMonth(
+                'atd.attendance_date',
+                $monthNumber
+            )
+
+            ->whereYear(
+                'atd.attendance_date',
+                $selectedYear
             );
-            
+
 
         /*
         |--------------------------------------------------------------------------
         | Hotel Filter
         |--------------------------------------------------------------------------
         */
+
         if ($request->filled('hotel_id')) {
-            $query->where('atd.hotel_id', $request->hotel_id);
+
+            $query->where(
+                'atd.hotel_id',
+                $request->hotel_id
+            );
         }
+
 
         /*
         |--------------------------------------------------------------------------
         | Department Filter
         |--------------------------------------------------------------------------
         */
+
         if ($request->filled('department_id')) {
-            $query->where('s.department_id', $request->department_id);
+
+            $query->where(
+                's.department_id',
+                $request->department_id
+            );
         }
 
-        $employees = $query->get();
+
         /*
         |--------------------------------------------------------------------------
-        | Calculate Salary
+        | Employee Wise Select
         |--------------------------------------------------------------------------
         */
 
-        $employees = $employees->map(function ($employee) {
+        $employees = $query
 
-            $employee->working_days = (int) $employee->working_days;
+            ->select(
 
-            $employee->total_hours = (float) $employee->total_hours;
+                /*
+                |--------------------------------------------------------------------------
+                | Employee Information
+                |--------------------------------------------------------------------------
+                */
 
-            $employee->rate_per_hour = (float) $employee->rate_per_hour;
+                's.id',
 
-            // Total salary
-            $employee->total_amount =
-                $employee->total_hours * $employee->rate_per_hour;
+                's.user_id',
+
+                's.code as employee_id',
+
+                's.name',
+
+                's.department_id',
+
+                'u.image as user_image',
+
+                'c.name as department',
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hotel
+                |--------------------------------------------------------------------------
+                |
+                | Multiple hotels will appear in one row.
+                |
+                */
+
+                DB::raw("
+                    GROUP_CONCAT(
+                        DISTINCT h.name
+                        ORDER BY h.name
+                        SEPARATOR ', '
+                    ) as hotel
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Working Days
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    COUNT(
+                        DISTINCT DATE(atd.attendance_date)
+                    ) as working_days
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Total Working Hours
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    SUM(
+                        COALESCE(
+                            atd.worked_hours,
+                            0
+                        )
+                    ) as total_hours
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Display Hourly Rate
+                |--------------------------------------------------------------------------
+                |
+                | If different rates exist during the month,
+                | highest rate will be displayed.
+                |
+                */
+
+                DB::raw("
+                    MAX(
+                        COALESCE(
+                            atd.hour_rate,
+                            0
+                        )
+                    ) as rate_per_hour
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Total Salary Amount
+                |--------------------------------------------------------------------------
+                |
+                | Every attendance:
+                |
+                | worked_hours × hour_rate
+                |
+                */
+
+                DB::raw("
+                    SUM(
+                        COALESCE(
+                            atd.worked_hours,
+                            0
+                        )
+                        *
+                        COALESCE(
+                            atd.hour_rate,
+                            0
+                        )
+                    ) as total_amount
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Expense Amount
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    COALESCE(
+                        exp.expense_amount,
+                        0
+                    ) as expense_amount
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Advance Recovery
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    COALESCE(
+                        pmnt.advance_recovery,
+                        0
+                    ) as advance_recovery
+                "),
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Other Deduction
+                |--------------------------------------------------------------------------
+                */
+
+                DB::raw("
+                    COALESCE(
+                        pmnt.other_deduction,
+                        0
+                    ) as other_deduction
+                ")
+            )
+
 
             /*
             |--------------------------------------------------------------------------
-            | Advance Recovery
+            | Group By
             |--------------------------------------------------------------------------
             |
-            | এখানে আপনার advance/payment table অনুযায়ী query দিতে হবে।
-            | আপাতত 0 রাখা হয়েছে।
+            | IMPORTANT:
+            |
+            | Do NOT group by:
+            |
+            | h.name
+            | atd.hour_rate
+            |
+            | Otherwise same employee will appear multiple times.
             |
             */
-            $employee->advance_recovery = 0;
+
+            ->groupBy(
+
+                's.id',
+
+                's.user_id',
+
+                's.code',
+
+                's.name',
+
+                's.department_id',
+
+                'u.image',
+
+                'c.name',
+
+                'exp.expense_amount',
+
+                'pmnt.advance_recovery',
+
+                'pmnt.other_deduction'
+            )
+
 
             /*
             |--------------------------------------------------------------------------
-            | Other Deduction
+            | Employee Name Sorting
             |--------------------------------------------------------------------------
             */
-            $employee->other_deduction = 0;
+
+            ->orderBy(
+                's.name',
+                'asc'
+            )
+
 
             /*
             |--------------------------------------------------------------------------
-            | Final Payable
+            | Execute Query
             |--------------------------------------------------------------------------
             */
-            $employee->final_payable =
-                $employee->total_amount
-                - $employee->advance_recovery
-                - $employee->other_deduction;
 
-            /*
-            |--------------------------------------------------------------------------
-            | Employee Photo
-            |--------------------------------------------------------------------------
-            */
-            $employee->photo_url = !empty($employee->photo)
-                ? asset($employee->photo)
-                : asset('images/avatar-placeholder.png');
+            ->get();
 
-            return $employee;
-        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Calculate Final Payroll
+        |--------------------------------------------------------------------------
+        */
+
+        $employees = $employees->map(
+            function ($employee) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Working Days
+                |--------------------------------------------------------------------------
+                */
+
+                $employee->working_days = (int)
+                    $employee->working_days;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Total Hours
+                |--------------------------------------------------------------------------
+                */
+
+                $employee->total_hours = round(
+                    (float) $employee->total_hours,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hourly Rate
+                |--------------------------------------------------------------------------
+                */
+
+                $employee->rate_per_hour = round(
+                    (float) $employee->rate_per_hour,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Salary Amount
+                |--------------------------------------------------------------------------
+                */
+
+                $employee->total_amount = round(
+                    (float) $employee->total_amount,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Expense
+                |--------------------------------------------------------------------------
+                |
+                | Expense will be added to earning.
+                |
+                */
+
+                $employee->expense_amount = round(
+                    (float) $employee->expense_amount,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Advance Recovery
+                |--------------------------------------------------------------------------
+                |
+                | Payment table:
+                | status = Advance
+                |
+                */
+
+                $employee->advance_recovery = round(
+                    (float) $employee->advance_recovery,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Other Deduction
+                |--------------------------------------------------------------------------
+                |
+                | Payment table:
+                | status = Payment
+                |
+                */
+
+                $employee->other_deduction = round(
+                    (float) $employee->other_deduction,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Gross Earning
+                |--------------------------------------------------------------------------
+                |
+                | Salary + Expense
+                |
+                */
+
+                $employee->gross_earning = round(
+                    $employee->total_amount
+                    + $employee->expense_amount,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Final Payable
+                |--------------------------------------------------------------------------
+                |
+                | Salary
+                | + Expense
+                | - Advance Recovery
+                | - Other Deduction
+                |
+                */
+
+                $employee->final_payable = round(
+                    $employee->gross_earning
+                    - $employee->advance_recovery
+                    - $employee->other_deduction,
+                    2
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Profile Image
+                |--------------------------------------------------------------------------
+                */
+
+                if (!empty($employee->user_image)) {
+
+                    $employee->photo_url = asset(
+                        $employee->user_image
+                    );
+
+                } else {
+
+                    $employee->photo_url = asset(
+                        'images/avatar-placeholder.png'
+                    );
+                }
+
+
+                return $employee;
+            }
+        );
     }
 
-    return view('hrm.staff-reports.sheet', [
-        'hotels'        => $hotels,
-        'departments'   => $departments,
-        'employees'     => $employees,
 
-        'selectedMonth' => $selectedMonth,
-        'selectedYear'  => $selectedYear,
+    /*
+    |--------------------------------------------------------------------------
+    | Return View
+    |--------------------------------------------------------------------------
+    */
 
-        'selectedHotel'      => $request->hotel_id,
-        'selectedDepartment' => $request->department_id,
-    ]);
+    return view(
+        'hrm.staff-reports.sheet',
+        [
+
+            'hotels' => $hotels,
+
+            'departments' => $departments,
+
+            'employees' => $employees,
+
+            'selectedMonth' => $selectedMonth,
+
+            'selectedYear' => $selectedYear,
+
+            'selectedHotel' => $selectedHotel,
+
+            'selectedDepartment' => $selectedDepartment,
+        ]
+    );
 }
 
 
