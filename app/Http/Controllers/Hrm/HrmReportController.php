@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Hrm;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Company;
+use App\Models\Hotel;
 use App\Models\Staff;
+use App\Models\Category;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -572,6 +574,29 @@ public function monthlyReport(Request $request)
         'employees',
         'report'
     ));
+}
+
+
+public function payslipReport(Request $request){
+
+ return view('hrm.staff-reports.payslip');
+}
+public function certificateReport(Request $request){
+    return view('hrm.staff-reports.certificate');
+}
+public function sheetReport(Request $request){
+    $hotels      = Hotel::orderBy('name')->get();
+        $departments = Category::orderBy('name')->get();
+ 
+        return view('hrm.staff-reports.sheet', [
+            'hotels'        => $hotels,
+            'departments'   => $departments,
+            'employees'     => collect(), // empty until "Load Attendance Data" is clicked
+            'selectedMonth' => now()->format('F'),
+            'selectedYear'  => now()->year,
+        ]);
+   // return view('hrm.staff-reports.sheet');
+    
 }
 
 

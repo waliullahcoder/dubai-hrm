@@ -185,6 +185,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/expense-report',[HrmReportController::class,'expenseReport'])->name('expense.report');
     Route::get('/working-hour-report',[HrmReportController::class,'workinghourReport'])->name('workinghour.report');
     Route::get('/monthly-report',[HrmReportController::class,'monthlyReport'])->name('monthly.report');
+    Route::get('/staff-payslip',[HrmReportController::class,'payslipReport'])->name('payslip.report');
+    Route::get('/staff-certificate',[HrmReportController::class,'certificateReport'])->name('certificate.report');
+    Route::get('/staff-sheet',[HrmReportController::class,'sheetReport'])->name('sheet.report');
 
     //Staff Report
     Route::get('/staff-advance',[StaffReportController::class,'staffAdvance'])->name('advance.report');
