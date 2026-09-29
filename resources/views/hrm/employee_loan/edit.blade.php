@@ -167,7 +167,7 @@
 
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label class="form-label">Installment Amount <span class="text-danger">*</span></label>
+                    <label class="form-label">Recovered Amount <span class="text-danger">*</span></label>
 
                     <input type="number"
                            step="0.01"
@@ -179,7 +179,7 @@
 
                 </div>
                 <div class="col-md-3 mb-3">
-                    <label class="form-label">Installment Total <span class="text-danger">*</span></label>
+                    <label class="form-label">Recovered Total <span class="text-danger">*</span></label>
 
                     <input type="number"
                            step="0.01"

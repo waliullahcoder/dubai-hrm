@@ -171,6 +171,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/employee-bonus',BonusManagementController::class);
     Route::resource('/employee-increment',IncrementController::class);
     Route::resource('/employee-loan',LoanController::class);
+    Route::get('/advance-loan-report',[LoanController::class,'advanceLoanReport'])->name('advance.loan.report');
     Route::resource('/employee-overtime',OverTimeController::class);
     Route::resource('/expense',ExpenseController::class);
     Route::resource('/hotel',HotelController::class);

@@ -774,7 +774,7 @@
                 </tr>
 
 
-                @if($report['expense'] > 0)
+                <!-- @if($report['expense'] > 0)
 
                 <tr>
 
@@ -788,7 +788,7 @@
 
                 </tr>
 
-                @endif
+                @endif -->
 
 
                 <tr class="net-row">

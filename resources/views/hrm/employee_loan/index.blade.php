@@ -33,8 +33,8 @@
                     <th>Payroll Month</th>
                     <th>Year</th>
                     <th>Loan Amount</th>
-                    <th>Installment Amount</th>
-                    <th>Total Installment</th>
+                    <th>Recovered Amount</th>
+                    <th>Total Recovered</th>
                     <th>Loan Date</th>
                     <th>Status</th>
                     <th width="120">Action</th>

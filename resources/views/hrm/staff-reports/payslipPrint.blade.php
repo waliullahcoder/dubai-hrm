@@ -225,14 +225,16 @@
     @else
     <div class="photo-placeholder">Employee<br>Photo</div>
     @endif
-   
+   @php 
+   $staff = $data['staff'];
+   @endphp
     <div class="employee-details">
       <table>
-        <tr><td class="label">Employee Name</td><td class="colon">:</td><td class="value">[Full Name]</td></tr>
-        <tr><td class="label">Employee ID</td><td class="colon">:</td><td class="value">[EMP0000]</td></tr>
-        <tr><td class="label">Mobile Number</td><td class="colon">:</td><td class="value">[000 000 0000]</td></tr>
-        <tr><td class="label">Branch / Location</td><td class="colon">:</td><td class="value">[Location]</td></tr>
-        <tr><td class="label">Department</td><td class="colon">:</td><td class="value">[Department]</td></tr>
+        <tr><td class="label">Employee Name</td><td class="colon">:</td><td class="value">{{$staff->name}}</td></tr>
+        <tr><td class="label">Employee ID</td><td class="colon">:</td><td class="value">{{$staff->code}}</td></tr>
+        <tr><td class="label">Mobile Number</td><td class="colon">:</td><td class="value">{{$staff->phone}}</td></tr>
+        <tr><td class="label">Location</td><td class="colon">:</td><td class="value">{{$staff->address}}</td></tr>
+        <tr><td class="label">Department</td><td class="colon">:</td><td class="value">{{$data['department']->name}}</td></tr>
       </table>
     </div>
   </div>
@@ -241,15 +243,15 @@
   <div class="work-grid">
     <div>
       <div class="wlabel">Total Working Days</div>
-      <div class="wvalue">[00]</div>
+      <div class="wvalue">{{$data['attendance']->count('id')}}</div>
     </div>
     <div>
       <div class="wlabel">Total Hours</div>
-      <div class="wvalue">[000.00]</div>
+      <div class="wvalue">{{$data['attendance']->sum('worked_hours')}}</div>
     </div>
     <div>
       <div class="wlabel">Hourly Rate</div>
-      <div class="wvalue">[0.00]</div>
+      <div class="wvalue">{{$staff->currency_code}} {{$staff->basic_salary}}</div>
     </div>
   </div>
 
@@ -263,19 +265,19 @@
     </tr>
     <tr>
       <td>Total Working Hours</td>
-      <td class="num">[000.00]</td>
-      <td class="num">[0.00]</td>
-      <td class="num">[0.00]</td>
+      <td class="num">{{$data['attendance']->sum('worked_hours')}}</td>
+      <td class="num">{{$staff->basic_salary}}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['attendance']->sum('amount'), 2, '.', ',') }}</td>
     </tr>
     <tr>
       <td>Allowance / Other</td>
       <td class="num">-</td>
       <td class="num">-</td>
-      <td class="num">[0.00]</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['expenseAmount'], 2, '.', ',') }}</td>
     </tr>
     <tr class="total">
       <td colspan="3">Total Earnings</td>
-      <td class="num">[0.00]</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['attendance']->sum('amount')+$data['expenseAmount'], 2, '.', ',') }}</td>
     </tr>
   </table>
 
@@ -287,33 +289,33 @@
     </tr>
     <tr>
       <td>Advance Recovery</td>
-      <td class="num">[0.00]</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['advanceAmount'], 2, '.', ',') }}</td>
     </tr>
     <tr>
       <td>Other Deduction</td>
-      <td class="num">[0.00]</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['paymentAmount'], 2, '.', ',') }}</td>
     </tr>
     <tr class="total-deduction">
       <td>Total Deductions</td>
-      <td class="num">[0.00]</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['advanceAmount']+$data['paymentAmount'], 2, '.', ',') }}</td>
     </tr>
   </table>
 
   <div class="section-header final">FINAL PAYABLE AMOUNT</div>
   <div class="final-box">
     <div class="flabel">Final Payable</div>
-    <div class="fvalue">[0.00]</div>
+    <div class="fvalue">{{$staff->currency_code}} {{ number_format((float) $data['attendance']->sum('amount')+$data['expenseAmount']-$data['advanceAmount']+$data['paymentAmount'], 2, '.', ',') }}</div>
   </div>
 
   <div class="remarks">
-    <strong>Remarks:</strong> [Salary for Month Year]
+    <strong>Remarks:</strong> {{$selectedmonth}}-{{$year}}
   </div>
 
   <div class="footer">
     <div class="sign-line">Prepared By</div>
     <div class="sign-line">Received By (Employee)</div>
     <div class="footer-right">
-      <strong>Date:</strong> [DD Month YYYY]
+      <strong>Date:</strong> {{ date('d-m-Y') }}
       <div class="note">This is a computer generated payslip.</div>
     </div>
   </div>

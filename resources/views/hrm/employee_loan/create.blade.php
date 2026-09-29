@@ -423,7 +423,7 @@
 
             <div class="loan-section-title">
                 <i class="fas fa-money-bill-wave me-1"></i>
-                Loan Amount & Installment
+                Loan Amount & Recovered
             </div>
 
             <div class="row">
@@ -448,7 +448,7 @@
                 <div class="col-md-6 mb-3">
 
                     <label class="form-label">
-                        Installment Amount <span class="text-danger">*</span>
+                        Recovered Amount <span class="text-danger">*</span>
                     </label>
 
                     <input type="number"
@@ -590,7 +590,7 @@ PRINT PREVIEW
     </tr>
 
     <tr>
-        <th>Installment Amount</th>
+        <th>Recovered Amount</th>
         <td id="preview_installment_amount">0.00</td>
     </tr>
 

@@ -580,18 +580,19 @@ public function monthlyReport(Request $request)
 
 public function payslipReport(Request $request){
 
-    //dd($request->all());
 $staffs = Staff::get();
 $month = $request->payslip_month;
 $year  = $request->payslip_year;
 $employeeId   = $request->employee_id;
 $selectedmonth = $request->payslip_month;
 $month = Carbon::parse("1 {$month} {$year}")->month;
+    if($request->payslip_month){
 
     $attendance = DB::table('hrm_employee_attendances')
     ->where('employee_id', $employeeId)
     ->whereYear('attendance_date', $year)
     ->whereMonth('attendance_date', $month)
+    ->whereNotNull('check_out')
     ->get();
     
     
@@ -623,6 +624,7 @@ $month = Carbon::parse("1 {$month} {$year}")->month;
             ->sum('expense_amount');
             $staff= Staff::where('id', $employeeId)->first();
             $user = User::where('id',  $staff->user_id)->first();
+            $department = Category::where('id',  $staff->department_id)->first();
             $data = [];
             $data =[
               'paymentAmount' => $paymentAmount,
@@ -630,15 +632,78 @@ $month = Carbon::parse("1 {$month} {$year}")->month;
               'expenseAmount' => $expenseAmount,
               'attendance' => $attendance,
               'staff' => $staff,
+              'department' => $department,
               'user' => $user
             ];
             if($data['attendance']->count()>0){
                 return view('hrm.staff-reports.payslipPrint', compact('staffs','data', 'selectedmonth', 'year'));
             }
-      return view('hrm.staff-reports.payslip', compact('staffs','data'));
+        }
+      return view('hrm.staff-reports.payslip', compact('staffs'));
 }
 public function certificateReport(Request $request){
-    return view('hrm.staff-reports.certificate');
+
+
+$staffs = Staff::get();
+$month = $request->payslip_month;
+$year  = $request->payslip_year;
+$employeeId   = $request->employee_id;
+$selectedmonth = $request->payslip_month;
+$month = Carbon::parse("1 {$month} {$year}")->month;
+    if($request->payslip_month){
+
+    $attendance = DB::table('hrm_employee_attendances')
+    ->where('employee_id', $employeeId)
+    ->whereYear('attendance_date', $year)
+    ->whereMonth('attendance_date', $month)
+    ->whereNotNull('check_out')
+    ->get();
+    
+    
+     $advanceAmount = DB::table('hrm_payments')
+            ->where('employee_id', $employeeId)
+            ->whereMonth('payment_date', $month)
+            ->whereYear('payment_date', $year)
+            ->where(function ($query) {
+                $query->where('status', 'Advance');
+            })
+            ->sum('payment_amount');
+
+        $paymentAmount = DB::table('hrm_payments')
+            ->where('employee_id', $employeeId)
+            ->whereMonth('payment_date', $month)
+            ->whereYear('payment_date', $year)
+            ->where(function ($query) {
+                $query->where('status', 'Payment');
+            })
+            ->sum('payment_amount');
+
+        $expenseAmount = DB::table('hrm_expense')
+            ->where('employee_id', $employeeId)
+            ->whereMonth('expense_date', $month)
+            ->whereYear('expense_date', $year)
+            ->where(function ($query) {
+                $query->where('status', 'Approved');
+            })
+            ->sum('expense_amount');
+            $staff= Staff::where('id', $employeeId)->first();
+            $user = User::where('id',  $staff->user_id)->first();
+            $department = Category::where('id',  $staff->department_id)->first();
+            $data = [];
+            $data =[
+              'paymentAmount' => $paymentAmount,
+              'advanceAmount' => $advanceAmount,
+              'expenseAmount' => $expenseAmount,
+              'attendance' => $attendance,
+              'staff' => $staff,
+              'department' => $department,
+              'user' => $user
+            ];
+            if($data['staff']->count()>0){
+                return view('hrm.staff-reports.certificatePrint', compact('staffs','data', 'selectedmonth', 'year'));
+            }
+        }
+      return view('hrm.staff-reports.certificate', compact('staffs'));
 }
 
 public function sheetReport(Request $request)

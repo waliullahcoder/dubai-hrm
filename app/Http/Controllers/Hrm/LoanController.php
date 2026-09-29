@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Hrm;
 use App\Models\Client;
 use App\Models\ClientCategory;
+use App\Models\Category;
 use App\Models\CoaSetup;
 use App\Models\Staff;
 use App\Models\User;
@@ -105,6 +106,21 @@ class LoanController extends Controller
         }
 
         return view('hrm.employee_loan.index');
+    }
+
+    public function advanceLoanReport(Request $request){
+         $staffs = DB::table('staff')
+            ->where('status', 1)
+            ->orderBy('name')
+            ->get();
+            $staff = Staff::where('id', $request->employee_id)->first();
+          if($staff){
+              $department = Category::where('id', $staff->department_id)->first();
+              $loans = DB::table('hrm_employee_loan')->orderBy('id','desc')->where('employee_id', $request->employee_id)->get();
+             
+              return view('hrm.employee_loan.advance-loan-report-print', compact('staff','department','loans'));
+          }
+            return view('hrm.employee_loan.advance-loan-report', compact('staffs'));   
     }
 
   public function create()
