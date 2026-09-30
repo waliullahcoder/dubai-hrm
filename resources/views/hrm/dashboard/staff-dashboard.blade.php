@@ -77,7 +77,7 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     @endif
 
                     <!-- Check In -->
-                    @if($staff->location_varified == date('Y-m-d') && $todayAttendancecheck?->check_out != null)
+                    @if($staff->location_varified == date('Y-m-d'))
                     <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
                     <input type="hidden" name="attendance_date" value="{{ date('Y-m-d') }}">
                     <input type="hidden" name="attendance_status" value="Present">
@@ -94,32 +94,48 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                             <p style="text-align:center"><strong> Location Varified Successfully!</strong></p>
                         </div>
                     </div>
-                  <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label">Check In</label>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="clock-wrapper">
+                                        <div class="clock" id="checkInClock">
+                                            <!-- Hour Numbers -->
+                                            @for($i = 1; $i <= 12; $i++)
+                                                <div class="hour-number hour-{{ $i }}"
+                                                    data-hour="{{ $i }}">
+                                                    {{ $i }}
+                                                </div>
+                                            @endfor
 
-                                <select id="check_in_hour" class="form-control">
-                                    @for($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
-                                </select>
+                                            <!-- Center -->
+                                            <div class="clock-center"></div>
+
+                                            <!-- Hour Hand -->
+                                            <div class="hour-hand" id="checkInHourHand"></div>
+
+                                        </div>
+
+                                        <div class="selected-time">
+                                            <span id="checkInSelectedHour">12</span>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="check_in_hour" id="check_in_hour" value="12">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">AM / PM</label>
+                                    <select name="check_in_ampm" id="check_in_ampm" class="form-control">
+                                        <option value="AM">AM</option>
+                                        <option value="PM">PM</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">&nbsp;</label>
 
-                                <select id="check_in_ampm" class="form-control">
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        {{-- Actual value that will be submitted --}}
-                        <input type="hidden" name="check_in" id="check_in"><br>
-                    <button class="btn btn-checkin">
-                        <i class="fas fa-map-marker-alt"></i> Confirm Check In
-                    </button>
+                            {{-- Actual value that will be submitted --}}
+                            <input type="hidden" name="check_in" id="check_in"><br>
+                            <button class="btn btn-checkin">
+                            <i class="fas fa-sign-in-alt"></i> Confirm Check In
+                            </button>           
                     @endif
 
                     <!-- Check Out -->
@@ -186,31 +202,56 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     </div>
                       {{-- Check Out --}}
                     <div class="col-md-12">
-                        <label class="form-label">
-                            <i class="fas fa-sign-out-alt"></i> Check Out
-                        </label>
+    <label class="form-label">
+        <i class="fas fa-sign-out-alt"></i> Check Out
+    </label>
 
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <select id="check_out_hour" class="form-control">
-                                    @for($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}">
-                                            {{ $i }}
-                                        </option>
-                                    @endfor
-                                </select>
-                            </div>
+    <div class="clock-wrapper">
+        <div class="clock" id="checkOutClock">
 
-                            <div class="col-6">
-                                <select id="check_out_ampm" class="form-control">
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                </select>
-                            </div>
-                        </div><br>
+            @for($i = 1; $i <= 12; $i++)
+                <div class="hour-number hour-{{ $i }}"
+                     data-hour="{{ $i }}">
+                    {{ $i }}
+                </div>
+            @endfor
 
-                        <input type="hidden" name="check_out" id="check_out">
-                    </div><br>
+            <div class="clock-center"></div>
+
+            <div class="hour-hand" id="checkOutHourHand"></div>
+
+        </div>
+
+        <div class="selected-time">
+            <span id="checkOutSelectedHour">12</span>
+        </div>
+    </div>
+
+    <div class="row g-2 mt-2">
+        <div class="col-6">
+            <select name="check_out_ampm"
+                    id="check_out_ampm"
+                    class="form-control">
+
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+
+            </select>
+        </div>
+    </div>
+
+    <input type="hidden"
+           name="check_out_hour"
+           id="check_out_hour"
+           value="12">
+
+    <input type="hidden"
+           name="check_out"
+           id="check_out">
+</div>
+                    
+                    
+                    <br>
 
                     <button class="btn btn-checkout">
                         <i class="fas fa-sign-out-alt"></i> Confirm Check Out
@@ -436,5 +477,153 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial value
     updateCheckIn();
     updateCheckOut();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const clock = document.getElementById('checkInClock');
+    const hourHand = document.getElementById('checkInHourHand');
+    const hourInput = document.getElementById('check_in_hour');
+    const selectedHour = document.getElementById('checkInSelectedHour');
+
+    const hours = document.querySelectorAll('#checkInClock .hour-number');
+
+    function setHour(hour) {
+
+        hour = parseInt(hour);
+
+        // 12 = 0 degree
+        let degree = hour === 12 ? 0 : hour * 30;
+
+        hourHand.style.transform =
+            `translateX(-50%) rotate(${degree}deg)`;
+
+        hourInput.value = hour;
+
+        selectedHour.textContent = hour;
+
+        hours.forEach(item => {
+            item.classList.remove('active');
+
+            if (parseInt(item.dataset.hour) === hour) {
+                item.classList.add('active');
+            }
+        });
+    }
+
+    hours.forEach(item => {
+
+        // Mouse click
+        item.addEventListener('click', function () {
+            setHour(this.dataset.hour);
+        });
+
+        // Mobile touch
+        item.addEventListener('touchstart', function (e) {
+            e.preventDefault();
+            setHour(this.dataset.hour);
+        });
+    });
+
+    // Default 12
+    setHour(12);
+
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const hours = document.querySelectorAll(
+        '#checkOutClock .hour-number'
+    );
+
+    const hourHand = document.getElementById(
+        'checkOutHourHand'
+    );
+
+    const hourInput = document.getElementById(
+        'check_out_hour'
+    );
+
+    const selectedHour = document.getElementById(
+        'checkOutSelectedHour'
+    );
+
+    const ampm = document.getElementById(
+        'check_out_ampm'
+    );
+
+    const checkOut = document.getElementById(
+        'check_out'
+    );
+
+
+    function setHour(hour) {
+
+        hour = parseInt(hour);
+
+        let degree = hour === 12 ? 0 : hour * 30;
+
+        hourHand.style.transform =
+            `translateX(-50%) rotate(${degree}deg)`;
+
+        hourInput.value = hour;
+
+        selectedHour.textContent = hour;
+
+        hours.forEach(item => {
+
+            item.classList.remove('active');
+
+            if (parseInt(item.dataset.hour) === hour) {
+                item.classList.add('active');
+            }
+
+        });
+
+        updateCheckOut();
+    }
+
+
+    function updateCheckOut() {
+
+        const hour = hourInput.value;
+        const period = ampm.value;
+
+        checkOut.value = hour + ':00 ' + period;
+    }
+
+
+    hours.forEach(item => {
+
+        item.addEventListener('click', function () {
+
+            setHour(this.dataset.hour);
+
+        });
+
+        item.addEventListener('touchstart', function (e) {
+
+            e.preventDefault();
+
+            setHour(this.dataset.hour);
+
+        });
+
+    });
+
+
+    ampm.addEventListener('change', function () {
+
+        updateCheckOut();
+
+    });
+
+
+    // Default
+    setHour(12);
+
+});
 </script>
 @endpush
