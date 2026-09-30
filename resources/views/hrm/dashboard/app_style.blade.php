@@ -123,6 +123,7 @@
         margin: 0;
         font-size: 12px;
         color: #64748b;
+        text-align:center;
     }
 
     .btn-checkin {
@@ -1025,4 +1026,133 @@
     margin: 0;
     text-align: center;
 }
+</style>
+
+
+<style>
+    /* Step indicator */
+    .steps {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 22px;
+    }
+
+    .steps::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 12%;
+        right: 12%;
+        height: 2px;
+        background: #dbe3ee;
+    }
+
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .step .circle-num {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto 4px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid #cbd5e1;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .step.done .circle-num {
+        background: #16a34a;
+        border-color: #16a34a;
+        color: #fff;
+    }
+
+    .step.done {
+        color: #0f172a;
+    }
+
+    .step.active .circle-num {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, .18);
+    }
+
+    .step.active {
+        color: #2563eb;
+        font-weight: 700;
+    }
+
+    /* Heading */
+    .ci-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .ci-head .ci-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: #e8f0ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .ci-head h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 17px;
+    }
+
+    .ci-head p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    /* AM / PM toggle */
+    .ampm-toggle {
+        display: flex;
+        background: #e8eef9;
+        border-radius: 10px;
+        padding: 3px;
+        margin-bottom: 18px;
+    }
+
+    .ampm-toggle button {
+        flex: 1;
+        border: 0;
+        background: transparent;
+        border-radius: 8px;
+        padding: 8px 0;
+        font-weight: 700;
+        font-size: 14px;
+        color: #334155;
+        transition: .2s;
+    }
+
+    .ampm-toggle button.active {
+        background: #2563eb;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, .3);
+    }
 </style>

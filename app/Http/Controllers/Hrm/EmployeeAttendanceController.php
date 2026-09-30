@@ -463,6 +463,7 @@ public function attendanceDashboard(Request $request)
    
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'employee_id' => 'required'
         ]);

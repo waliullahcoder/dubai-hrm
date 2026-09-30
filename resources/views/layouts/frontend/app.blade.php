@@ -2,17 +2,22 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>HRM Login | Techno Park Bangladesh</title>
+    <title>Staff Login | {{ $admin_setting->title ?? 'HRM' }}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
 
     <style>
+    :root {
+        --blue: #2563eb;
+        --blue-dark: #1d4ed8;
+        --navy: #0f172a;
+        --muted: #64748b;
+        --border: #dbe3ee;
+    }
+
     * {
         margin: 0;
         padding: 0;
@@ -20,488 +25,350 @@
     }
 
     body {
-
-        font-family: 'Segoe UI', sans-serif;
+        font-family: 'Segoe UI', Roboto, sans-serif;
         min-height: 100vh;
-
-        background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0f766e, #111827);
-        background-size: 400% 400%;
-        animation: bgAnimation 12s ease infinite;
-
+        /* Background photo: put your image at public/assets/login-bg.jpg */
+        background:#fffdfd;
+        background-attachment: fixed;
         display: flex;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
-
+        padding: 20px 16px;
     }
 
-    @keyframes bgAnimation {
-
-        0% {
-            background-position: 0% 50%;
-        }
-
-        50% {
-            background-position: 100% 50%;
-        }
-
-        100% {
-            background-position: 0% 50%;
-        }
-
+    .page {
+        width: 100%;
+        max-width: 430px;
+        position: relative;
     }
 
-    .circle {
-
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, .08);
-        animation: float 8s infinite ease-in-out;
-
-    }
-
-    .circle:nth-child(1) {
-
-        width: 250px;
-        height: 250px;
-        left: -80px;
-        top: -80px;
-
-    }
-
-    .circle:nth-child(2) {
-
-        width: 180px;
-        height: 180px;
-        right: -40px;
-        bottom: -30px;
-
-    }
-
-    .circle:nth-child(3) {
-
-        width: 120px;
-        height: 120px;
-        left: 15%;
-        bottom: 8%;
-
-    }
-
-    @keyframes float {
-
-        50% {
-
-            transform: translateY(-20px);
-
-        }
-
-    }
-
-    .login-wrapper {
-
-        width: 1100px;
-        max-width: 95%;
-        background: rgba(255, 255, 255, .08);
-
-        backdrop-filter: blur(20px);
-
-        border-radius: 25px;
-
-        overflow: hidden;
-
-        box-shadow: 0 25px 70px rgba(0, 0, 0, .45);
-
-    }
-
-    .left-panel {
-
-        background:linear-gradient(135deg, #0b282e, #06b6d4);
-
-        color: #fff;
-
-        padding: 70px 60px;
-
+    /* Language selector */
+    .lang-wrap {
         display: flex;
-
-        flex-direction: column;
-
-        justify-content: center;
-
-        height: 100%;
-
+        justify-content: flex-end;
+        margin-bottom: 10px;
     }
 
-    .logo {
-      
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background: #fff;
-        color: #2563eb;
+    .lang-btn {
+        background: rgba(30, 41, 59, .55);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, .25);
+        color: #fff;
+        border-radius: 14px;
+        padding: 8px 14px;
+        font-size: 14px;
+        font-weight: 600;
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 45px;
-        margin-bottom: 30px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
-        margin-top:20px;
+        gap: 8px;
     }
 
-    .left-panel h1 {
-
-        font-size: 38px;
-        font-weight: 700;
-        margin-bottom: 15px;
-
-    }
-
-    .left-panel p {
-
-        color: #e5e7eb;
-        line-height: 30px;
-        font-size: 17px;
-
-    }
-
-    .features {
-
-        margin-top: 35px;
-
-    }
-
-    .features li {
-
-        list-style: none;
-        margin-bottom: 18px;
-        font-size: 16px;
-
-    }
-
-    .features i {
-
-        margin-right: 10px;
+    .lang-btn:hover,
+    .lang-btn:focus,
+    .lang-btn.show {
+        background: rgba(30, 41, 59, .75);
         color: #fff;
-
     }
 
-    .right-panel {
-
-        background: #ececed;
-
-        padding: 60px;
-
+    .lang-btn i.fa-chevron-down {
+        font-size: 11px;
+        margin-left: 6px;
     }
 
-    .right-panel h2 {
+    /* Logo */
+    .logo-box {
+        text-align: center;
+        padding: 10px 0 24px;
+    }
 
+    .logo-box img {
+        max-width: 230px;
+        max-height: 130px;
+        object-fit: contain;
+    }
+
+    /* Card */
+    .login-card {
+        background: rgba(255, 255, 255, .96);
+        border-radius: 22px;
+        padding: 30px 24px 22px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, .3);
+    }
+
+    .login-card h2 {
+        text-align: center;
+        font-weight: 800;
+        font-size: 28px;
+        color: var(--navy);
+    }
+
+    .login-card h3 {
+        text-align: center;
         font-weight: 700;
-
-        color: #0f172a;
-
+        font-size: 20px;
+        color: var(--blue);
+        margin-top: 4px;
     }
 
     .subtitle {
-
-        color: #64748b;
-
-        margin-bottom: 35px;
-
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+        margin: 6px 0 22px;
     }
 
-    .form-control {
-
-        height: 55px;
-
-        border-radius: 12px;
-
-        padding-left: 45px;
-
-    }
-
-    .form-control:focus {
-
-        border-color: #2563eb;
-
-        box-shadow: 0 0 0 .2rem rgba(37, 99, 235, .15);
-
-    }
-
+    /* Inputs */
     .input-group-custom {
-
         position: relative;
+        margin-bottom: 14px;
+    }
 
-        margin-bottom: 25px;
+    .input-group-custom .form-control {
+        height: 52px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding-left: 46px;
+        padding-right: 46px;
+        font-size: 15px;
+    }
 
+    .input-group-custom .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .input-group-custom .form-control:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 .2rem rgba(37, 99, 235, .15);
     }
 
     .input-group-custom .left-icon {
-
         position: absolute;
-        left: 15px;
-        top: 17px;
-        color: #94a3b8;
-
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 17px;
     }
 
     .input-group-custom .eye {
-
         position: absolute;
-        right: 18px;
-        top: 18px;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #475569;
         cursor: pointer;
-        color: #94a3b8;
-
-    }
-
-    .login-btn {
-
-        width: 100%;
-
-        height: 55px;
-
-        border: none;
-
-        border-radius: 12px;
-
-        background: linear-gradient(135deg, #2563eb, #06b6d4);
-
-        color: #fff;
-
         font-size: 17px;
-
-        font-weight: 700;
-
-        transition: .3s;
-
     }
 
-    .login-btn:hover {
+    /* Remember / forgot */
+    .row-opts {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 4px 0 18px;
+        font-size: 14px;
+        color: #334155;
+    }
 
-        transform: translateY(-2px);
+    .row-opts label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
 
-        box-shadow: 0 15px 35px rgba(37, 99, 235, .25);
-
+    .row-opts input[type=checkbox] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--blue);
     }
 
     .forgot {
-
-        text-decoration: none;
-
-        color: #2563eb;
-
+        color: var(--blue);
         font-weight: 600;
-
+        text-decoration: none;
     }
 
+    .forgot:hover {
+        text-decoration: underline;
+    }
+
+    /* Buttons */
+    .login-btn {
+        width: 100%;
+        height: 54px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: .3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: .25s;
+    }
+
+    .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(37, 99, 235, .35);
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        margin: 18px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    .register-btn {
+        width: 100%;
+        height: 52px;
+        border-radius: 12px;
+        border: 1.5px solid #93b4ea;
+        background: #f1f6ff;
+        color: var(--blue-dark);
+        font-weight: 700;
+        font-size: 15px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: .25s;
+    }
+
+    .register-btn:hover {
+        background: #e3edff;
+        color: var(--blue-dark);
+    }
+
+    /* Footer */
     .footer {
-
         text-align: center;
-
-        margin-top: 30px;
-
-        color: #64748b;
-
-        font-size: 14px;
-
+        color: #fff;
+        font-size: 12.5px;
+        margin-top: 18px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+        line-height: 1.6;
     }
 
-    @media(max-width:991px) {
+    .footer b {
+        font-weight: 700;
+    }
 
-        .left-panel {
-
-            display: none;
-
-        }
-
-        .right-panel {
-
-            padding: 35px;
-
-        }
-
+    .alert {
+        border-radius: 12px;
+        font-size: 14px;
     }
     </style>
-
 </head>
 
 <body>
 
-    <div class="circle"></div>
-    <div class="circle"></div>
-    <div class="circle"></div>
+    <div class="page">
 
-    <div class="login-wrapper">
+        <!-- Language -->
+        <!-- <div class="lang-wrap">
+            <div class="dropdown">
+                <button class="lang-btn dropdown-toggle-custom" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="fas fa-globe"></i>
+                    <span>English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="?lang=en">English</a></li>
+                    <li><a class="dropdown-item" href="?lang=bn">বাংলা</a></li>
+                </ul>
+            </div>
+        </div> -->
 
-        <div class="row g-0">
+        <!-- Logo -->
+        <div class="logo-box">
+            <img src="{{ asset(@$admin_setting->logo) }}" alt="{{ @$admin_setting->title }}">
+        </div>
 
-            <div class="col-lg-6">
+        <!-- Card -->
+        <div class="login-card">
 
-                <div class="left-panel">
+            <h2>Welcome Back</h2>
+            <h3>Staff Login</h3>
+            <p class="subtitle">Sign in to access your account.</p>
 
-                    <div>
+            <form method="POST" action="{{ route('admin.login') }}">
+                @csrf
 
-                    <img src="{{asset(@$admin_setting->logo)}}" class="logo" alt="{{$admin_setting->title}}">
-                    
-                    </div>
+                @if(session('error'))
+                <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
 
-                    <h1>{{$admin_setting->title}}</h1>
-
-                    <ul class="features">
-
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            Staff Management
-                        </li>
-
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            Salary Management
-                        </li>
-
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                           Attendance Management
-                        </li>
-
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            Cash Management
-                        </li>
-
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            Reports & Analytics
-                        </li>
-
-                    </ul>
-
+                <div class="input-group-custom">
+                    <i class="fas fa-user left-icon"></i>
+                    <input type="text" name="user_name" class="form-control"
+                        placeholder="Mobile Number" required autofocus>
                 </div>
 
-            </div>
-
-            <div class="col-lg-6">
-
-                <div class="right-panel">
-
-                    <h2>Welcome Back 👋</h2>
-
-                    <p class="subtitle">
-
-                        Sign in to continue to your HRM Dashboard.
-
-                    </p>
-
-                    <form method="POST" action="{{ route('admin.login') }}">
-
-                        @csrf
-
-                        @if(session('error'))
-
-                        <div class="alert alert-danger">
-
-                            {{ session('error') }}
-
-                        </div>
-
-                        @endif
-
-                        <div class="input-group-custom">
-
-                            <i class="fas fa-user left-icon"></i>
-
-                            <input type="text" name="user_name" class="form-control" value="admin" required>
-
-                        </div>
-
-                        <div class="input-group-custom">
-
-                            <i class="fas fa-lock left-icon"></i>
-
-                            <input type="password" name="password" id="password" class="form-control"
-                                value="12345678" required>
-
-                            <span class="eye" id="togglePassword">
-
-                                <i class="fas fa-eye"></i>
-
-                            </span>
-
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-4">
-
-                            <div>
-
-                                <input type="checkbox" name="remember">
-
-                                Remember Me
-
-                            </div>
-
-                            <a href="#" class="forgot">
-
-                                Forgot Password?
-
-                            </a>
-
-                        </div>
-
-                        <button class="login-btn">
-
-                            <i class="fas fa-sign-in-alt me-2"></i>
-
-                            LOGIN TO HRM
-
-                        </button>
-
-                    </form>
-
-                    <div class="d-flex justify-content-between mb-4">
-                            <div>Please fill the data </div>
-
-                            <a href="{{url('staff-registration')}}" class="forgot">
-                                Join as a Staff
-                            </a>
-                    </div>
-
-                    <div class="footer">
-
-                        <hr>
-
-                        © {{ date('Y') }}
-
-                        <b>Techno Park Bangladesh</b>
-
-                        <br>
-
-                        Employee & Payroll Management System
-
-                    </div>
-
+                <div class="input-group-custom">
+                    <i class="fas fa-lock left-icon"></i>
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="Password" required>
+                    <span class="eye" id="togglePassword"><i class="fas fa-eye"></i></span>
                 </div>
 
-            </div>
+                <div class="row-opts">
+                    <label>
+                        <input type="checkbox" name="remember"> Remember Me
+                    </label>
+                    <a href="#" class="forgot">Forgot Password?</a>
+                </div>
 
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-right-to-bracket"></i>
+                    LOGIN AS STAFF
+                </button>
+            </form>
+
+            <div class="divider">OR</div>
+
+            <a href="{{ url('staff-registration') }}" class="register-btn">
+                <i class="fas fa-file-circle-plus"></i>
+                Register as Staff
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            © {{ date('Y') }} <b>{{ @$admin_setting->title }}</b><br>
+            Employee &amp; Payroll Management System
         </div>
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     const toggle = document.getElementById('togglePassword');
-
     const password = document.getElementById('password');
 
-    toggle.onclick = function() {
-
-        const type = password.type === 'password' ? 'text' : 'password';
-
-        password.type = type;
-
-        toggle.innerHTML = password.type === 'password' ?
-            '<i class="fas fa-eye"></i>' :
-            '<i class="fas fa-eye-slash"></i>';
-
-    }
+    toggle.addEventListener('click', function() {
+        const show = password.type === 'password';
+        password.type = show ? 'text' : 'password';
+        toggle.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    });
     </script>
 
 </body>

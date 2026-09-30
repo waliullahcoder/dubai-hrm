@@ -33,6 +33,30 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     @csrf
 
                     @if(($staff->location_varified == NULL || $staff->location_varified != date('Y-m-d')))
+<button type="button" id="showDivBtn" class="btn btn-primary">
+    Set Location
+</button>
+
+<div id="myDiv" style="display: none;">
+                    <!-- Steps -->
+                    <div class="steps">
+                        <div class="step">
+                            <div class="circle-num">1</div>
+                            Location
+                        </div>
+                        <div class="step">
+                            <div class="circle-num">2</div>
+                            Department
+                        </div>
+                        <div class="step">
+                            <div class="circle-num">3</div>
+                            Checkin
+                        </div>
+                        <div class="step">
+                            <div class="circle-num">4</div>
+                            Checkout
+                        </div>
+                    </div>
                      <input type="hidden" name="employee_id" value="{{ $staff->id }}">
                     <input type="hidden" name="location_varified" value="{{ date('Y-m-d') }}">
                      <div class="col-lg-12 col-sm-12">
@@ -75,7 +99,7 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     </button>
                     
                     
-
+</div>
                     <!-- Check In -->
                     @elseif (
                             $staff->location_varified == date('Y-m-d')
@@ -96,23 +120,52 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     <input type="hidden" name="check_in_latitude" id="check_in_latitude" value="23.41">
                     <input type="hidden" name="check_in_longitude" id="check_in_longitude" value="91.42">
 
-                    <div class="status-box">
-    <div class="status-info">
 
-        <div class="status-icon-wrapper">
-            <div class="status-icon">
-                <i class="far fa-circle"></i>
-            </div>
+                 
 
-            <h6>Not yet Checked In</h6>
-        </div>
+                                            
+                    <!-- Steps -->
+                    <div class="steps">
+                        <div class="step done">
+                            <div class="circle-num"><i class="fas fa-check"></i></div>
+                            Location
+                        </div>
+                        <div class="step done">
+                            <div class="circle-num"><i class="fas fa-check"></i></div>
+                            Department
+                        </div>
+                        <div class="step active">
+                            <div class="circle-num">3</div>
+                            Checkin
+                        </div>
+                        <div class="step">
+                            <div class="circle-num">4</div>
+                            Checkout
+                        </div>
+                    </div>
 
-        <p>
-            <strong>Location Verified Successfully!</strong>
-        </p>
+                    <!-- Heading -->
+                    <div class="ci-head">
+                        <div class="ci-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <div>
+                            <h6>Select Check In Time</h6>
+                            <p>Choose your check in hour</p>
+                        </div>
+                    </div>
 
-    </div>
-</div>
+                    <!-- AM / PM -->
+                    <div class="ampm-toggle" data-target="check_in_ampm" data-label="#checkInSelectedAmPm">
+                        <button type="button" data-val="AM" class="active">AM</button>
+                        <button type="button" data-val="PM">PM</button>
+                    </div>
+                    <div class="col-md-12 d-none">
+                        <select name="check_in_ampm" id="check_in_ampm" class="form-control">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+
+                        
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="clock-wrapper">
@@ -140,13 +193,13 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                                     <input type="hidden" name="check_in_hour" id="check_in_hour" value="12">
                                 </div>
 
-                                <div class="col-md-12">
+                                <!-- <div class="col-md-12">
                                     <label class="form-label">AM / PM</label>
                                     <select name="check_in_ampm" id="check_in_ampm" class="form-control">
                                         <option value="AM">AM</option>
                                         <option value="PM">PM</option>
                                     </select>
-                                </div>
+                                </div> -->
                             </div>
 
 
@@ -171,7 +224,7 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                             <h6>
                                 <div class="status-icon">
                                     <i class="fas fa-check"></i>
-                                </div><strong> Checked In Successfully!</strong>
+                                </div><strong> You are already Checked In</strong>
                             </h6>
                             <p class="subtitle">
                                 Start your work by checking in
@@ -185,6 +238,7 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                                     Meters • Allowed 200 meters
                                 </span>
                             </div>
+                            
 
                             <!-- Check In Time -->
                             @if($todayAttendancecheck && $todayAttendancecheck?->check_in)
@@ -219,53 +273,83 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                         </div>
 
                     </div>
-                      {{-- Check Out --}}
-                    <div class="col-md-12">
+                    <!-- Steps -->
+                    <div class="steps">
+                        <div class="step done">
+                            <div class="circle-num"><i class="fas fa-check"></i></div>
+                            Location
+                        </div>
+                        <div class="step done">
+                            <div class="circle-num"><i class="fas fa-check"></i></div>
+                            Department
+                        </div>
+                        <div class="step done">
+                            <div class="circle-num"><i class="fas fa-check"></i></div>
+                            Checkin
+                        </div>
+                        <div class="step">
+                            <div class="circle-num">4</div>
+                            Checkout
+                        </div>
+                    </div>
+                                        <!-- AM / PM -->
+                    <div class="ampm-toggle" data-target="check_in_ampm" data-label="#checkInSelectedAmPm">
+                        <button type="button" data-val="AM" class="active">AM</button>
+                        <button type="button" data-val="PM">PM</button>
+                    </div>
+                    <div class="col-md-12 d-none">
+                        <select name="check_in_ampm" id="check_in_ampm" class="form-control">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                                        {{-- Check Out --}}
+                                        <div class="col-md-12">
 
-    <div class="clock-wrapper">
-        <div class="clock" id="checkOutClock">
+                        <div class="clock-wrapper">
+                            <div class="clock" id="checkOutClock">
 
-            @for($i = 1; $i <= 12; $i++)
-                <div class="hour-number hour-{{ $i }}"
-                     data-hour="{{ $i }}">
-                    {{ $i }}
-                </div>
-            @endfor
+                                @for($i = 1; $i <= 12; $i++)
+                                    <div class="hour-number hour-{{ $i }}"
+                                        data-hour="{{ $i }}">
+                                        {{ $i }}
+                                    </div>
+                                @endfor
 
-            <div class="clock-center"></div>
+                                <div class="clock-center"></div>
 
-            <div class="hour-hand" id="checkOutHourHand"></div>
+                                <div class="hour-hand" id="checkOutHourHand"></div>
 
-        </div>
+                            </div>
 
-        <div class="selected-time">
-            <span id="checkOutSelectedHour">12</span>
-        </div>
-    </div>
+                            <div class="selected-time">
+                                <span id="checkOutSelectedHour">12</span>
+                            </div>
+                        </div>
 
-    <div class="row g-2 mt-2">
-        <div class="col-12">
-            <select name="check_out_ampm"
-                    id="check_out_ampm"
-                    class="form-control">
-                <option value="PM">PM</option>
-                <option value="AM">AM</option>
-                
+                        <!-- <div class="row g-2 mt-2">
+                            <div class="col-12">
+                                <select name="check_out_ampm"
+                                        id="check_out_ampm"
+                                        class="form-control">
+                                    <option value="PM">PM</option>
+                                    <option value="AM">AM</option>
+                                    
 
-            </select>
-        </div>
-    </div>
+                                </select>
+                            </div>
+                        </div> -->
 
-    <input type="hidden"
-           name="check_out_hour"
-           id="check_out_hour"
-           value="12">
+                        <input type="hidden"
+                            name="check_out_hour"
+                            id="check_out_hour"
+                            value="12">
 
-    <input type="hidden"
-           name="check_out"
-           id="check_out">
-</div>
-                    
+                        <input type="hidden"
+                            name="check_out"
+                            id="check_out">
+                    </div>
+                                        
                     
                     <br>
 
@@ -279,16 +363,37 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     <!-- Checked In and Checked Out Both Done -->
 
                     @if($todayAttendancecheck?->check_in != null && $todayAttendancecheck?->check_out != null)
+                    
                     <div class="status-box">
                         <!-- Big Status Icon -->
                         <div class="status-info" style="text-align:center">
+                            <!-- Steps -->
+                            <div class="steps">
+                                <div class="step done">
+                                    <div class="circle-num"><i class="fas fa-check"></i></div>
+                                    Location
+                                </div>
+                                <div class="step done">
+                                    <div class="circle-num"><i class="fas fa-check"></i></div>
+                                    Department
+                                </div>
+                                <div class="step done">
+                                    <div class="circle-num"><i class="fas fa-check"></i></div>
+                                    Checkin
+                                </div>
+                                <div class="step done">
+                                    <div class="circle-num"><i class="fas fa-check"></i></div>
+                                    Checkout
+                                </div>
+                            </div>
                             <h6>
                                 <div class="status-icon">
                                     <i class="fas fa-check"></i>
                                 </div><strong> Checked Out Successfully!</strong>
                             </h6>
                             <p class="subtitle">
-                                Today Working Summary
+                               Hotel : {{$staff->hotel?->name}}<br>
+                               Department : {{\App\Models\Category::find($staff->department_id)?->name}}
                             </p>
                             <!-- Check In Time -->
                             @if($todayAttendancecheck && $todayAttendancecheck?->check_in)
@@ -589,5 +694,34 @@ $(document).ready(function () {
     });
 
 });
+
+
+$(document).on('click', '.ampm-toggle button', function () {
+    const $wrap = $(this).closest('.ampm-toggle');
+    const val = $(this).data('val');
+
+    $wrap.find('button').removeClass('active');
+    $(this).addClass('active');
+
+    $('#' + $wrap.data('target')).val(val).trigger('change'); // apnar JS ei change dhore
+    $($wrap.data('label')).text(val);                         // "Selected Time" box e AM/PM
+});
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#showDivBtn').click(function () {
+            $('#myDiv').toggle();
+
+            // Button text change
+            if ($('#myDiv').is(':visible')) {
+                $(this).text('Hide Location');
+            } else {
+                $(this).text('Show Location');
+            }
+        });
+
+    });
 </script>
 @endpush
