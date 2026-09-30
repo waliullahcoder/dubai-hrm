@@ -1155,4 +1155,7 @@
         color: #fff;
         box-shadow: 0 4px 10px rgba(37, 99, 235, .3);
     }
+    .marginbody{
+        margin:10px;
+    }
 </style>
