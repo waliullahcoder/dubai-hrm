@@ -74,10 +74,22 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                         <i class="fas fa-map-marker-alt"></i> Confirm Location
                     </button>
                     
-                    @endif
+                    
 
                     <!-- Check In -->
-                    @if($staff->location_varified == date('Y-m-d'))
+                    @elseif (
+                            $staff->location_varified == date('Y-m-d')
+                            &&
+                            (
+                                !$todayAttendancecheck
+                                ||
+                                (
+                                    $todayAttendancecheck
+                                    && $todayAttendancecheck->check_in
+                                    && $todayAttendancecheck->check_out
+                                )
+                            )
+                        )
                     <input type="hidden" name="employee_id[]" value="{{ $staff->id }}">
                     <input type="hidden" name="attendance_date" value="{{ date('Y-m-d') }}">
                     <input type="hidden" name="attendance_status" value="Present">
@@ -85,15 +97,22 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     <input type="hidden" name="check_in_longitude" id="check_in_longitude" value="91.42">
 
                     <div class="status-box">
-                        <div class="status-info">
-                            <h6 style="text-align:center">
-                                <div class="status-icon">
-                                    <i class="far fa-circle" style="color:white"></i>
-                                </div> Not yet Checked In
-                            </h6>
-                            <p style="text-align:center"><strong> Location Varified Successfully!</strong></p>
-                        </div>
-                    </div>
+    <div class="status-info">
+
+        <div class="status-icon-wrapper">
+            <div class="status-icon">
+                <i class="far fa-circle"></i>
+            </div>
+
+            <h6>Not yet Checked In</h6>
+        </div>
+
+        <p>
+            <strong>Location Verified Successfully!</strong>
+        </p>
+
+    </div>
+</div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="clock-wrapper">
@@ -202,9 +221,6 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                     </div>
                       {{-- Check Out --}}
                     <div class="col-md-12">
-    <label class="form-label">
-        <i class="fas fa-sign-out-alt"></i> Check Out
-    </label>
 
     <div class="clock-wrapper">
         <div class="clock" id="checkOutClock">
@@ -228,13 +244,13 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
     </div>
 
     <div class="row g-2 mt-2">
-        <div class="col-6">
+        <div class="col-12">
             <select name="check_out_ampm"
                     id="check_out_ampm"
                     class="form-control">
-
-                <option value="AM">AM</option>
                 <option value="PM">PM</option>
+                <option value="AM">AM</option>
+                
 
             </select>
         </div>
@@ -281,17 +297,25 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                                 <table class="attendance-table">
                                     <tr>
                                         <td>Check In</td>
-                                        <td><strong>{{ $todayAttendancecheck?->check_in ?? '--:--' }}</strong></td>
+                                        <td><strong>
+                                            {{ $todayAttendancecheck?->check_in
+    ? Carbon\Carbon::parse($todayAttendancecheck->check_in)->format('g A')
+    : '' }}
+                                        </strong></td>
                                     </tr>
 
                                     <tr>
                                         <td>Check Out</td>
-                                        <td><strong>{{ $todayAttendancecheck?->check_out ?? '--:--' }}</strong></td>
+                                        <td><strong>
+                                            {{ $todayAttendancecheck?->check_out
+    ? Carbon\Carbon::parse($todayAttendancecheck->check_out)->format('g A')
+    : '' }}
+                                           </strong></td>
                                     </tr>
 
                                     <tr>
                                         <td>Worked Hours</td>
-                                        <td><strong>{{ $todayAttendancecheck?->worked_hours ?? '0' }}</strong></td>
+                                        <td><strong>{{ number_format($todayAttendancecheck?->worked_hours) ?? '0' }}</strong></td>
                                     </tr>
 
                                     <tr>
@@ -327,6 +351,222 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
 <script>
 $(document).ready(function () {
 
+    // ==========================================
+    // Convert 12 Hour -> 24 Hour
+    // ==========================================
+    function convertTo24Hour(hour, ampm) {
+
+        hour = parseInt(hour);
+
+        if (ampm === 'AM') {
+
+            if (hour === 12) {
+                hour = 0;
+            }
+
+        } else {
+
+            if (hour !== 12) {
+                hour += 12;
+            }
+
+        }
+
+        return String(hour).padStart(2, '0') + ':00:00';
+    }
+
+
+    // ==========================================
+    // CHECK IN
+    // ==========================================
+    function updateCheckIn() {
+
+        let hour = $('#check_in_hour').val();
+        let ampm = $('#check_in_ampm').val();
+
+        let time = convertTo24Hour(hour, ampm);
+
+        $('#check_in').val(time);
+
+        console.log('Check In:', time);
+    }
+
+
+    // ==========================================
+    // CHECK OUT
+    // ==========================================
+    function updateCheckOut() {
+
+        let hour = $('#check_out_hour').val();
+        let ampm = $('#check_out_ampm').val();
+
+        let time = convertTo24Hour(hour, ampm);
+
+        $('#check_out').val(time);
+
+        console.log('Check Out:', time);
+    }
+
+
+    // ==========================================
+    // Check In Clock
+    // ==========================================
+    const checkInClock = document.getElementById('checkInClock');
+
+    if (checkInClock) {
+
+        const hourHand = document.getElementById('checkInHourHand');
+        const hourInput = document.getElementById('check_in_hour');
+        const selectedHour = document.getElementById('checkInSelectedHour');
+
+        const hours = document.querySelectorAll(
+            '#checkInClock .hour-number'
+        );
+
+
+        function setCheckInHour(hour) {
+
+            hour = parseInt(hour);
+
+            let degree = hour === 12 ? 0 : hour * 30;
+
+            hourHand.style.transform =
+                `translateX(-50%) rotate(${degree}deg)`;
+
+            hourInput.value = hour;
+
+            selectedHour.textContent = hour;
+
+
+            hours.forEach(item => {
+
+                item.classList.remove('active');
+
+                if (parseInt(item.dataset.hour) === hour) {
+                    item.classList.add('active');
+                }
+
+            });
+
+
+            updateCheckIn();
+        }
+
+
+        hours.forEach(item => {
+
+            item.addEventListener('click', function () {
+                setCheckInHour(this.dataset.hour);
+            });
+
+
+            item.addEventListener('touchstart', function (e) {
+
+                e.preventDefault();
+
+                setCheckInHour(this.dataset.hour);
+
+            });
+
+        });
+
+
+        setCheckInHour(
+            $('#check_in_hour').val() || 12
+        );
+
+
+        $('#check_in_ampm').on('change', function () {
+            updateCheckIn();
+        });
+
+    }
+
+
+    // ==========================================
+    // Check Out Clock
+    // ==========================================
+    const checkOutClock = document.getElementById('checkOutClock');
+
+    if (checkOutClock) {
+
+        const hourHand = document.getElementById('checkOutHourHand');
+        const hourInput = document.getElementById('check_out_hour');
+        const selectedHour = document.getElementById('checkOutSelectedHour');
+
+        const hours = document.querySelectorAll(
+            '#checkOutClock .hour-number'
+        );
+
+
+        function setCheckOutHour(hour) {
+
+            hour = parseInt(hour);
+
+            let degree = hour === 12 ? 0 : hour * 30;
+
+            hourHand.style.transform =
+                `translateX(-50%) rotate(${degree}deg)`;
+
+            hourInput.value = hour;
+
+            selectedHour.textContent = hour;
+
+
+            hours.forEach(item => {
+
+                item.classList.remove('active');
+
+                if (parseInt(item.dataset.hour) === hour) {
+                    item.classList.add('active');
+                }
+
+            });
+
+
+            updateCheckOut();
+        }
+
+
+        hours.forEach(item => {
+
+            item.addEventListener('click', function () {
+                setCheckOutHour(this.dataset.hour);
+            });
+
+
+            item.addEventListener('touchstart', function (e) {
+
+                e.preventDefault();
+
+                setCheckOutHour(this.dataset.hour);
+
+            });
+
+        });
+
+
+        setCheckOutHour(
+            $('#check_out_hour').val() || 12
+        );
+
+
+        $('#check_out_ampm').on('change', function () {
+            updateCheckOut();
+        });
+
+    }
+
+
+    // Initial values
+    updateCheckIn();
+    updateCheckOut();
+
+});
+</script>
+<script>
+$(document).ready(function () {
+
     $('#hotel_id').on('change', function () {
 
         let address = $(this)
@@ -347,282 +587,6 @@ $(document).ready(function () {
             );
         }
     });
-
-});
-</script>
-<script>
-// user's device GPS coordinate auto display
-function getCurrentLocation() {
-
-    if (!navigator.geolocation) {
-
-        alert('GPS is not supported by your browser.');
-        return;
-
-    }
-
-    navigator.geolocation.getCurrentPosition(
-
-        function(position) {
-
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-
-            document.getElementById('check_in_latitude').value =
-                latitude.toFixed(7);
-
-            document.getElementById('check_in_longitude').value =
-                longitude.toFixed(7);
-
-            // Checkout-এর জন্যও current location রাখা
-            document.getElementById('check_out_latitude').value =
-                latitude.toFixed(7);
-
-            document.getElementById('check_out_longitude').value =
-                longitude.toFixed(7);
-
-        },
-
-        function(error) {
-
-            if (error.code === error.PERMISSION_DENIED) {
-
-              //  alert('Please allow GPS/Location permission.');
-
-            } else if (error.code === error.POSITION_UNAVAILABLE) {
-
-                alert('Location information is unavailable.');
-
-            } else if (error.code === error.TIMEOUT) {
-
-                alert('Location request timed out.');
-
-            } else {
-
-                alert('Unable to get your location.');
-
-            }
-
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 15000,
-            maximumAge: 0
-        }
-
-    );
-
-}
-
-
-// Page load হলে GPS নেওয়া হবে
-document.addEventListener('DOMContentLoaded', function() {
-
-    getCurrentLocation();
-
-});
-</script>
-<script>
-    function convertTo24Hour(hour, ampm) {
-
-        hour = parseInt(hour);
-
-        if (ampm === 'AM') {
-            if (hour === 12) {
-                hour = 0;
-            }
-        } else {
-            if (hour !== 12) {
-                hour += 12;
-            }
-        }
-
-        return String(hour).padStart(2, '0') + ':00:00';
-    }
-
-
-    function updateCheckIn() {
-
-        let hour = $('#check_in_hour').val();
-        let ampm = $('#check_in_ampm').val();
-
-        $('#check_in').val(
-            convertTo24Hour(hour, ampm)
-        );
-    }
-
-
-    function updateCheckOut() {
-
-        let hour = $('#check_out_hour').val();
-        let ampm = $('#check_out_ampm').val();
-
-        $('#check_out').val(
-            convertTo24Hour(hour, ampm)
-        );
-    }
-
-
-    $('#check_in_hour, #check_in_ampm').on('change', function () {
-        updateCheckIn();
-    });
-
-
-    $('#check_out_hour, #check_out_ampm').on('change', function () {
-        updateCheckOut();
-    });
-
-
-    // Initial value
-    updateCheckIn();
-    updateCheckOut();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const clock = document.getElementById('checkInClock');
-    const hourHand = document.getElementById('checkInHourHand');
-    const hourInput = document.getElementById('check_in_hour');
-    const selectedHour = document.getElementById('checkInSelectedHour');
-
-    const hours = document.querySelectorAll('#checkInClock .hour-number');
-
-    function setHour(hour) {
-
-        hour = parseInt(hour);
-
-        // 12 = 0 degree
-        let degree = hour === 12 ? 0 : hour * 30;
-
-        hourHand.style.transform =
-            `translateX(-50%) rotate(${degree}deg)`;
-
-        hourInput.value = hour;
-
-        selectedHour.textContent = hour;
-
-        hours.forEach(item => {
-            item.classList.remove('active');
-
-            if (parseInt(item.dataset.hour) === hour) {
-                item.classList.add('active');
-            }
-        });
-    }
-
-    hours.forEach(item => {
-
-        // Mouse click
-        item.addEventListener('click', function () {
-            setHour(this.dataset.hour);
-        });
-
-        // Mobile touch
-        item.addEventListener('touchstart', function (e) {
-            e.preventDefault();
-            setHour(this.dataset.hour);
-        });
-    });
-
-    // Default 12
-    setHour(12);
-
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const hours = document.querySelectorAll(
-        '#checkOutClock .hour-number'
-    );
-
-    const hourHand = document.getElementById(
-        'checkOutHourHand'
-    );
-
-    const hourInput = document.getElementById(
-        'check_out_hour'
-    );
-
-    const selectedHour = document.getElementById(
-        'checkOutSelectedHour'
-    );
-
-    const ampm = document.getElementById(
-        'check_out_ampm'
-    );
-
-    const checkOut = document.getElementById(
-        'check_out'
-    );
-
-
-    function setHour(hour) {
-
-        hour = parseInt(hour);
-
-        let degree = hour === 12 ? 0 : hour * 30;
-
-        hourHand.style.transform =
-            `translateX(-50%) rotate(${degree}deg)`;
-
-        hourInput.value = hour;
-
-        selectedHour.textContent = hour;
-
-        hours.forEach(item => {
-
-            item.classList.remove('active');
-
-            if (parseInt(item.dataset.hour) === hour) {
-                item.classList.add('active');
-            }
-
-        });
-
-        updateCheckOut();
-    }
-
-
-    function updateCheckOut() {
-
-        const hour = hourInput.value;
-        const period = ampm.value;
-
-        checkOut.value = hour + ':00 ' + period;
-    }
-
-
-    hours.forEach(item => {
-
-        item.addEventListener('click', function () {
-
-            setHour(this.dataset.hour);
-
-        });
-
-        item.addEventListener('touchstart', function (e) {
-
-            e.preventDefault();
-
-            setHour(this.dataset.hour);
-
-        });
-
-    });
-
-
-    ampm.addEventListener('change', function () {
-
-        updateCheckOut();
-
-    });
-
-
-    // Default
-    setHour(12);
 
 });
 </script>

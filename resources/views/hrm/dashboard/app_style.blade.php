@@ -110,17 +110,7 @@
         margin-bottom: 14px;
     }
 
-    .status-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #e6f9f0;
-        color: #10b981;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-    }
+    
 
     .status-info h6 {
         margin: 0;
@@ -295,23 +285,7 @@
                         background: rgba(0, 255, 136, 0.08);
                     }
 
-                    .status-icon {
-                        width: 62px;
-                        height: 62px;
-                        min-width: 62px;
-                        border-radius: 50%;
-                        background: rgba(255, 255, 255, 0.12);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border: 2px solid rgba(255, 255, 255, 0.2);
-                        margin-left:40%;
-                    }
-
-                    .status-icon i {
-                        font-size: 30px;
-                        color: #fff;
-                    }
+                   
 
                     .status-info {
                         flex: 1;
@@ -333,7 +307,6 @@
                     }
 
                     .location-status {
-                        display: flex;
                         align-items: center;
                         gap: 7px;
                         margin-bottom: 10px;
@@ -1013,5 +986,43 @@
     font-size: 28px;
     font-weight: 600;
     color: #0d6efd;
+}
+.status-icon-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    background: #727885;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 8px auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.status-icon i {
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    line-height: 1;
+    color: #fff !important;
+}
+
+.status-icon-wrapper h6 {
+    width: 100%;
+    margin: 0;
+    text-align: center;
 }
 </style>

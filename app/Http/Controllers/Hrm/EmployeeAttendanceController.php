@@ -463,12 +463,8 @@ public function attendanceDashboard(Request $request)
    
     public function store(Request $request)
     {
-        $request->check_in = Carbon::createFromTime((int) $request->check_in_hour, 0, 0)->format('H:i:s');
-        $request->check_out = Carbon::createFromTime((int) $request->check_out_hour, 0, 0)->format('H:i:s');
         $request->validate([
-            'employee_id' => 'required',
-            // 'attendance_date' => 'required',
-            // 'attendance_status' => 'required',
+            'employee_id' => 'required'
         ]);
 
         if(Auth::user()->role_status==4 && $request->location_varified){
