@@ -130,7 +130,7 @@ class AdminController extends Controller
                 ->sum('expense_amount');
         }
 
-        
+
         return view('hrm.dashboard.dashboard', compact(
             'total_staff',
             'total_hotel',
@@ -144,7 +144,7 @@ class AdminController extends Controller
             'advance_payments'
         ));
         }
-        
+
     }
 
     /**
@@ -185,41 +185,88 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Profile page
      */
     public function edit()
     {
         $admin = Auth::user();
-        return view('admin.profile.index', compact('admin'));
+
+        // Profile completion (percentage + missing items)
+        [$completion, $missing] = $this->profileCompletion($admin);
+
+        return view('admin.profile.index', compact('admin', 'completion', 'missing'));
     }
 
-    public function changeImages(Request $request)
+    /**
+     * Calculate profile completion.
+     * Every item below is worth the same share of 100%.
+     */
+    private function profileCompletion($user): array
     {
-        $images = User::findOrFail(Auth::user()->id);
-        $cover = $request->file('cover_image');
-        if (isset($cover)) {
-            $path = 'backend/images/avatar/';
-            $file_name = 'cover-' . Str::random(40) . '.' . $cover->getClientOriginalExtension();
-            $path_file_name = $path . $file_name;
-            $cover->move($path, $file_name);
-            if (file_exists($images->cover_image)) {
-                unlink($images->cover_image);
+        $items = [
+            'name'          => 'Name',
+            'email'         => 'Email address',
+            'phone'         => 'Mobile number',
+            'address'       => 'Address',
+            'image'         => 'Profile photo',
+            'id_card_front' => 'ID card (front side)',
+            'id_card_back'  => 'ID card (back side)',
+            'passport_image'=> 'Passport',
+        ];
+
+        $missing = [];
+        foreach ($items as $column => $label) {
+            if (empty($user->$column)) {
+                $missing[$column] = $label;
             }
-            $images->cover_image = $path_file_name;
         }
 
-        $profile = $request->file('profile_image');
-        if (isset($profile)) {
-            $path = 'backend/images/avatar/';
-            $file_name = 'profile-' . Str::random(40) . '.' . $profile->getClientOriginalExtension();
-            $path_file_name = $path . $file_name;
-            $profile->move($path, $file_name);
-            if (file_exists($images->image)) {
-                unlink($images->image);
+        $filled = count($items) - count($missing);
+        $percent = (int) round(($filled / count($items)) * 100);
+
+        return [$percent, $missing];
+    }
+
+    /**
+     * Upload / change profile photo, ID card (front/back) and passport.
+     */
+    public function changeImages(Request $request)
+    {
+        $request->validate([
+            'profile_image'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'id_card_front'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'id_card_back'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'passport_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
+
+        $user = User::findOrFail(Auth::user()->id);
+
+        // input name => [db column, file prefix, folder]
+        $uploads = [
+            'profile_image'  => ['image',          'profile',  'backend/images/avatar/'],
+            'id_card_front'  => ['id_card_front',  'id-front', 'backend/images/documents/'],
+            'id_card_back'   => ['id_card_back',   'id-back',  'backend/images/documents/'],
+            'passport_image' => ['passport_image', 'passport', 'backend/images/documents/'],
+        ];
+
+        foreach ($uploads as $input => [$column, $prefix, $path]) {
+            if (!$request->hasFile($input)) {
+                continue;
             }
-            $images->image = $path_file_name;
+
+            $file = $request->file($input);
+            $file_name = $prefix . '-' . Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $file->move($path, $file_name);
+
+            // delete old file
+            if (!empty($user->$column) && file_exists(public_path($user->$column))) {
+                @unlink(public_path($user->$column));
+            }
+
+            $user->$column = $path . $file_name;
         }
-        $images->save();
+
+        $user->save();
         return redirect()->back()->withSuccessMessage('Image Changed Successfully!');
     }
 
@@ -231,6 +278,7 @@ class AdminController extends Controller
         $request->validate([
             'email' => 'unique:users,email,' . Auth::user()->id,
             'name' => 'required',
+            'phone' => 'nullable|string|max:20',
         ]);
         $admin = User::findOrFail(Auth::user()->id);
         $admin->name = $request->name;
