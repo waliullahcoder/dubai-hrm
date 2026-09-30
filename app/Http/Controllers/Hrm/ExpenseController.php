@@ -149,6 +149,108 @@ class ExpenseController extends Controller
             ->withSuccessMessage('Expense added successfully.');
     }
 
+     // RTA Bus expense head id (apnar dropdown e "313 - RTA Bus")
+    private const RTA_HEAD_ID = 313;
+
+    // Company Bus er head id. coa_setups e naam e "Company" ache emon head khuje,
+    // na pele 313 e fallback kore. Apnar asol id jani thakle ekhane fixed number din.
+    private function companyHeadId(): int
+    {
+        return (int) (DB::table('coa_setups')
+            ->where('parent_id', 4)
+            ->where('head_name', 'like', '%Company%')
+            ->value('id') ?? self::RTA_HEAD_ID);
+    }
+
+    /**
+     * Transport page (Step 1-5)
+     */
+    public function transport()
+    {
+        $staff = \App\Models\Staff::where('user_id', auth()->id())->firstOrFail();
+
+        // Dropdown location list - nijer shohor/area onujayi edit korun
+        $locations = [
+            'Satwa',
+            'Madinat Jumeirah',
+            'Deira',
+            'Bur Dubai',
+            'Al Barsha',
+            'Dubai Marina',
+            'Al Qusais',
+            'Karama',
+        ];
+
+        $todayTrips = DB::table('hrm_expense')
+            ->where('employee_id', $staff->id)
+            ->whereDate('expense_date', today())
+            ->whereIn('expense_head_id', array_unique([self::RTA_HEAD_ID, $this->companyHeadId()]))
+            ->orderBy('id')
+            ->get();
+           // dd($todayTrips);
+
+        return view('hrm.expense.transport', compact('staff', 'locations', 'todayTrips'));
+    }
+
+    /**
+     * Confirm Transport - 1 ta trip = 1 ta hrm_expense row
+     */
+    public function transportStore(Request $request)
+    {
+        $request->validate([
+            'transport_type'  => 'required|in:company,rta',
+            'trips'           => 'required_if:transport_type,rta|array',
+            'trips.*.from'    => 'required_with:trips|string|max:100',
+            'trips.*.to'      => 'required_with:trips|string|max:100|different:trips.*.from',
+            'trips.*.amount'  => 'required_with:trips|numeric|min:0',
+        ]);
+
+        $staff = \App\Models\Staff::where('user_id', auth()->id())->firstOrFail();
+        $today = now();
+
+        $rows = [];
+        if ($request->transport_type === 'company') {
+            $headId = $this->companyHeadId();
+            $rows[] = ['head' => $headId, 'amount' => 0, 'remarks' => 'Company Bus'];
+            $typeLabel = 'Company Bus';
+        } else {
+            foreach ($request->trips as $t) {
+                $rows[] = [
+                    'head'    => self::RTA_HEAD_ID,
+                    'amount'  => $t['amount'],
+                    'remarks' => $t['from'] . ' → ' . $t['to'],
+                ];
+            }
+            $typeLabel = 'RTA Bus';
+        }
+
+        DB::transaction(function () use ($rows, $staff, $today) {
+            foreach ($rows as $r) {
+                DB::table('hrm_expense')->insert([
+                    'expense_head_id' => $r['head'],
+                    'employee_id'     => $staff->id,
+                    'expense_month'   => $today->month,
+                    'expense_year'    => $today->year,
+                    'expense_amount'  => $r['amount'],
+                    'expense_date'    => $today->toDateString(),
+                    'remarks'         => $r['remarks'],
+                    'status'          => 'Pending',
+                    'created_by'      => auth()->id(),
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ]);
+            }
+        });
+
+        return redirect()->route('admin.transport.index')->with('recorded', [
+            'type'   => $typeLabel,
+            'route'  => collect($rows)->pluck('remarks')->implode("\n"),
+            'amount' => collect($rows)->sum('amount'),
+            'date'   => $today->format('j F Y'),
+        ]);
+    }
+
+
     public function edit($id)
     {
         $expense = DB::table('hrm_expense')->find($id);

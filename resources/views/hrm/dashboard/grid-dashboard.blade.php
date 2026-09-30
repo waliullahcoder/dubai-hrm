@@ -7,7 +7,7 @@
                     <span class="menu-title">Working Hours</span>
                 </a>
 
-                <a href="{{url('admin/expense/create')}}" class="menu-card">
+                <a href="{{url('admin/transport')}}" class="menu-card">
                     <div class="menu-icon">
                         <i class="fas fa-bus"></i>
                     </div>
