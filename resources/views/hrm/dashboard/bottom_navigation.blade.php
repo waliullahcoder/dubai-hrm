@@ -5,7 +5,7 @@
             </a>
             <a href="{{url('admin/payment-report')}}" class="nav-item">
                 <i class="far fa-clock"></i>
-                <span>Payment History</span>
+                <span>Payment Report</span>
             </a>
             <a href="{{url('admin/profile')}}" class="nav-item">
                 <i class="far fa-user"></i>

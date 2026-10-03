@@ -117,8 +117,8 @@ class LoanController extends Controller
           if($staff){
               $department = Category::where('id', $staff->department_id)->first();
               $loans = DB::table('hrm_employee_loan')->orderBy('id','desc')->where('employee_id', $request->employee_id)->get();
-             
-              return view('hrm.employee_loan.advance-loan-report-print', compact('staff','department','loans'));
+               $advance_payments = DB::table('hrm_payments')->where('status', 'Advance')->orderBy('id','desc')->where('employee_id', $request->employee_id)->get();
+              return view('hrm.employee_loan.advance-loan-report-print', compact('staff','department','loans','advance_payments'));
           }
             return view('hrm.employee_loan.advance-loan-report', compact('staffs'));   
     }

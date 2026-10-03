@@ -1,4 +1,4 @@
-<div class="menu-grid">
+<div class="menu-grid marginbody">
                 
                 <a href="{{url('admin/working-hours')}}" class="menu-card">
                     <div class="menu-icon">
@@ -14,12 +14,7 @@
                     <span class="menu-title">Transport</span>
                 </a>
 
-                <a href="{{url('admin/staff-advance')}}" class="menu-card">
-                    <div class="menu-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <span class="menu-title">Advance</span>
-                </a>
+               
 
                 <a href="{{url('admin/staff-earning')}}" class="menu-card">
                     <div class="menu-icon">
@@ -28,18 +23,11 @@
                     <span class="menu-title">Earnings</span>
                 </a>
 
-                <a href="{{url('admin/payment-report')}}" class="menu-card">
-                    <div class="menu-icon">
-                        <i class="fas fa-file-invoice-dollar"></i>
-                    </div>
-                    <span class="menu-title">Transactions</span>
-                </a>
-
                 <a href="{{url('admin/my-payment-report')}}" class="menu-card">
                     <div class="menu-icon">
                         <i class="far fa-credit-card"></i>
                     </div>
-                    <span class="menu-title">Payment</span>
+                    <span class="menu-title">Payment History</span>
                 </a>
 
             </div>

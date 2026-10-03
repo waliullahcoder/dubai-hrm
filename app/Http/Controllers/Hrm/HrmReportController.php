@@ -506,7 +506,7 @@ public function monthlyReport(Request $request)
         |--------------------------------------------------------------------------
         */
 
-        $advanceAmount = DB::table('hrm_payments')
+        $advancepayment = DB::table('hrm_payments')
             ->where('employee_id', $employeeId)
             ->whereMonth('payment_date', $month)
             ->whereYear('payment_date', $year)
@@ -514,6 +514,16 @@ public function monthlyReport(Request $request)
                 $query->where('status', 'Advance');
             })
             ->sum('payment_amount');
+         $loan= DB::table('hrm_employee_loan')
+            ->where('employee_id', $employeeId)
+            ->whereMonth('loan_date', $month)
+            ->whereYear('loan_date', $year)
+            ->where(function ($query) {
+                $query->where('status', 'Approved');
+            })->get();
+            
+        $loanadvance =  $loan->sum('loan_amount')-$loan->sum('total_installments');
+        $advanceAmount =  $advancepayment + $loanadvance ;
 
         $paymentAmount = DB::table('hrm_payments')
             ->where('employee_id', $employeeId)

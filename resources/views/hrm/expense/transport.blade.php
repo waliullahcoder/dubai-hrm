@@ -1,5 +1,3 @@
-@extends('layouts.admin.app')
-
 
 @if(auth()->user()->role_status==4)
 

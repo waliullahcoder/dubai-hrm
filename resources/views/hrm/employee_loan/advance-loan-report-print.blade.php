@@ -594,7 +594,7 @@
             <tbody>
                 <tr>
                     <td>{{$loans->first()->loan_date}}</td>
-                    <td><strong>{{$loans->first()->loan_amount}}</strong></td>
+                    <td><strong>{{$loans->first()->loan_amount+$advance_payments->first()->payment_amount}}</strong></td>
                     <td><strong>{{$loans->sum('installment_amount')}}</strong></td>
                     <td><strong>{{$loans->sum('loan_amount')-$loans->sum('total_installments')}}</strong></td>
                 </tr>
@@ -631,7 +631,7 @@
                 </td>
 
                 <td class="amount-value">
-                    {{$loans->sum('loan_amount')-$loans->sum('total_installments')}}
+                    {{$loans->sum('loan_amount')+$advance_payments->sum('payment_amount')-$loans->sum('total_installments')}}
                 </td>
             </tr>
 

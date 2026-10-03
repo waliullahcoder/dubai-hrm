@@ -19,7 +19,7 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
 }
 @endphp
 <div class="container py-4">
-    <div class="app-container position-relative">
+    <div class="app-container position-relative marginbody">
 
         <!-- Header -->
         @include('hrm.dashboard.header')
