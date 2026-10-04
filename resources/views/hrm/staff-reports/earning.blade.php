@@ -181,17 +181,26 @@
                 <span class="lbl"><span class="sym sym-plus"><i class="fas fa-plus"></i></span> Transport Allowance</span>
                 <b>{{ $cur }} {{ $fmt($transport) }}</b>
             </div>
+            <div class="calc-row">
+                <span class="lbl"><span class="sym sym-plus"><i class="fas fa-plus"></i></span> Advance Recovery</span>
+                <b>{{ $cur }} {{ $paymentdata['loans']->sum('total_installments') }}</b>
+            </div>
 
             <div class="calc-row total-amt">
                 <span class="lbl"><span class="sym sym-eq"><i class="fas fa-equals"></i></span> <strong>Total Amount</strong></span>
-                <b>{{ $cur }} {{ $fmt($totalAmt) }}</b>
+                <b>{{ $cur }} {{ $fmt($totalAmt+$paymentdata['loans']->sum('total_installments')) }}</b>
             </div>
 
             <div class="calc-row deduct">
-                <span class="lbl"><span class="sym sym-minus"><i class="fas fa-minus"></i></span> Advance Recovery</span>
-                <b>{{ $cur }} {{ $fmt($advance) }}</b>
+                <span class="lbl"><span class="sym sym-minus"><i class="fas fa-minus"></i></span> Advance Loan</span>
+                <b>{{ $cur }} {{ $paymentdata['advance'] }}</b>
             </div>
-
+            <div class="calc-row deduct">
+                <span class="lbl"><span class="sym sym-minus"><i class="fas fa-minus"></i></span> Payments </span>
+                <b>{{ $cur }} {{ $paymentdata['payments'] }}</b>
+            </div>
+            
+            
             <div class="calc-row deduct">
                 <span class="lbl"><span class="sym sym-minus"><i class="fas fa-minus"></i></span> Other Deduction</span>
                 <b>{{ $cur }} {{ $fmt($other) }}</b>
@@ -199,7 +208,7 @@
 
             <div class="calc-row net">
                 <span class="lbl"><span class="sym sym-wallet"><i class="fas fa-wallet"></i></span> Net Payable</span>
-                <b>{{ $cur }} {{ $fmt($net) }}</b>
+                <b>{{ $cur }} {{ $paymentdata['net_payable'] }}</b>
             </div>
         </div>
 

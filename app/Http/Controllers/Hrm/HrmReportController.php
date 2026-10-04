@@ -118,37 +118,50 @@ class HrmReportController extends Controller
 
 
 
-    public function expenseReport()
+   public function expenseReport()
     {
         if (request()->ajax()) {
 
             $model = DB::table('hrm_expense as exp')
-                ->leftJoin('staff as s', 's.id', '=', 'exp.employee_id')
+                ->leftJoin('coa_setups as coa', 'coa.id', '=', 'exp.expense_head_id')
                 ->select(
                     'exp.id',
-                    's.code as employee_code',
-                    's.name as employee_name',
+                    'coa.head_name as expense_head',
                     'exp.expense_month',
                     'exp.expense_year',
                     'exp.expense_amount',
                     'exp.expense_date',
                     'exp.status',
                     'exp.remarks'
-                );
+                )
+                ->where('exp.expense_head_id','!=',313);
 
-            if (request()->filled('employee_id')) {
-                $model->where('exp.employee_id', request('employee_id'));
+            // Expense Head Filter
+            if (request()->filled('coa_id')) {
+                $model->where('exp.expense_head_id', request('coa_id'));
             }
+
+            // Status Filter
             if (request()->filled('status')) {
                 $model->where('exp.status', request('status'));
             }
 
+            // From Date
             if (request()->filled('from_date')) {
-                $model->whereDate('exp.expense_date', '>=', request('from_date'));
+                $model->whereDate(
+                    'exp.expense_date',
+                    '>=',
+                    request('from_date')
+                );
             }
 
+            // To Date
             if (request()->filled('to_date')) {
-                $model->whereDate('exp.expense_date', '<=', request('to_date'));
+                $model->whereDate(
+                    'exp.expense_date',
+                    '<=',
+                    request('to_date')
+                );
             }
 
             $model->orderByDesc('exp.id');
@@ -159,44 +172,47 @@ class HrmReportController extends Controller
 
                 ->editColumn('expense_month', function ($row) {
                     return $row->expense_month
-                        ? date('F', mktime(0, 0, 0, $row->expense_month, 1))
+                        ? date(
+                            'F',
+                            mktime(0, 0, 0, $row->expense_month, 1)
+                        )
                         : '-';
                 })
 
                 ->editColumn('expense_amount', function ($row) {
-                    return number_format($row->expense_amount, 2);
+                    return number_format(
+                        $row->expense_amount,
+                        2
+                    );
                 })
-
-               
 
                 ->editColumn('expense_date', function ($row) {
                     return $row->expense_date
-                        ? date('F j, Y', strtotime($row->expense_date))
+                        ? date(
+                            'F j, Y',
+                            strtotime($row->expense_date)
+                        )
                         : '-';
                 })
 
                 ->editColumn('status', function ($row) {
 
-                        $status = strtolower(trim($row->status ?? ''));
+                    $status = strtolower(
+                        trim($row->status ?? '')
+                    );
 
-                        if ($status === 'Approved') {
+                    if ($status === 'approved') {
+                        $class = 'Approved';
+                    } elseif ($status === 'paid') {
+                        $class = 'Paid';
+                    } else {
+                        $class = 'pending';
+                    }
 
-                            $class = 'Approved';
-
-                        } elseif ($status === 'Paid') {
-
-                            $class = 'Paid';
-
-                        } else {
-
-                            $class = 'pending';
-
-                        }
-
-                        return '<span class="payment-badge ' . $class . '">
-                                    ' . ucfirst($row->status ?? '-') . '
-                                </span>';
-                    })
+                    return '<span class="payment-badge ' . $class . '">
+                                ' . ucfirst($row->status ?? '-') . '
+                            </span>';
+                })
 
                 ->rawColumns([
                     'status'
@@ -205,12 +221,16 @@ class HrmReportController extends Controller
                 ->make(true);
         }
 
-        $employees = DB::table('staff')
-            ->where('status', 1)
-            ->orderBy('name')
+        // Expense Heads
+        $heads = DB::table('coa_setups')
+            ->orderBy('head_name')
+            ->where('head_type', 'E')
             ->get();
 
-        return view('hrm.reports.expense', compact('employees'));
+        return view(
+            'hrm.reports.expense',
+            compact('heads')
+        );
     }
 
     public function workinghourReport()
@@ -231,7 +251,7 @@ class HrmReportController extends Controller
                     'atd.check_out',
                     'atd.worked_hours',
                     'atd.remarks'
-                );
+                )->whereNotNull('atd.check_out');
 
             // ================= HOTEL FILTER =================
             if (request()->filled('hotel_id')) {
@@ -469,7 +489,7 @@ public function monthlyReport(Request $request)
             END as to_bus_amount
         ")
     )
-
+     ->whereNotNull('atd.check_out')
     ->where('atd.employee_id', $employeeId)
     ->whereMonth('atd.attendance_date', $month)
     ->whereYear('atd.attendance_date', $year)
@@ -522,8 +542,9 @@ public function monthlyReport(Request $request)
                 $query->where('status', 'Approved');
             })->get();
             
-        $loanadvance =  $loan->sum('loan_amount')-$loan->sum('total_installments');
+        $loanadvance =  $loan->sum('loan_amount');
         $advanceAmount =  $advancepayment + $loanadvance ;
+        $recovery = $loan->sum('total_installments');
 
         $paymentAmount = DB::table('hrm_payments')
             ->where('employee_id', $employeeId)
@@ -545,6 +566,7 @@ public function monthlyReport(Request $request)
     
         $expenseAmount = DB::table('hrm_expense')
             ->where('employee_id', $employeeId)
+            ->where('expense_head_id', 313)
             ->whereMonth('expense_date', $month)
             ->whereYear('expense_date', $year)
             ->where(function ($query) {
@@ -558,9 +580,10 @@ public function monthlyReport(Request $request)
         |--------------------------------------------------------------------------
         */
 
-        $grossAmount = $totalEarning + $totalTransport;
+        $grossAmount = $totalEarning + $expenseAmount + $recovery;
 
-        $netAmount = $grossAmount - $advanceAmount - $paymentAmount + $expenseAmount;
+        $netAmount = $grossAmount - ($advanceAmount + $paymentAmount);
+     //   dd($grossAmount ,$advanceAmount , $paymentAmount , $expenseAmount,$netAmount);
 
         $report = [
             'employee'       => $employee,
@@ -577,7 +600,9 @@ public function monthlyReport(Request $request)
             'payment'        => $paymentAmount,
             'expense'        => $expenseAmount,
             'gross_amount'   => $grossAmount,
+            'recovery'     => $recovery,
             'net_amount'     => $netAmount,
+            
         ];
     }
 
@@ -588,68 +613,201 @@ public function monthlyReport(Request $request)
 }
 
 
-public function payslipReport(Request $request){
+public function payslipReport(Request $request)
+{
+    $staffs = Staff::get();
 
-$staffs = Staff::get();
-$month = $request->payslip_month;
-$year  = $request->payslip_year;
-$employeeId   = $request->employee_id;
-$selectedmonth = $request->payslip_month;
-$month = Carbon::parse("1 {$month} {$year}")->month;
-    if($request->payslip_month){
+    $employeeId = $request->employee_id;
+    $selectedmonth = $request->payslip_month;
+    $year = $request->payslip_year;
 
-    $attendance = DB::table('hrm_employee_attendances')
-    ->where('employee_id', $employeeId)
-    ->whereYear('attendance_date', $year)
-    ->whereMonth('attendance_date', $month)
-    ->whereNotNull('check_out')
-    ->get();
-    
-    
-     $advanceAmount = DB::table('hrm_payments')
-            ->where('employee_id', $employeeId)
-            ->whereMonth('payment_date', $month)
-            ->whereYear('payment_date', $year)
-            ->where(function ($query) {
-                $query->where('status', 'Advance');
-            })
-            ->sum('payment_amount');
+    // Employee ID না থাকলে normal payslip page
+    if (!$employeeId) {
+        return view('hrm.staff-reports.payslip', compact('staffs'));
+    }
 
-        $paymentAmount = DB::table('hrm_payments')
-            ->where('employee_id', $employeeId)
-            ->whereMonth('payment_date', $month)
-            ->whereYear('payment_date', $year)
-            ->where(function ($query) {
-                $query->where('status', 'Payment');
-            })
-            ->sum('payment_amount');
+    // Employee খুঁজে দেখুন
+    $staff = Staff::find($employeeId);
 
-        $expenseAmount = DB::table('hrm_expense')
-            ->where('employee_id', $employeeId)
-            ->whereMonth('expense_date', $month)
-            ->whereYear('expense_date', $year)
-            ->where(function ($query) {
-                $query->where('status', 'Approved');
-            })
-            ->sum('expense_amount');
-            $staff= Staff::where('id', $employeeId)->first();
-            $user = User::where('id',  $staff->user_id)->first();
-            $department = Category::where('id',  $staff->department_id)->first();
-            $data = [];
-            $data =[
-              'paymentAmount' => $paymentAmount,
-              'advanceAmount' => $advanceAmount,
-              'expenseAmount' => $expenseAmount,
-              'attendance' => $attendance,
-              'staff' => $staff,
-              'department' => $department,
-              'user' => $user
-            ];
-            if($data['attendance']->count()>0){
-                return view('hrm.staff-reports.payslipPrint', compact('staffs','data', 'selectedmonth', 'year'));
-            }
+    // Employee না থাকলে error না দিয়ে page এ ফিরে যাবে
+    if (!$staff) {
+        return view('hrm.staff-reports.payslip', compact('staffs'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Month & Year
+    |--------------------------------------------------------------------------
+    */
+
+    $month = null;
+
+    if (!empty($selectedmonth) && !empty($year)) {
+        try {
+            // যদি January, February এভাবে আসে
+            $month = Carbon::parse("1 {$selectedmonth} {$year}")->month;
+        } catch (\Exception $e) {
+            $month = null;
+            $year = null;
         }
-      return view('hrm.staff-reports.payslip', compact('staffs'));
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Attendance
+    |--------------------------------------------------------------------------
+    */
+
+    $attendanceQuery = DB::table('hrm_employee_attendances')
+        ->where('employee_id', $employeeId)
+        ->whereNotNull('check_out');
+
+    // Month + Year থাকলে শুধু ওই মাসের attendance
+    if ($month && $year) {
+        $attendanceQuery
+            ->whereYear('attendance_date', $year)
+            ->whereMonth('attendance_date', $month);
+    }
+
+    $attendance = $attendanceQuery
+        ->orderBy('attendance_date', 'asc')
+        ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Advance
+    |--------------------------------------------------------------------------
+    */
+
+    $advanceQuery = DB::table('hrm_payments')
+        ->where('employee_id', $employeeId)
+        ->where('status', 'Advance');
+
+    if ($month && $year) {
+        $advanceQuery
+            ->whereMonth('payment_date', $month)
+            ->whereYear('payment_date', $year);
+    }
+
+    $advanceAmount = $advanceQuery->sum('payment_amount');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Loan
+    |--------------------------------------------------------------------------
+    */
+
+    $loanQuery = DB::table('hrm_employee_loan')
+        ->where('employee_id', $employeeId)
+        ->where('status', 'Approved');
+
+    if ($month && $year) {
+        $loanQuery
+            ->whereMonth('loan_date', $month)
+            ->whereYear('loan_date', $year);
+    }
+
+    $loans = $loanQuery
+        ->orderBy('id', 'desc')
+        ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payment
+    |--------------------------------------------------------------------------
+    */
+
+    $paymentQuery = DB::table('hrm_payments')
+        ->where('employee_id', $employeeId)
+        ->where('status', 'Payment');
+
+    if ($month && $year) {
+        $paymentQuery
+            ->whereMonth('payment_date', $month)
+            ->whereYear('payment_date', $year);
+    }
+
+    $paymentAmount = $paymentQuery->sum('payment_amount');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Expense
+    |--------------------------------------------------------------------------
+    */
+
+    $expenseQuery = DB::table('hrm_expense')
+        ->where('employee_id', $employeeId)
+        ->where('status', 'Approved')
+        ->where('expense_head_id', 313);
+
+    if ($month && $year) {
+        $expenseQuery
+            ->whereMonth('expense_date', $month)
+            ->whereYear('expense_date', $year);
+    }
+
+    $expenseAmount = $expenseQuery->sum('expense_amount');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | User & Department
+    |--------------------------------------------------------------------------
+    */
+
+    $user = [];
+    $department = [];
+
+    if ($staff->user_id) {
+        $user = User::find($staff->user_id);
+    }
+
+    if ($staff->department_id) {
+        $department = Category::find($staff->department_id);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Data
+    |--------------------------------------------------------------------------
+    */
+
+    $data = [
+        'paymentAmount' => $paymentAmount ?? 0,
+        'advanceAmount' => $advanceAmount ?? 0,
+        'expenseAmount' => $expenseAmount ?? 0,
+        'attendance' => $attendance,
+        'staff' => $staff,
+        'department' => $department,
+        'user' => $user,
+        'loans' => $loans,
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payslip Print
+    |--------------------------------------------------------------------------
+    |
+    | Employee পাওয়া গেলে এবং month/year থাকুক বা না থাকুক
+    | payslipPrint view দেখাবে।
+    |
+    */
+
+    return view(
+        'hrm.staff-reports.payslipPrint',
+        compact(
+            'staffs',
+            'data',
+            'selectedmonth',
+            'year'
+        )
+    );
 }
 public function certificateReport(Request $request){
 
@@ -757,6 +915,10 @@ public function sheetReport(Request $request)
     | Load Attendance Data
     |--------------------------------------------------------------------------
     */
+      $monthNumber = Carbon::parse(
+            "1 {$selectedMonth} {$selectedYear}"
+        )->month;
+  $loans = DB::table('hrm_employee_loan')->where('payroll_year', $request->payroll_year)->where('payroll_month', $monthNumber)->where('status','Approved')->get()??[];
 
     if ($request->isMethod('post') || $request->has('payroll_month')) {
 
@@ -766,11 +928,9 @@ public function sheetReport(Request $request)
         |--------------------------------------------------------------------------
         */
 
-        $monthNumber = Carbon::parse(
-            "1 {$selectedMonth} {$selectedYear}"
-        )->month;
+      
 
-
+      
         /*
         |--------------------------------------------------------------------------
         | Expense Sub Query
@@ -1377,7 +1537,6 @@ public function sheetReport(Request $request)
 
                 $employee->final_payable = round(
                     $employee->gross_earning
-                    - $employee->advance_recovery
                     - $employee->other_deduction,
                     2
                 );
@@ -1424,6 +1583,7 @@ public function sheetReport(Request $request)
             'departments' => $departments,
 
             'employees' => $employees,
+            'loans' => $loans,
 
             'selectedMonth' => $selectedMonth,
 

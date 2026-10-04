@@ -501,13 +501,13 @@
 
                 <div class="card-body">
 
-                    <div class="text-danger small fw-semibold mb-2">
+                    <div class="text-warning small fw-semibold mb-2">
                         <i class="fa-solid fa-circle-minus me-1"></i>
                         Advance Recovery (AED)
                     </div>
 
                     <h4 class="fw-bold mb-0">
-                        {{ number_format($employees->sum('advance_recovery') ?? 0, 2) }}
+                        {{ number_format($loans->sum('total_installments') ?? 0, 2) }}
                     </h4>
 
                 </div>
@@ -526,11 +526,11 @@
 
                     <div class="text-danger small fw-semibold mb-2">
                         <i class="fa-solid fa-circle-minus me-1"></i>
-                        Other Deduction (AED)
+                        Advance Loan & Other Deduction (AED)
                     </div>
 
                     <h4 class="fw-bold mb-0">
-                        {{ number_format($employees->sum('other_deduction') ?? 0, 2) }}
+                        {{ number_format($employees->sum('other_deduction')+$loans->sum('loan_amount'), 2) }}
                     </h4>
 
                 </div>
@@ -553,7 +553,7 @@
                     </div>
 
                     <h4 class="fw-bold text-success mb-0">
-                        {{ number_format($employees->sum('final_payable') ?? 0, 2) }}
+                        {{ number_format(($employees->sum('total_amount')+ $loans->sum('total_installments') - ($employees->sum('other_deduction') + $loans->sum('loan_amount')) ), 2) }}
                     </h4>
 
                 </div>

@@ -15,6 +15,9 @@
                         <th>Company</th>
                     @endif
                     <th width="100">Image</th>
+                    <th width="100">ID Front</th>
+                    <th width="100">ID Back</th>
+                    <th width="100">Passport</th>
                     <th>Name</th>
                     <th>User ID</th>
                     <th>Area</th>
@@ -82,9 +85,28 @@
                             data: 'company',
                             name: 'company',
                         },
-                    @endif {
+                    @endif 
+                    {
                         data: 'image',
                         name: 'image',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'id_card_front',
+                        name: 'id_card_front',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'id_card_back',
+                        name: 'id_card_back',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'passport_image',
+                        name: 'passport_image',
                         orderable: false,
                         searchable: false,
                     },

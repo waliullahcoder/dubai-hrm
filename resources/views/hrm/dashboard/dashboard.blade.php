@@ -170,7 +170,204 @@
     }
 
 </style>
+<div class="container-fluid py-4">
 
+    <form method="GET"
+          action="{{ route('admin.payslip.report') }}"
+          class="staff-filter-card">
+
+        <div class="filter-header">
+            <div class="header-icon">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+
+            <div>
+                <h5 class="mb-1">Staff Summary</h5>
+                <small>Select a staff member to view payslip summary</small>
+            </div>
+        </div>
+
+        <div class="filter-body">
+
+            <div class="row align-items-end g-3">
+
+                {{-- Employee --}}
+                <div class="col-md-9">
+
+
+                    <div class="select-wrapper">
+
+                        <i class="fa-solid fa-user-tie select-icon"></i>
+
+                        <select name="employee_id"
+                                class="form-select select"
+                                required>
+
+                            <option value="">Select Staff</option>
+
+                            @foreach($staffs ?? [] as $staff)
+
+                                <option value="{{ $staff->id }}"
+                                    {{ request('employee_id') == $staff->id ? 'selected' : '' }}>
+                                    {{ $staff->name }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                {{-- Search --}}
+                <div class="col-md-3">
+
+                    <button type="submit"
+                            class="btn btn-search w-100">
+
+                        <i class="fa-solid fa-magnifying-glass me-2"></i>
+                        Show Summary
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<style>
+    .staff-filter-card {
+        background: #fff;
+        border: 1px solid #e8ecf2;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 25px rgba(15, 23, 42, 0.06);
+    }
+
+    /* Header */
+    .filter-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 22px;
+        border-bottom: 1px solid #edf0f5;
+        background: linear-gradient(135deg, #ffffff, #f8faff);
+    }
+
+    .header-icon {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #eef4ff;
+        color: #2563eb;
+        font-size: 18px;
+    }
+
+    .filter-header h5 {
+        color: #172033;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .filter-header small {
+        color: #8a94a6;
+        font-size: 12px;
+    }
+
+    /* Body */
+    .filter-body {
+        padding: 22px;
+    }
+
+    .filter-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .filter-label i {
+        color: #2563eb;
+    }
+
+    /* Select */
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        z-index: 2;
+        pointer-events: none;
+        font-size: 14px;
+    }
+
+    .select-wrapper .form-select {
+        height: 46px;
+        padding-left: 40px;
+        border: 1px solid #dfe4ec;
+        border-radius: 10px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 500;
+        transition: all .2s ease;
+    }
+
+    .select-wrapper .form-select:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+    }
+
+    /* Search Button */
+    .btn-search {
+        height: 46px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 5px 14px rgba(22, 163, 74, .20);
+        transition: all .2s ease;
+    }
+
+    .btn-search:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 7px 18px rgba(22, 163, 74, .28);
+    }
+
+    @media (max-width: 767px) {
+
+        .filter-header {
+            padding: 16px;
+        }
+
+        .filter-body {
+            padding: 16px;
+        }
+
+        .btn-search {
+            margin-top: 2px;
+        }
+    }
+</style>
 
 <div class="container-fluid dashboard-wrapper">
 

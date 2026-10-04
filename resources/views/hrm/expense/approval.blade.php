@@ -7,15 +7,8 @@
 
         <h5 class="mb-0">
             <i class="fas fa-gift text-success"></i>
-         Company Expense Management
+         Staff's Expense Approval List
         </h5>
-
-        @can('admin.expense.create')
-        <a href="{{ route('admin.expense.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add Expense
-        </a>
-        @endcan
-
     </div>
 
     <div class="card-body">
@@ -72,7 +65,7 @@ $('.dataTable').DataTable({
             }
         ],
 
-    ajax: "{{ route('admin.expense.index') }}",
+    ajax: "{{ route('admin.expense.approval') }}",
 
        columns: [
     {

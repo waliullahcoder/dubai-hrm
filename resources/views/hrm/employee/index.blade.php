@@ -11,7 +11,7 @@
             <thead>
                 <tr class="text-nowrap">
                     <th width="3"></th>
-                    <th>Code</th>
+                    <th>Employee ID</th>
                     <th>Name</th>
                     <th>Contact</th>
                     <th><i class="fad fa-hotel"></i> Hotel</th>

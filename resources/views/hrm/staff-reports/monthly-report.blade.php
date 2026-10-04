@@ -3,7 +3,6 @@
 @section('content')
 
 <style>
-
     :root {
         --primary: #173b6c;
         --primary-dark: #102b50;
@@ -23,7 +22,9 @@
         margin: 0 auto;
     }
 
-    /* Filter */
+    /* =========================
+       FILTER CARD
+    ========================= */
 
     .filter-card {
         background: #fff;
@@ -31,7 +32,7 @@
         border-radius: 14px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,.04);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, .04);
     }
 
     .filter-title {
@@ -55,6 +56,12 @@
         border: 1px solid #d9dee7;
     }
 
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(23, 59, 108, .08);
+    }
+
     .btn-report {
         min-height: 43px;
         border: 0;
@@ -70,14 +77,20 @@
         color: #fff;
     }
 
-    /* Report */
+    /* =========================
+       REPORT PAPER
+    ========================= */
 
     .report-paper {
         background: #fff;
         border-radius: 12px;
         padding: 35px;
-        box-shadow: 0 5px 25px rgba(0,0,0,.06);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, .06);
     }
+
+    /* =========================
+       COMPANY HEADER
+    ========================= */
 
     .company-header {
         display: flex;
@@ -89,8 +102,15 @@
         margin-bottom: 22px;
     }
 
+    .company-logo-wrapper {
+        width: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
     .company-logo {
-        width: 100%;
+        max-width: 130px;
         height: 85px;
         object-fit: contain;
     }
@@ -121,10 +141,12 @@
     }
 
     .header-right {
-        width: 85px;
+        width: 140px;
     }
 
-    /* Employee */
+    /* =========================
+       EMPLOYEE INFO
+    ========================= */
 
     .employee-box {
         background: #f8fafc;
@@ -139,6 +161,7 @@
         color: var(--muted);
         text-transform: uppercase;
         letter-spacing: .5px;
+        margin-bottom: 3px;
     }
 
     .employee-name {
@@ -152,10 +175,13 @@
         color: var(--muted);
     }
 
-    /* Table */
+    /* =========================
+       REPORT TABLE
+    ========================= */
 
     .table-responsive {
         border-radius: 8px;
+        overflow-x: auto;
     }
 
     .report-table {
@@ -195,39 +221,10 @@
     .amount {
         font-weight: 600;
     }
-    /* Signature */
 
-.signature-section {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 70px;
-    padding: 0 50px 10px;
-    gap: 120px;
-}
-
-.signature-box {
-    width: 260px;
-    text-align: center;
-}
-
-.signature-line {
-    border-top: 1px solid #222;
-    margin-bottom: 10px;
-}
-
-.signature-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1f2937;
-}
-
-.signature-name {
-    font-size: 12px;
-    color: #6b7280;
-    margin-top: 4px;
-}
-
-    /* Summary */
+    /* =========================
+       SUMMARY
+    ========================= */
 
     .summary-title {
         font-size: 16px;
@@ -268,6 +265,44 @@
         color: #dc3545;
     }
 
+    /* =========================
+       SIGNATURE
+    ========================= */
+
+    .signature-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 70px;
+        padding: 0 50px 10px;
+        gap: 120px;
+    }
+
+    .signature-box {
+        width: 260px;
+        text-align: center;
+    }
+
+    .signature-line {
+        border-top: 1px solid #222;
+        margin-bottom: 10px;
+    }
+
+    .signature-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .signature-name {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
     .report-footer {
         margin-top: 28px;
         padding-top: 15px;
@@ -277,6 +312,10 @@
         color: var(--muted);
         font-size: 11px;
     }
+
+    /* =========================
+       PRINT BUTTON
+    ========================= */
 
     .print-btn {
         background: var(--secondary);
@@ -292,6 +331,10 @@
         opacity: .9;
     }
 
+    /* =========================
+       MOBILE
+    ========================= */
+
     @media(max-width: 768px) {
 
         .report-paper {
@@ -303,16 +346,37 @@
             text-align: center;
         }
 
+        .company-logo-wrapper,
         .header-right {
-            display: none;
+            width: auto;
+            justify-content: center;
+        }
+
+        .company-logo {
+            height: 70px;
         }
 
         .company-name {
             font-size: 21px;
         }
+
+        .signature-section {
+            flex-direction: column;
+            align-items: center;
+            gap: 45px;
+            padding: 0;
+        }
+
+        .report-footer {
+            flex-direction: column;
+            gap: 5px;
+            text-align: center;
+        }
     }
 
-    /* PRINT */
+    /* =========================
+       PRINT
+    ========================= */
 
     @media print {
 
@@ -321,8 +385,14 @@
             margin: 10mm;
         }
 
+        html,
         body {
             background: #fff !important;
+        }
+
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
         .no-print,
@@ -330,7 +400,8 @@
         .navbar,
         .app-header,
         .main-header,
-        footer,.navbar-header {
+        footer,
+        .navbar-header {
             display: none !important;
         }
 
@@ -340,32 +411,108 @@
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
+            max-width: 100% !important;
         }
 
         .report-wrapper {
-            max-width: 100%;
+            max-width: 100% !important;
+            width: 100% !important;
         }
 
         .report-paper {
             box-shadow: none !important;
             border: none !important;
-            padding: 0;
+            border-radius: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        .company-header {
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+        }
+
+        .company-logo {
+            max-width: 110px;
+            height: 65px;
+        }
+
+        .company-name {
+            font-size: 22px;
+        }
+
+        .report-title {
+            font-size: 15px;
+        }
+
+        .report-period {
+            font-size: 12px;
+        }
+
+        .employee-box {
+            padding: 10px 14px;
+            margin-bottom: 15px;
+        }
+
+        .employee-name {
+            font-size: 16px;
         }
 
         .report-table thead th {
             background: #173b6c !important;
             color: #fff !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            padding: 8px 6px;
+            font-size: 10px;
+        }
+
+        .report-table tbody td {
+            padding: 7px 6px;
+            font-size: 10px;
+        }
+
+        .summary-title {
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .summary-table td {
+            padding: 7px 10px;
+            font-size: 11px;
         }
 
         .net-row td {
             background: #eafaf5 !important;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            color: #087f5b !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .signature-section {
+            margin-top: 45px;
+            padding: 0 30px 5px;
+        }
+
+        .signature-box {
+            width: 220px;
+        }
+
+        .signature-title {
+            font-size: 11px;
+        }
+
+        .signature-name {
+            font-size: 10px;
+        }
+
+        .report-footer {
+            margin-top: 18px;
+            padding-top: 10px;
+            font-size: 9px;
         }
     }
-
 </style>
 
 
@@ -373,7 +520,10 @@
 
     <div class="report-wrapper">
 
-        {{-- FILTER --}}
+        {{-- =====================================================
+            FILTER
+        ====================================================== --}}
+
         <div class="filter-card no-print">
 
             <div class="filter-title">
@@ -432,7 +582,9 @@
                                 <option value="{{ $month }}"
                                     {{ request('month', date('m')) == $month ? 'selected' : '' }}>
 
-                                    {{ \Carbon\Carbon::create()->month($month)->format('F') }}
+                                    {{ \Carbon\Carbon::create()
+                                        ->month($month)
+                                        ->format('F') }}
 
                                 </option>
 
@@ -454,7 +606,11 @@
                                 class="form-select"
                                 required>
 
-                            @for($year = date('Y') - 3; $year <= date('Y') + 1; $year++)
+                            @for(
+                                $year = date('Y') - 3;
+                                $year <= date('Y') + 1;
+                                $year++
+                            )
 
                                 <option value="{{ $year }}"
                                     {{ request('year', date('Y')) == $year ? 'selected' : '' }}>
@@ -470,7 +626,7 @@
                     </div>
 
 
-                    {{-- Button --}}
+                    {{-- Generate --}}
                     <div class="col-md-2">
 
                         <button type="submit"
@@ -490,387 +646,551 @@
         </div>
 
 
+        {{-- =====================================================
+            REPORT
+        ====================================================== --}}
+
         @if($report)
 
-        {{-- REPORT --}}
-        <div class="report-paper">
+            <div class="report-paper">
 
-            {{-- Header --}}
-            <div class="company-header">
+                {{-- =================================================
+                    COMPANY HEADER
+                ================================================== --}}
 
-                <div>
+                <div class="company-header">
 
-                    <img src="{{ asset($admin_setting->logo) }}"
-                         class="company-logo"
-                         alt="Company Logo">
+                    <div class="company-logo-wrapper">
+
+                        @if(!empty($admin_setting->logo))
+
+                            <img src="{{ asset($admin_setting->logo) }}"
+                                 class="company-logo"
+                                 alt="Company Logo">
+
+                        @endif
+
+                    </div>
+
+
+                    <div class="company-info">
+
+                        <h1 class="company-name">
+                            {{ config('app.name') }}
+                        </h1>
+
+                        <div class="report-title">
+                            Monthly Employee Report
+                        </div>
+
+                        <div class="report-period">
+
+                            {{ \Carbon\Carbon::create(
+                                $report['year'],
+                                $report['month'],
+                                1
+                            )->format('F Y') }}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="header-right"></div>
 
                 </div>
 
 
-                <div class="company-info">
+                {{-- =================================================
+                    EMPLOYEE INFORMATION
+                ================================================== --}}
 
-                    <h1 class="company-name">
-                        {{ config('app.name') }}
-                    </h1>
+                <div class="employee-box">
 
-                    <div class="report-title">
-                        Monthly Employee Report
-                    </div>
+                    <div class="row align-items-center">
 
-                    <div class="report-period">
+                        <div class="col-md-7">
 
-                        {{ \Carbon\Carbon::create(
-                            $report['year'],
-                            $report['month'],
-                            1
-                        )->format('F Y') }}
+                            <div class="employee-label">
+                                Employee
+                            </div>
 
-                    </div>
+                            <div class="employee-name">
+                                {{ $report['employee']->name }}
+                            </div>
 
-                </div>
-
-
-                <div class="header-right"></div>
-
-            </div>
-
-
-            {{-- Employee Information --}}
-            <div class="employee-box">
-
-                <div class="row">
-
-                    <div class="col-md-7">
-
-                        <div class="employee-label">
-                            Employee
                         </div>
 
-                        <div class="employee-name">
-                            {{ $report['employee']->name }}
-                        </div>
 
-                    </div>
+                        <div class="col-md-5 text-md-end mt-2 mt-md-0">
 
-                    <div class="col-md-5 text-md-end">
+                            <div class="employee-label">
+                                Monthly Report
+                            </div>
 
-                        <div class="employee-label">
-                            Monthly Report
-                        </div>
+                            <div class="employee-id">
 
-                        <div class="employee-id">
-                            Employee ID:
-                            #{{ $report['employee']->id }}
+                                Employee ID:
+                                #{{ $report['employee']->id }}
+
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
 
-            </div>
 
+                {{-- =================================================
+                    ATTENDANCE TABLE
+                ================================================== --}}
 
-            {{-- Attendance Table --}}
-            <div class="table-responsive">
+                <div class="table-responsive">
 
-                <table class="report-table">
+                    <table class="report-table">
 
-                    <thead>
-
-                        <tr>
-
-                            <th>#</th>
-
-                            <th>Date</th>
-
-                            <th>Hotel</th>
-
-                            <th>Check In</th>
-
-                            <th>Check Out</th>
-
-                            <th>Working Hours</th>
-
-                            <th>From Bus</th>
-
-                            <th>To Bus</th>
-
-                            <th>Total Transport</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @forelse($report['attendances'] as $key => $attendance)
+                        <thead>
 
                             <tr>
 
-                                <td>
-                                    {{ $key + 1 }}
-                                </td>
+                                <th>#</th>
 
-                                <td>
-                                    {{ \Carbon\Carbon::parse($attendance->attendance_date)->format('d M Y') }}
-                                </td>
+                                <th>Date</th>
 
-                                <td class="hotel-name">
-                                    {{ $attendance->hotel_name ?? 'N/A' }}
-                                </td>
+                                <th>Hotel</th>
 
-                                <td>
-                                    {{ $attendance->check_in
-                                        ? \Carbon\Carbon::parse($attendance->check_in)->format('h:i A')
-                                        : '-' }}
-                                </td>
+                                <th>Check In</th>
 
-                                <td>
-                                    {{ $attendance->check_out
-                                        ? \Carbon\Carbon::parse($attendance->check_out)->format('h:i A')
-                                        : '-' }}
-                                </td>
+                                <th>Check Out</th>
 
-                                <td>
-                                    <strong>
-                                        {{ number_format((float) $attendance->worked_hours, 2) }}
-                                    </strong>
-                                </td>
+                                <th>Working Hours</th>
 
-                                <td class="amount">
-                                    {{ number_format((float) $attendance->from_bus_amount, 2) }}
-                                </td>
+                                <th>From Bus</th>
 
-                                <td class="amount">
-                                    {{ number_format((float) $attendance->to_bus_amount, 2) }}
-                                </td>
+                                <th>To Bus</th>
 
-                                <td class="amount">
-                                    {{ number_format(
-                                        (float)$attendance->from_bus_amount +
-                                        (float)$attendance->to_bus_amount,
-                                        2
-                                    ) }}
-                                </td>
+                                <th>Total Transport</th>
 
                             </tr>
 
-                        @empty
+                        </thead>
 
-                            <tr>
 
-                                <td colspan="9"
-                                    class="text-center py-4">
+                        <tbody>
 
-                                    No attendance records found.
+                            @forelse(
+                                $report['attendances']
+                                as $key => $attendance
+                            )
 
-                                </td>
+                                <tr>
 
-                            </tr>
+                                    {{-- Serial --}}
+                                    <td>
+                                        {{ $key + 1 }}
+                                    </td>
 
-                        @endforelse
 
-                    </tbody>
+                                    {{-- Date --}}
+                                    <td>
+
+                                        {{ \Carbon\Carbon::parse(
+                                            $attendance->attendance_date
+                                        )->format('d M Y') }}
+
+                                    </td>
+
+
+                                    {{-- Hotel --}}
+                                    <td class="hotel-name">
+
+                                        {{ $attendance->hotel_name ?? 'N/A' }}
+
+                                    </td>
+
+
+                                    {{-- Check In --}}
+                                    <td>
+
+                                        @if($attendance->check_in)
+
+                                            {{ \Carbon\Carbon::parse(
+                                                $attendance->check_in
+                                            )->format('h:i A') }}
+
+                                        @else
+
+                                            -
+
+                                        @endif
+
+                                    </td>
+
+
+                                    {{-- Check Out --}}
+                                    <td>
+
+                                        @if($attendance->check_out)
+
+                                            {{ \Carbon\Carbon::parse(
+                                                $attendance->check_out
+                                            )->format('h:i A') }}
+
+                                        @else
+
+                                            -
+
+                                        @endif
+
+                                    </td>
+
+
+                                    {{-- Working Hours --}}
+                                    <td>
+
+                                        <strong>
+
+                                            {{ number_format(
+                                                (float) $attendance->worked_hours,
+                                                2
+                                            ) }}
+
+                                        </strong>
+
+                                    </td>
+
+
+                                    {{-- From Bus --}}
+                                    <td class="amount">
+
+                                        {{ number_format(
+                                            (float) $attendance->from_bus_amount,
+                                            2
+                                        ) }}
+
+                                    </td>
+
+
+                                    {{-- To Bus --}}
+                                    <td class="amount">
+
+                                        {{ number_format(
+                                            (float) $attendance->to_bus_amount,
+                                            2
+                                        ) }}
+
+                                    </td>
+
+
+                                    {{-- Total Transport --}}
+                                    <td class="amount">
+
+                                        {{ number_format(
+                                            (float) $attendance->from_bus_amount +
+                                            (float) $attendance->to_bus_amount,
+                                            2
+                                        ) }}
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td colspan="9"
+                                        class="text-center py-4">
+
+                                        No attendance records found.
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                {{-- =================================================
+                    PAYMENT SUMMARY
+                ================================================== --}}
+
+                <div class="summary-title">
+                    Payment Summary
+                </div>
+
+
+                <table class="summary-table">
+
+                    {{-- Total Hours --}}
+                    <tr>
+
+                        <td>
+                            Total Working Hours
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['total_hours'],
+                                2
+                            ) }}
+
+                            Hours
+
+                        </td>
+
+                    </tr>
+
+
+                    {{-- Hourly Rate --}}
+                    <tr>
+
+                        <td>
+                            Hourly Rate
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['rate'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+
+                    {{-- Total Earning --}}
+                    <tr>
+
+                        <td>
+                            Total Earning Amount
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['total_earning'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+
+                    {{-- Transport --}}
+                    <tr>
+
+                        <td>
+                            Total Transport Amount
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['expense'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+                    {{-- Transport --}}
+                    <tr>
+
+                        <td>
+                            Advance Recovery
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['recovery'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+
+                    {{-- Gross --}}
+                    <tr>
+
+                        <td>
+                            Gross Amount
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['gross_amount'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+
+                    {{-- Advance --}}
+                    <tr class="advance-row">
+
+                        <td>
+                            Advance Amount Deducted
+                        </td>
+
+                        <td>
+
+                            -
+
+                            {{ number_format(
+                                (float) $report['advance'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+
+                    {{-- Payment --}}
+                    <tr class="advance-row">
+
+                        <td>
+                            Payment Amount Deducted
+                        </td>
+
+                        <td>
+
+                            -
+
+                            {{ number_format(
+                                (float) $report['payment'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
+
+
+
+
+                    {{-- Net Amount --}}
+                    <tr class="net-row">
+
+                        <td>
+                            NET AMOUNT
+                        </td>
+
+                        <td>
+
+                            {{ number_format(
+                                (float) $report['net_amount'],
+                                2
+                            ) }}
+
+                        </td>
+
+                    </tr>
 
                 </table>
 
-            </div>
 
+                {{-- =================================================
+                    SIGNATURE SECTION
+                ================================================== --}}
 
-            {{-- Summary --}}
-            <div class="summary-title">
-                Payment Summary
-            </div>
+                <div class="signature-section">
 
-            <table class="summary-table">
+                    {{-- Employee --}}
+                    <div class="signature-box">
 
-                <tr>
+                        <div class="signature-line"></div>
 
-                    <td>
-                        Total Working Hours
-                    </td>
+                        <div class="signature-title">
+                            Employee Signature
+                        </div>
 
-                    <td>
-                        {{ number_format($report['total_hours'], 2) }} Hours
-                    </td>
+                        <div class="signature-name">
 
-                </tr>
+                            {{ $report['employee']->name }}
 
+                        </div>
 
-                <tr>
+                    </div>
 
-                    <td>
-                        Hourly Rate
-                    </td>
 
-                    <td>
-                        {{ number_format($report['rate'], 2) }}
-                    </td>
+                    {{-- Authorized --}}
+                    <div class="signature-box">
 
-                </tr>
+                        <div class="signature-line"></div>
 
+                        <div class="signature-title">
+                            Authorized Signature
+                        </div>
 
-                <tr>
+                        <div class="signature-name">
+                            Authorized Person
+                        </div>
 
-                    <td>
-                        Total Earning Amount
-                    </td>
+                    </div>
 
-                    <td>
-                        {{ number_format($report['total_earning'], 2) }}
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td>
-                        Total Transport Amount
-                    </td>
-
-                    <td>
-                        {{ number_format($report['transport'], 2) }}
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td>
-                        Gross Amount
-                    </td>
-
-                    <td>
-                        {{ number_format($report['gross_amount'], 2) }}
-                    </td>
-
-                </tr>
-
-
-                <tr class="advance-row">
-
-                    <td>
-                        Advance Amount Deducted
-                    </td>
-
-                    <td>
-                        - {{ number_format($report['advance'], 2) }}
-                    </td>
-
-                </tr>
-                 <tr class="advance-row">
-
-                    <td>
-                        Payment Amount Deducted
-                    </td>
-
-                    <td>
-                        - {{ number_format($report['payment'], 2) }}
-                    </td>
-
-                </tr>
-
-
-                <!-- @if($report['expense'] > 0)
-
-                <tr>
-
-                    <td>
-                        Approved Expense
-                    </td>
-
-                    <td>
-                        + {{ number_format($report['expense'], 2) }}
-                    </td>
-
-                </tr>
-
-                @endif -->
-
-
-                <tr class="net-row">
-
-                    <td>
-                        NET AMOUNT
-                    </td>
-
-                    <td>
-                        {{ number_format($report['net_amount'], 2) }}
-                    </td>
-
-                </tr>
-
-            </table>
-
-
-
-            {{-- Signature Section --}}
-<div class="signature-section">
-
-    <div class="signature-box">
-
-        <div class="signature-line"></div>
-
-        <div class="signature-title">
-            Employee Signature
-        </div>
-
-        <div class="signature-name">
-            {{ $report['employee']->name }}
-        </div>
-
-    </div>
-
-
-    <div class="signature-box">
-
-        <div class="signature-line"></div>
-
-        <div class="signature-title">
-            Authorized Signature
-        </div>
-
-        <div class="signature-name">
-            Authorized Person
-        </div>
-
-    </div>
-
-</div>
-
-
-            {{-- Footer --}}
-            <div class="report-footer">
-
-                <div>
-                    Generated on:
-                    {{ now()->format('d M Y h:i A') }}
                 </div>
 
-                <div>
-                    Monthly Employee Report
+
+                {{-- =================================================
+                    FOOTER
+                ================================================== --}}
+
+                <div class="report-footer">
+
+                    <div>
+
+                        Generated on:
+
+                        {{ now()->format('d M Y h:i A') }}
+
+                    </div>
+
+                    <div>
+                        Monthly Employee Report
+                    </div>
+
+                </div>
+
+
+                {{-- =================================================
+                    PRINT BUTTON
+                ================================================== --}}
+
+                <div class="text-end mt-3 no-print">
+
+                    <button type="button"
+                            onclick="window.print()"
+                            class="print-btn">
+
+                        <i class="fas fa-print me-1"></i>
+
+                        Print Report
+
+                    </button>
+
                 </div>
 
             </div>
-
-
-            {{-- Print --}}
-            <div class="text-end mt-3 no-print">
-
-                <button onclick="window.print()"
-                        class="print-btn">
-
-                    <i class="fas fa-print me-1"></i>
-                    Print Report
-
-                </button>
-
-            </div>
-
-        </div>
 
         @endif
 

@@ -38,7 +38,7 @@ class ExpenseController extends Controller
                     'exp.expense_date',
                     'exp.status',
                     'exp.remarks'
-                )->orderBy('id','desc');
+                )->where('exp.expense_head_id', '!=', 313)->orderBy('id','desc');
 
             return DataTables::of($model)
     
@@ -106,10 +106,107 @@ class ExpenseController extends Controller
         return view('hrm.expense.index');
     }
 
+    public function expenseApproval()
+    {
+
+        if (request()->ajax()) {
+
+            $model = DB::table('hrm_expense as exp')
+                ->leftJoin('coa_setups as c', 'c.id', '=', 'exp.expense_head_id')
+                ->leftJoin('staff as s', 's.id', '=', 'exp.employee_id')
+                ->select(
+                    'exp.id',
+                    's.name as employee_name',
+                    'c.head_name',
+                    'exp.expense_month',
+                    'exp.expense_year',
+                    'exp.expense_amount',
+                    'exp.expense_date',
+                    'exp.status',
+                    'exp.remarks'
+                )
+                ->where('exp.expense_head_id', 313) 
+                ->where('exp.expense_amount', '!=',0) 
+                ->orderByDesc('exp.status','desc');
+
+            return DataTables::of($model)
+
+                ->addIndexColumn()
+
+                ->editColumn('expense_month', function ($row) {
+                    return $row->expense_month
+                        ? date('F', mktime(0, 0, 0, $row->expense_month, 1))
+                        : '-';
+                })
+
+                ->editColumn('expense_date', function ($row) {
+                    return $row->expense_date
+                        ? date('d M, Y', strtotime($row->expense_date))
+                        : '-';
+                })
+
+                ->editColumn('expense_amount', function ($row) {
+                    return number_format($row->expense_amount, 2);
+                })
+
+                ->editColumn('status', function ($row) {
+
+                    if ($row->status == 'Pending') {
+                        return '<span class="badge bg-warning">Pending</span>';
+                    }
+
+                    if ($row->status == 'Approved') {
+                        return '<span class="badge bg-info">Approved</span>';
+                    }
+
+                    return '<span class="badge bg-success">Paid</span>';
+                })
+
+                ->addColumn('actions', function ($row) {
+
+                    $btn = '';
+
+                    if (auth()->user()->can('admin.expense.show')) {
+                        $btn .= '<a href="' . route('admin.expense.show', $row->id) . '"
+                            class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i>
+                        </a>';
+                    }
+
+                    if (auth()->user()->can('admin.expense.edit')) {
+                        $btn .= '<a href="' . route('admin.expense.edit', $row->id) . '"
+                            class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>';
+                    }
+
+                    if (auth()->user()->can('admin.expense.destroy')) {
+                        $btn .= '<button
+                            class="btn btn-sm btn-danger link-delete"
+                            data-url="' . route('admin.expense.destroy', $row->id) . '">
+                            <i class="fas fa-trash"></i>
+                        </button>';
+                    }
+
+                    return '<div class="btn-group">' . $btn . '</div>';
+                })
+
+                ->rawColumns([
+                    'status',
+                    'actions'
+                ])
+
+                ->make(true);
+        }
+
+        return view('hrm.expense.approval');
+    }
+
   public function create()
     {
         $coas = DB::table('coa_setups')
             ->where('parent_id', 4)
+            ->where('id', '!=',313)
             ->orderBy('head_name')
             ->get();
         $hotels = DB::table('staff')
@@ -291,6 +388,12 @@ class ExpenseController extends Controller
                 'updated_by'    => auth()->id(),
                 'updated_at'    => now(),
             ]);
+
+            if($request->employee_id){
+                return redirect()
+            ->route('admin.expense.approval')
+            ->withSuccessMessage('Approved successfully.');
+            }
 
         return redirect()
             ->route('admin.expense.index')

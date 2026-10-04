@@ -50,8 +50,68 @@ class UserController extends Controller
                     }
                 })
                 ->addColumn('image', function ($row) {
-                    $image = '<img class="lazyload" data-src="' . (file_exists($row->image) ? asset($row->image) : asset('backend/images/avatar/default/user.jpg')) . ' " height="40" alt="' . $row->name . '">';
-                    return $image;
+                    $image = file_exists($row->image)
+                        ? asset($row->image)
+                        : asset('backend/images/avatar/default/user.jpg');
+
+                    return '<a href="' . $image . '" target="_blank" rel="noopener noreferrer" title="View Image">
+                                <img 
+                                    class="lazyload"
+                                    data-src="' . $image . '"
+                                    height="40"
+                                    width="40"
+                                    alt="' . e($row->name) . '"
+                                    style="cursor:pointer; border-radius:4px;"
+                                >
+                            </a>';
+                })
+                ->addColumn('id_card_front', function ($row) {
+                        $image = file_exists($row->id_card_front)
+                            ? asset($row->id_card_front)
+                            : asset('backend/images/avatar/default/user.jpg');
+
+                        return '<a href="' . $image . '" target="_blank" title="View ID Card">
+                                    <img 
+                                        class="lazyload"
+                                        data-src="' . $image . '"
+                                        height="40"
+                                        width="40"
+                                        alt="' . $row->name . '"
+                                        style="cursor: pointer; border-radius: 4px;"
+                                    >
+                                </a>';
+                    })
+               ->addColumn('id_card_back', function ($row) {
+                    $image = file_exists($row->id_card_back)
+                        ? asset($row->id_card_back)
+                        : asset('backend/images/avatar/default/user.jpg');
+
+                    return '<a href="' . $image . '" target="_blank" rel="noopener noreferrer" title="View ID Card Back">
+                                <img 
+                                    class="lazyload"
+                                    data-src="' . $image . '"
+                                    height="40"
+                                    width="40"
+                                    alt="' . e($row->name) . '"
+                                    style="cursor:pointer; border-radius:4px;"
+                                >
+                            </a>';
+                })
+
+                ->addColumn('passport_image', function ($row) {
+                    $image = file_exists($row->passport_image)
+                        ? asset($row->passport_image)
+                        : asset('backend/images/avatar/default/user.jpg');
+
+                    return '<a href="' . $image . '" target="_blank" rel="noopener noreferrer" title="View Passport">
+                                <img 
+                                    class="lazyload"
+                                    data-src="' . $image . '"
+                                    height="40"
+                                    alt="' . e($row->name) . '"
+                                    style="cursor:pointer; border-radius:4px;"
+                                >
+                            </a>';
                 })
                 ->addColumn('role', function ($row) {
                     return $row->getRoleNames()->toArray();
@@ -95,7 +155,7 @@ class UserController extends Controller
                     $actionBtn .= '</div>';
                     return $actionBtn;
                 })
-                ->rawColumns(['checkbox', 'image', 'status', 'actions'])
+                ->rawColumns(['checkbox', 'image','id_card_front','id_card_back','passport_image', 'status', 'actions'])
                 ->make(true);
         }
         $title = 'User Management';

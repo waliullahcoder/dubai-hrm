@@ -39,9 +39,9 @@
             </div>
         </div>
         <div class="col-lg-4 col-sm-6">
-            <label for="code" class="form-label"><b>Code <span class="text-danger">*</span></b></label>
+            <label for="code" class="form-label"><b>Employee ID <span class="text-danger">*</span></b></label>
             <input type="text" class="form-control" id="code" name="code" required
-                value="{{ $data->code }}" placeholder="code">
+                value="{{ $data->code }}" placeholder="Employee ID">
         </div>
         <div class="col-lg-4 col-sm-6">
             <label for="name" class="form-label"><b>Staff Name <span class="text-danger">*</span></b></label>

@@ -53,16 +53,16 @@ public function paymentData()
  
     $totalpayments = DB::table('hrm_payments')->where('employee_id', $staff->id)->sum('payment_amount');
     $payments      = DB::table('hrm_payments')->where('employee_id', $staff->id)->where('status', 'Payment')->sum('payment_amount');
-    $advance       = DB::table('hrm_payments')->where('employee_id', $staff->id)->where('status', 'Advance')->sum('payment_amount');
-    $expense       = DB::table('hrm_expense')->where('employee_id', $staff->id)->where('status', 'Approved')->sum('expense_amount');
+    $loans       = DB::table('hrm_employee_loan')->where('employee_id', $staff->id)->where('status', 'Approved')->get();
+    $advance       = DB::table('hrm_payments')->where('employee_id', $staff->id)->where('status', 'Advance')->sum('payment_amount')+ $loans->sum('loan_amount');
+    $expense       = DB::table('hrm_expense')->where('expense_head_id',313)->where('employee_id', $staff->id)->where('status', 'Approved')->sum('expense_amount');
     $totalWorkedHours = DB::table('hrm_employee_attendances')
         ->where('employee_id', $staff->id)
         ->where('attendance_status', 'Present')
+        ->whereNotNull('check_out')
         ->sum('worked_hours');
- 
     $earnings    = $staff->basic_salary * $totalWorkedHours - $staff->others;
-    $net_payable = $earnings - $totalpayments;
- 
+    $net_payable = $earnings + $loans->sum('total_installments') +  $expense - ($advance + $payments);
     return [
         'staff'         => $staff,
         'totalpayments' => $totalpayments,
@@ -71,6 +71,7 @@ public function paymentData()
         'worked_hours'  => $totalWorkedHours,
         'expense'       => $expense,
         'earnings'      => $earnings,
+        'loans'      => $loans,
         'net_payable'   => $net_payable,
         'history'       => $this->paymentHistory($staff),   // NEW: month-wise rows
     ];
@@ -97,6 +98,7 @@ protected function paymentHistory($staff)
     $hours = DB::table('hrm_employee_attendances')
         ->where('employee_id', $staff->id)
         ->where('attendance_status', 'Present')
+        ->whereNotNull('check_out')
         ->selectRaw("DATE_FORMAT(attendance_date, '%Y-%m') as ym, SUM(worked_hours) as total")
         ->groupBy('ym')
         ->pluck('total', 'ym');
@@ -104,6 +106,7 @@ protected function paymentHistory($staff)
     // 2) Mash-wise approved transport/expense
     $expenses = DB::table('hrm_expense')
         ->where('employee_id', $staff->id)
+        ->where('expense_head_id', 313)
         ->where('status', 'Approved')
         ->selectRaw("DATE_FORMAT($expDate, '%Y-%m') as ym, SUM(expense_amount) as total")
         ->groupBy('ym')
@@ -141,7 +144,7 @@ protected function paymentHistory($staff)
     return $months->map(function ($ym) use ($rate, $hours, $expenses, $paid, $adv, $lastDate, $lastMethod) {
         $gross = $rate * (float) ($hours[$ym] ?? 0);
         $net   = $gross + (float) ($expenses[$ym] ?? 0) - (float) ($adv[$ym] ?? 0);
- 
+        
         return [
             'month'        => $ym,                                   // 2026-09
             'net_payable'  => $net,

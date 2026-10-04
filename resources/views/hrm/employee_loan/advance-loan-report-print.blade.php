@@ -556,7 +556,7 @@
 
                 <td class="label">Hotel / Outlet</td>
                 <td class="colon">:</td>
-                <td class="value">{{$staff->hotel->name}}</td>
+                <td class="value">{{$staff->hotel?->name}}</td>
             </tr>
 
             <tr>
@@ -593,8 +593,8 @@
 
             <tbody>
                 <tr>
-                    <td>{{$loans->first()->loan_date}}</td>
-                    <td><strong>{{$loans->first()->loan_amount+$advance_payments->first()->payment_amount}}</strong></td>
+                    <td>{{$loans->first()?->loan_date}}</td>
+                    <td><strong>{{$loans->first()?->loan_amount+$advance_payments->first()?->payment_amount}}</strong></td>
                     <td><strong>{{$loans->sum('installment_amount')}}</strong></td>
                     <td><strong>{{$loans->sum('loan_amount')-$loans->sum('total_installments')}}</strong></td>
                 </tr>
@@ -651,7 +651,7 @@
         <div class="statement">
 
             I, {{$staff->name}} ({{$staff->code}}), kindly request a salary advance of
-            {{$staff->currency_code}} {{$loans->first()->loan_amount}} due to my personal/financial
+            {{$staff->currency_code}} {{$loans->first()?->loan_amount}} due to my personal/financial
             necessity. I understand that this amount will be adjusted from
             my upcoming salary as per company policy.
 

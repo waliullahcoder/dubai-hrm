@@ -66,10 +66,11 @@ class AdminController extends Controller
            $departments= Category::get();
            return view('hrm.dashboard.staff-dashboard', compact('hotels','departments'));
         }else{
+
+       $staffs= DB::table('staff')->get();
         // ==============================
         // BASIC SUMMARY
         // ==============================
-
         // Total Staff
         $total_staff = DB::table('staff')->count();
 
@@ -79,20 +80,24 @@ class AdminController extends Controller
         // Total Worked Hours
         $total_hours = DB::table('hrm_employee_attendances')
             ->where('attendance_status', 'Present')
+            ->whereNotNull('check_out')
             ->sum('worked_hours');
 
         // Total Earning
         // Staff total salary
-        $total_earning = DB::table('staff')
-            ->sum('total_salary');
+        $attendances = DB::table('hrm_employee_attendances')->whereNotNull('check_out')->get();
+
+        $total_earning = $attendances->sum('amount');
 
         // Total Payments
         $total_payments = DB::table('hrm_payments')
             ->sum('payment_amount');
 
             // Advance Payments
-        $advance_payments = DB::table('hrm_payments')->where('status', 'Advance')
+        $advancepayment = DB::table('hrm_payments')->where('status', 'Advance')
             ->sum('payment_amount');
+        $loans = DB::table('hrm_employee_loan')->where('status', 'Approved')->get();
+        $advance_payments = $advancepayment + $loans->sum('loan_amount');
 
         // Total Expense
         $total_expense = DB::table('hrm_expense')
@@ -100,7 +105,7 @@ class AdminController extends Controller
             ->sum('expense_amount');
 
         // Total Outstanding
-        $total_outstanding = $total_earning - $total_payments;
+        $total_outstanding = $total_earning - ($total_payments+$loans->sum('loan_amount'));
 
         if ($total_outstanding < 0) {
             $total_outstanding = 0;
@@ -141,7 +146,8 @@ class AdminController extends Controller
             'total_outstanding',
             'monthly_payments',
             'monthly_expense',
-            'advance_payments'
+            'advance_payments',
+            'staffs'
         ));
         }
 

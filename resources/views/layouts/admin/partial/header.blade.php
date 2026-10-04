@@ -201,15 +201,18 @@
 
             <!-- Vertical Separator Line (Only visible on desktop) -->
             <!-- <div class="d-none d-md-block" style="width: 1px; height: 22px; background-color: #e2e8f0; margin: 0 4px;"></div> -->
-
+@php
+$pendingcount = \DB::table('hrm_expense')->where('expense_amount', '!=',0)->where('expense_head_id',313)->where('status','Pending')->count();
+@endphp
             <!-- DROPDOWN FOR LISTS (Protects Space, Always Visible) -->
             <div class="dropdown">
                 <button class="btn list-dropdown-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fad fa-list text-primary"></i> <span>{{__('messages.view_list')}}</span>
+                    <i class="fad fa-list text-primary"></i> <span>{{__('messages.view_list')}} </span>
                 </button>
                 <div class="dropdown-menu custom-dropdown-menu shadow-lg border-0 rounded-3 mt-2">
                     <h6 class="dropdown-header fs-11 text-uppercase fw-bold text-muted px-3 pt-2 mb-1">{{__('messages.data_record')}}</h6>
                 
+
                     @can('admin.employee.index')
                     <a class="dropdown-item" href="{{url('/admin/employee')}}">
                         <i class="fad fa-user-tie text-primary"></i> <span>Employee List</span>
@@ -242,6 +245,31 @@
                     @endcan
                 </div>
             </div>
+
+            <a href="{{ url('/admin/staff-expense-approval') }}" class="quick-link-btn" title="Pending Approval">
+    <i class="fad fa-bell text-primary"></i>
+    <span>Pending Approval</span>
+    <span class="pending-badge">{{$pendingcount}}</span>
+</a>
+
+<style>
+    .pending-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        margin-left: 6px;
+        background: #dc3545;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+        border-radius: 50px;
+        box-shadow: 0 3px 8px rgba(220, 53, 69, 0.35);
+    }
+</style>
 
         </div>
 

@@ -1,19 +1,25 @@
+
 @extends('layouts.admin.app')
 
 @section('content')
+
 @include('hrm.reports.report_style')
+
 <div class="row">
 
     <div class="col-12">
 
         <div class="card report-card shadow-sm">
 
-            {{-- ================= HEADER ================= --}}
+            {{-- =====================================================
+                HEADER
+            ====================================================== --}}
+
             <div class="card-header d-flex justify-content-between align-items-center">
 
                 <h5 class="mb-0 report-title">
 
-                    <i class="fas fa-money-bill-wave text-primary me-2"></i>
+                    <i class="fas fa-file-invoice-dollar text-primary me-2"></i>
 
                     Expense Report
 
@@ -22,12 +28,16 @@
             </div>
 
 
-            {{-- ================= FILTER ================= --}}
+            {{-- =====================================================
+                FILTER
+            ====================================================== --}}
+
             <div class="card-body filter-section border-bottom">
 
                 <div class="row g-3 align-items-end">
 
-                    {{-- From Date --}}
+                    {{-- ================= FROM DATE ================= --}}
+
                     <div class="col-lg-2 col-md-6">
 
                         <label class="filter-label">
@@ -48,7 +58,8 @@
                     </div>
 
 
-                    {{-- To Date --}}
+                    {{-- ================= TO DATE ================= --}}
+
                     <div class="col-lg-2 col-md-6">
 
                         <label class="filter-label">
@@ -69,29 +80,32 @@
                     </div>
 
 
-                    {{-- Employee --}}
+                    {{-- ================= EXPENSE HEAD ================= --}}
+
                     <div class="col-lg-3 col-md-6">
 
                         <label class="filter-label">
 
-                            <i class="fas fa-user text-success"></i>
+                            <i class="fas fa-sitemap text-info"></i>
 
-                            Employee
+                            Expense Head
 
                         </label>
 
-                        <select id="employee_id" class="form-select">
+                        <select
+                            id="coa_id"
+                            class="form-select select"
+                        >
 
                             <option value="">
-                                All Employee
+                                All Expense Head
                             </option>
 
-                            @foreach($employees as $employee)
+                            @foreach($heads as $head)
 
-                                <option value="{{ $employee->id }}">
+                                <option value="{{ $head->id }}">
 
-                                    {{ $employee->code }} -
-                                    {{ $employee->name }}
+                                    {{ $head->head_name }}
 
                                 </option>
 
@@ -102,21 +116,25 @@
                     </div>
 
 
-                    {{-- Payment Status --}}
-                    <div class="col-lg-2 col-md-6">
+                    {{-- ================= STATUS ================= --}}
+
+                     <div class="col-lg-2 col-md-6">
 
                         <label class="filter-label">
 
-                            <i class="fas fa-money-check-alt text-warning"></i>
+                            <i class="fas fa-check-circle text-warning"></i>
 
-                            Payment Status
+                            Status
 
                         </label>
 
-                        <select id="status" class="form-select">
+                        <select
+                            id="status"
+                            class="form-select"
+                        >
 
                             <option value="">
-                                All Status
+                                All
                             </option>
 
                             <option value="Approved">
@@ -126,6 +144,7 @@
                             <option value="Paid">
                                 Paid
                             </option>
+
                             <option value="Pending">
                                 Pending
                             </option>
@@ -135,8 +154,9 @@
                     </div>
 
 
-                    {{-- Buttons --}}
-                    <div class="col-lg-3 col-md-6">
+                    {{-- ================= BUTTONS ================= --}}
+
+                    <div class="col-lg-2 col-md-6">
 
                         <div class="d-flex gap-2">
 
@@ -174,7 +194,10 @@
             </div>
 
 
-            {{-- ================= TABLE ================= --}}
+            {{-- =====================================================
+                TABLE
+            ====================================================== --}}
+
             <div class="card-body">
 
                 <div class="table-responsive">
@@ -188,25 +211,35 @@
 
                             <tr>
 
-                                <th>SL</th>
+                                <th>
+                                    SL
+                                </th>
 
-                                <th>Employee Code</th>
+                                <th>
+                                    Expense Head
+                                </th>
 
-                                <th>Employee Name</th>
+                                <th>
+                                    Expense Month
+                                </th>
 
-                                <th>Expense Month</th>
-
-                                <th>Year</th>
+                                <th>
+                                    Year
+                                </th>
 
                                 <th class="text-end">
                                     Amount
                                 </th>
 
-                                <th>Expense Date</th>
+                                <th>
+                                    Expense Date
+                                </th>
 
-                                <th>Expense Status</th>
+                                <th>
+                                    Status
+                                </th>
 
-                                <th style="min-width:200px;">
+                                <th style="min-width:250px;">
                                     Remarks
                                 </th>
 
@@ -222,7 +255,10 @@
 
                             <tr>
 
-                                <th colspan="5" class="text-end">
+                                <th
+                                    colspan="4"
+                                    class="text-end"
+                                >
 
                                     Page Total :
 
@@ -230,9 +266,11 @@
 
                                 <th
                                     class="text-end"
-                                    id="total_payment_amount"
+                                    id="total_expense_amount"
                                 >
+
                                     0.00 Tk.
+
                                 </th>
 
                                 <th colspan="3"></th>
@@ -262,6 +300,11 @@
 
 $(function () {
 
+
+    /* =========================================================
+       DATATABLE
+    ========================================================= */
+
     var table = $('.dataTable').DataTable({
 
         processing: true,
@@ -277,6 +320,11 @@ $(function () {
             [10, 25, 50, 100, "All"]
         ],
 
+
+        /* =====================================================
+           BUTTONS
+        ====================================================== */
+
         dom: 'Bfrtip',
 
         buttons: [
@@ -284,11 +332,14 @@ $(function () {
             {
                 extend: 'excelHtml5',
 
-                text: '<i class="fas fa-file-excel me-1"></i> Excel',
+                text:
+                    '<i class="fas fa-file-excel me-1"></i> Excel',
 
-                className: 'btn btn-success btn-sm',
+                className:
+                    'btn btn-success btn-sm',
 
-                title: 'Payment Report',
+                title:
+                    'Expense Report',
 
                 exportOptions: {
 
@@ -300,8 +351,7 @@ $(function () {
                         4,
                         5,
                         6,
-                        7,
-                        8
+                        7
                     ]
 
                 }
@@ -311,82 +361,173 @@ $(function () {
         ],
 
 
+        /* =====================================================
+           AJAX
+        ====================================================== */
+
         ajax: {
 
             url: "{{ route('admin.expense.report') }}",
 
             data: function (d) {
 
-                d.from_date = $('#from_date').val();
+                d.from_date =
+                    $('#from_date').val();
 
-                d.to_date = $('#to_date').val();
+                d.to_date =
+                    $('#to_date').val();
 
-                d.employee_id = $('#employee_id').val();
+                d.coa_id =
+                    $('#coa_id').val();
 
-                d.status = $('#status').val();
+                d.status =
+                    $('#status').val();
 
             }
 
         },
 
 
+        /* =====================================================
+           COLUMNS
+        ====================================================== */
+
         columns: [
+
+            /* ================= SL ================= */
 
             {
                 data: 'DT_RowIndex',
+
                 name: 'DT_RowIndex',
+
                 orderable: false,
-                searchable: false
+
+                searchable: false,
+
+                className: 'text-center'
             },
 
-            {
-                data: 'employee_code',
-                name: 's.code'
-            },
+
+            /* ================= EXPENSE HEAD ================= */
 
             {
-                data: 'employee_name',
-                name: 's.name'
+                data: 'expense_head',
+
+                name: 'coa.head_name',
+
+                defaultContent: '-',
+
+                render: function (data) {
+
+                    return data
+                        ? data
+                        : '-';
+
+                }
+
             },
+
+
+            /* ================= MONTH ================= */
 
             {
                 data: 'expense_month',
-                name: 'exp.expense_month'
+
+                name: 'exp.expense_month',
+
+                defaultContent: '-',
+
+                className: 'text-center'
+
             },
+
+
+            /* ================= YEAR ================= */
 
             {
                 data: 'expense_year',
-                name: 'exp.expense_year'
+
+                name: 'exp.expense_year',
+
+                defaultContent: '-',
+
+                className: 'text-center'
+
             },
+
+
+            /* ================= AMOUNT ================= */
 
             {
                 data: 'expense_amount',
+
                 name: 'exp.expense_amount',
 
-                className: 'text-end amount-cell'
+                className: 'text-end amount-cell',
+
+                render: function (data) {
+
+                    var amount =
+                        parseFloat(data) || 0;
+
+                    return amount.toLocaleString(
+                        'en-US',
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    ) + ' Tk.';
+
+                }
+
             },
+
+
+            /* ================= EXPENSE DATE ================= */
 
             {
                 data: 'expense_date',
-                name: 'exp.expense_date'
+
+                name: 'exp.expense_date',
+
+                defaultContent: '-'
+
             },
+
+
+            /* ================= STATUS ================= */
 
             {
                 data: 'status',
+
                 name: 'exp.status',
 
                 orderable: true,
 
-                searchable: true
+                searchable: true,
+
+                defaultContent: '-',
+
+                className: 'text-center'
+
             },
+
+
+            /* ================= REMARKS ================= */
 
             {
                 data: 'remarks',
+
                 name: 'exp.remarks',
+
+                defaultContent: '-',
 
                 render: function (data) {
 
-                    return data ? data : '-';
+                    return data
+                        ? data
+                        : '-';
 
                 }
 
@@ -395,47 +536,77 @@ $(function () {
         ],
 
 
-        footerCallback: function (row, data, start, end, display) {
+        /* =====================================================
+           FOOTER TOTAL
+        ====================================================== */
+
+        footerCallback: function (
+            row,
+            data,
+            start,
+            end,
+            display
+        ) {
 
             var api = this.api();
 
 
             function parseValue(value) {
 
-                if (typeof value === 'string') {
+                if (
+                    typeof value === 'string'
+                ) {
 
                     return parseFloat(
-                        value.replace(/[^0-9.-]+/g, '')
+                        value.replace(
+                            /[^0-9.-]+/g,
+                            ''
+                        )
                     ) || 0;
 
                 }
+
 
                 return parseFloat(value) || 0;
 
             }
 
 
-            var paymentTotal = api
-                .column(5, {
-                    page: 'current'
-                })
-                .data()
-                .reduce(function (a, b) {
+            var expenseTotal =
 
-                    return parseValue(a) + parseValue(b);
+                api
+                    .column(
+                        4,
+                        {
+                            page: 'current'
+                        }
+                    )
+                    .data()
+                    .reduce(
+                        function (a, b) {
 
-                }, 0);
+                            return (
+                                parseValue(a)
+                                +
+                                parseValue(b)
+                            );
+
+                        },
+                        0
+                    );
 
 
-            $('#total_payment_amount').html(
+            $('#total_expense_amount').html(
 
-                paymentTotal.toLocaleString('en-US', {
-
-                    minimumFractionDigits: 2,
-
-                    maximumFractionDigits: 2
-
-                }) + ' Tk.'
+                expenseTotal.toLocaleString(
+                    'en-US',
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                )
+                +
+                ' Tk.'
 
             );
 
@@ -444,40 +615,58 @@ $(function () {
     });
 
 
-    // ================= FILTER =================
+    /* =========================================================
+       FILTER BUTTON
+    ====================================================== */
 
-    $('#btnFilter').on('click', function () {
-
-        table.ajax.reload();
-
-    });
-
-
-    // ================= AUTO FILTER =================
-
-    $('#from_date, #to_date, #employee_id, #status')
-        .on('change', function () {
+    $('#btnFilter').on(
+        'click',
+        function () {
 
             table.ajax.reload();
 
-        });
+        }
+    );
 
 
-    // ================= RESET =================
+    /* =========================================================
+       AUTO FILTER
+    ====================================================== */
 
-    $('#btnReset').on('click', function () {
+    $(
+        '#from_date, #to_date, #coa_id, #status'
+    ).on(
+        'change',
+        function () {
 
-        $('#from_date').val('');
+            table.ajax.reload();
 
-        $('#to_date').val('');
+        }
+    );
 
-        $('#employee_id').val('');
 
-        $('#status').val('');
+    /* =========================================================
+       RESET
+    ====================================================== */
 
-        table.ajax.reload();
+    $('#btnReset').on(
+        'click',
+        function () {
 
-    });
+            $('#from_date').val('');
+
+            $('#to_date').val('');
+
+            $('#coa_id').val('');
+
+            $('#status').val('');
+
+
+            table.ajax.reload();
+
+        }
+    );
+
 
 });
 

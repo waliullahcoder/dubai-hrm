@@ -51,8 +51,8 @@
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="form-label">Work Location<span class="text-danger">*</span></label>
-                    <select name="employee_id" class="form-select select" required>
+                    <label class="form-label">Work Location</label>
+                    <select name="employee_id" class="form-select select">
                         <option value="">Select Location</option>
                         @foreach($hotels as $hotel)
                             <option value="{{ $hotel->id }}"

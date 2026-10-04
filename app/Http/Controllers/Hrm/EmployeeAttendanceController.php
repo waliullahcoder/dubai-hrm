@@ -128,6 +128,7 @@ public function attendanceDashboard(Request $request)
             $monthStart->format('Y-m-d'),
             $monthEnd->format('Y-m-d')
         ])
+        ->whereNotNull('check_out')
         ->where('a.attendance_status', 'Present');
 
     if ($hotelId) {
@@ -847,6 +848,11 @@ public function attendanceDashboard(Request $request)
                 'hotelcount' => $hotelcount
             ];
         }
+
+     public function destroy(string $id){
+         $action = DB::table('hrm_employee_attendances')->where('id',$id)->delete();
+         return response()->json(['status' => 'success']);
+     }
 
 
 }
