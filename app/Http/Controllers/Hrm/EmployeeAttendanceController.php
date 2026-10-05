@@ -796,6 +796,8 @@ public function attendanceDashboard(Request $request)
 
                 'employee_id'       => $request->employee_id,
                 'attendance_date'   => $request->attendance_date,
+                'hour_rate'          => $request->hour_rate,
+                'amount'          => $request->amount,
                 'check_in'          => $request->check_in,
                 'check_in_latitude'          => $request->check_in_latitude,
                 'check_in_longitude'          => $request->check_in_longitude,

@@ -37,8 +37,8 @@
                                 <th>Check In</th>
                                 <th>Check Out</th>
                                 <th>Worked Hours</th>
-                                <th>Late</th>
-                                <th>OT</th>
+                                <th>Houra Rate</th>
+                                <th>Amount</th>
                                 <th>Status</th>
                                 <th>Remarks</th>
                                 <th width="100">Action</th>
@@ -104,10 +104,10 @@ $('.dataTable').DataTable({
             data: 'worked_hours'
         },
         {
-            data: 'late_minutes'
+            data: 'hour_rate'
         },
         {
-            data: 'overtime_minutes'
+            data: 'amount'
         },
         {
             data: 'attendance_status'

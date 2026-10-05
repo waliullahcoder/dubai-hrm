@@ -954,7 +954,7 @@
                     <tr>
 
                         <td>
-                            Hourly Rate
+                            Current Hourly Rate
                         </td>
 
                         <td>

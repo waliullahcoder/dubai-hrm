@@ -288,7 +288,7 @@
         <td class="value">{{$staff->type}}</td>
       </tr>
       <tr>
-        <td class="label">Hourly Rate</td>
+        <td class="label">Current Hourly Rate</td>
         <td class="colon">:</td>
         <td class="value">{{$staff->currency_code}} {{$staff->basic_salary}}</td>
       </tr>

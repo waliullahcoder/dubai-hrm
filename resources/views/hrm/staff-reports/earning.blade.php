@@ -8,7 +8,6 @@
     $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
     $cur   = $staff->currency_code ?? 'BDT';
     $fmt   = fn($n) => number_format((float) $n, 2, '.', ',');
-
     $hours      = (float) ($paymentdata['worked_hours'] ?? 0);
     $rate       = (float) ($staff->basic_salary ?? 0);
     $gross      = (float) ($paymentdata['earnings'] ?? 0);
@@ -149,7 +148,7 @@
             <div class="sum-card sum-green">
                 <span class="ic"><i class="fas fa-coins"></i></span>
                 <div>
-                    <small>Hourly Rate</small>
+                    <small>Current Hourly Rate</small>
                     <strong>{{ $cur }} {{ $fmt($rate) }}</strong>
                 </div>
             </div>

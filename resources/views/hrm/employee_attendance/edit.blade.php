@@ -132,18 +132,38 @@
 
                         </div>
 
-                        <div class="col-lg-2">
+                       <div class="col-lg-2">
+                        <label><b>Worked Hours</b></label>
 
-                            <label><b>Worked Hours</b></label>
+                        <input type="text"
+                            name="worked_hours"
+                            id="worked_hours"
+                            class="form-control"
+                            value="{{ $data->worked_hours }}"
+                            readonly>
+                    </div>
 
-                            <input type="text"
-                                name="worked_hours"
-                                id="worked_hours"
-                                class="form-control"
-                                value="{{ $data->worked_hours }}"
-                                readonly>
+                    <div class="col-lg-6">
+                        <label><b>Hour Rate</b></label>
 
-                        </div>
+                        <input type="text"
+                            name="hour_rate"
+                            id="hour_rate"
+                            class="form-control"
+                            value="{{ $data->hour_rate }}">
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label><b>Earning Amount</b></label>
+
+                        <input type="text"
+                            name="amount"
+                            id="amount"
+                            class="form-control"
+                            value="{{ $data->amount }}"
+                            readonly>
+                    </div>
+
 
                         <div class="col-lg-12">
 
@@ -229,4 +249,27 @@ calculateAttendance();
 
 </script>
 
+                    <script>
+                    $(document).ready(function () {
+
+                        function calculateAmount() {
+
+                            let workedHours = parseFloat($('#worked_hours').val()) || 0;
+                            let hourRate = parseFloat($('#hour_rate').val()) || 0;
+
+                            let amount = workedHours * hourRate;
+
+                            $('#amount').val(amount.toFixed(2));
+                        }
+
+                        // Rate change হলে calculate
+                        $('#hour_rate').on('input keyup change', function () {
+                            calculateAmount();
+                        });
+
+                        // Page load হওয়ার সময়ও calculate
+                        calculateAmount();
+
+                    });
+                    </script>
 @endpush

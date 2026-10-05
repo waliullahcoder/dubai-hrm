@@ -254,7 +254,7 @@
       <div class="wvalue">{{$data['attendance']->sum('worked_hours')}}</div>
     </div>
     <div>
-      <div class="wlabel">Hourly Rate</div>
+      <div class="wlabel">Current Hourly Rate</div>
       <div class="wvalue">{{$staff->currency_code}} {{$staff->basic_salary}}</div>
     </div>
   </div>
