@@ -209,7 +209,7 @@
 
                                 <option value="{{ $staff->id }}"
                                     {{ request('employee_id') == $staff->id ? 'selected' : '' }}>
-                                    {{ $staff->name }}
+                                    {{ $staff->code }}, {{ $staff->name }}
                                 </option>
 
                             @endforeach
