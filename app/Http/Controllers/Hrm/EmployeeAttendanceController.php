@@ -469,6 +469,26 @@ public function attendanceDashboard(Request $request)
             'employee_id' => 'required'
         ]);
 
+
+
+        // once time attendance validation
+          $attencount = 0;
+         if(Auth::user()->role_status==4){
+              $attencount = DB::table('hrm_employee_attendances')
+                    ->whereNotNull('check_out')
+                    ->where('attendance_date', $request->attendance_date)
+                    ->whereIn('employee_id', (array) $request->employee_id)
+                    ->count();
+
+                if ($attencount > 0) {
+                    return redirect()->back()
+                        ->withErrors('Already Attendance done today! try at tomorrow');
+                }
+                      
+         }
+        // once time attendance validation  
+            
+
         if(Auth::user()->role_status==4 && $request->location_varified){
             $staff = Staff::find($request->employee_id);
             $staff->update([
