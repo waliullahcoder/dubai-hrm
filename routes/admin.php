@@ -115,6 +115,7 @@ use App\Http\Controllers\Hrm\HrmReportController;
 use App\Http\Controllers\Hrm\StaffPaymentController;
 use App\Http\Controllers\Hrm\StaffReportController;
 use App\Http\Controllers\Hrm\HotelController;
+use App\Http\Controllers\Hrm\InvoiceController;
 
 Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
     Route::get('/', [AdminController::class, 'index'])->name('login.index');
@@ -198,6 +199,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/staff-earning',[StaffReportController::class,'staffEarning'])->name('earning.report');
     Route::get('/working-hours',[StaffReportController::class,'workingHours'])->name('working.hour.report');
     Route::get('/my-payment-report',[StaffReportController::class,'staffPayment'])->name('my.paymen.reportt');
+
+    //invoice
+    Route::resource('/invoices',InvoiceController::class);
+    Route::get('invoices/export', [InvoiceController::class, 'export'])->name('invoices.export');
     
 
 });
