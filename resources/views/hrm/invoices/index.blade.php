@@ -10,7 +10,7 @@
                         style="width:48px;height:48px;"><i class="fas fa-file-invoice fa-lg"></i></span>
                     <div>
                         <small class="text-primary fw-semibold">Total Invoices</small>
-                        <h3 class="mb-0 fw-bold">{{ $summary->total_invoices }}</h3>
+                        <h3 class="mb-0 fw-bold" id="s_total_invoices">{{ $summary['total_invoices'] }}</h3>
                     </div>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                         style="width:48px;height:48px;"><i class="fas fa-dollar-sign fa-lg"></i></span>
                     <div>
                         <small class="text-muted">Total Amount<br>(Before VAT)</small>
-                        <h6 class="mb-0 fw-bold">AED {{ number_format($summary->total_before_vat, 2) }}</h6>
+                        <h6 class="mb-0 fw-bold">AED <span id="s_total_before_vat">{{ $summary['total_before_vat'] }}</span></h6>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                         style="width:48px;height:48px;background:#8b5cf6;"><i class="fas fa-percent fa-lg"></i></span>
                     <div>
                         <small class="text-muted">Total VAT (5%)</small>
-                        <h6 class="mb-0 fw-bold">AED {{ number_format($summary->total_vat, 2) }}</h6>
+                        <h6 class="mb-0 fw-bold">AED <span id="s_total_vat">{{ $summary['total_vat'] }}</span></h6>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                         style="width:48px;height:48px;"><i class="fas fa-coins fa-lg"></i></span>
                     <div>
                         <small class="text-muted">Total Amount<br>(With VAT)</small>
-                        <h6 class="mb-0 fw-bold">AED {{ number_format($summary->total_with_vat, 2) }}</h6>
+                        <h6 class="mb-0 fw-bold">AED <span id="s_total_with_vat">{{ $summary['total_with_vat'] }}</span></h6>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                         style="width:48px;height:48px;"><i class="fas fa-check fa-lg"></i></span>
                     <div>
                         <small class="text-muted">Paid Amount</small>
-                        <h6 class="mb-0 fw-bold">AED {{ number_format($summary->paid_amount, 2) }}</h6>
+                        <h6 class="mb-0 fw-bold">AED <span id="s_paid_amount">{{ $summary['paid_amount'] }}</span></h6>
                     </div>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                         style="width:48px;height:48px;"><i class="fas fa-hourglass-half fa-lg"></i></span>
                     <div>
                         <small class="text-muted">Unpaid Amount</small>
-                        <h6 class="mb-0 fw-bold">AED {{ number_format($summary->unpaid_amount, 2) }}</h6>
+                        <h6 class="mb-0 fw-bold">AED <span id="s_unpaid_amount">{{ $summary['unpaid_amount'] }}</span></h6>
                     </div>
                 </div>
             </div>
@@ -91,9 +91,9 @@
                         <i class="fas fa-plus me-1"></i> Add New Invoice
                     </a>
                 @endcan
-                <a href="#" id="export_btn" class="btn btn-outline-secondary">
+                <!-- <a href="#" id="export_btn" class="btn btn-outline-secondary">
                     <i class="fas fa-download me-1"></i> Export
-                </a>
+                </a> -->
                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse"
                     data-bs-target="#filter_area">
                     <i class="fas fa-filter me-1"></i> Filter
@@ -243,6 +243,18 @@
                 order: [
                     [1, 'desc']
                 ],
+            });
+
+            // Filter wise summary update
+            table.on('xhr.dt', function(e, settings, json) {
+                if (json && json.summary) {
+                    $('#s_total_invoices').text(json.summary.total_invoices);
+                    $('#s_total_before_vat').text(json.summary.total_before_vat);
+                    $('#s_total_vat').text(json.summary.total_vat);
+                    $('#s_total_with_vat').text(json.summary.total_with_vat);
+                    $('#s_paid_amount').text(json.summary.paid_amount);
+                    $('#s_unpaid_amount').text(json.summary.unpaid_amount);
+                }
             });
 
             $('#apply_filter').on('click', function() {

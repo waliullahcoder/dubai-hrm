@@ -16,10 +16,10 @@ class InvoiceController extends Controller
     /**
      * Invoice list + summary cards
      */
-    public function index(Request $request)
+   public function index(Request $request)
     {
         if ($request->ajax()) {
-            $model = DB::table($this->table . ' as i')
+            $model = $this->filteredQuery($request, 'i')
                 ->select(
                     'i.id',
                     'i.invoice_no',
@@ -34,10 +34,6 @@ class InvoiceController extends Controller
                     'i.invoice_pdf',
                     'i.remarks'
                 )
-                ->when($request->filled('payment_status'), fn($q) => $q->where('i.payment_status', $request->payment_status))
-                ->when($request->filled('active_status'), fn($q) => $q->where('i.active_status', $request->active_status))
-                ->when($request->filled('from_date'), fn($q) => $q->whereDate('i.invoice_date', '>=', Carbon::createFromFormat('d-m-Y', $request->from_date)->format('Y-m-d')))
-                ->when($request->filled('to_date'), fn($q) => $q->whereDate('i.invoice_date', '<=', Carbon::createFromFormat('d-m-Y', $request->to_date)->format('Y-m-d')))
                 ->orderBy('i.id', 'desc');
 
             return DataTables::of($model)
@@ -84,21 +80,45 @@ class InvoiceController extends Controller
                     return '<div class="d-flex justify-content-center">' . $btn . '</div>';
                 })
                 ->rawColumns(['total_amount', 'active_status', 'payment_status', 'invoice_pdf', 'actions'])
+                ->with('summary', $this->summaryData($request))
                 ->make(true);
         }
 
-        $summary = DB::table($this->table)
+        $summary = $this->summaryData($request);
+
+        return view('hrm.invoices.index', compact('summary'));
+    }
+
+    private function filteredQuery(Request $request, string $alias = 'i')
+    {
+        return DB::table($this->table . ' as ' . $alias)
+            ->when($request->filled('payment_status'), fn($q) => $q->where("$alias.payment_status", $request->payment_status))
+            ->when($request->filled('active_status'), fn($q) => $q->where("$alias.active_status", $request->active_status))
+            ->when($request->filled('from_date'), fn($q) => $q->whereDate("$alias.invoice_date", '>=', Carbon::createFromFormat('d-m-Y', $request->from_date)->format('Y-m-d')))
+            ->when($request->filled('to_date'), fn($q) => $q->whereDate("$alias.invoice_date", '<=', Carbon::createFromFormat('d-m-Y', $request->to_date)->format('Y-m-d')));
+    }
+
+    private function summaryData(Request $request): array
+    {
+        $s = $this->filteredQuery($request, 'i')
             ->selectRaw("
                 COUNT(*) as total_invoices,
-                COALESCE(SUM(amount_before_vat), 0) as total_before_vat,
-                COALESCE(SUM(vat_amount), 0) as total_vat,
-                COALESCE(SUM(total_amount), 0) as total_with_vat,
-                COALESCE(SUM(CASE WHEN payment_status = 'Paid' THEN total_amount ELSE 0 END), 0) as paid_amount,
-                COALESCE(SUM(CASE WHEN payment_status = 'Unpaid' THEN total_amount ELSE 0 END), 0) as unpaid_amount
+                COALESCE(SUM(i.amount_before_vat), 0) as total_before_vat,
+                COALESCE(SUM(i.vat_amount), 0) as total_vat,
+                COALESCE(SUM(i.total_amount), 0) as total_with_vat,
+                COALESCE(SUM(CASE WHEN i.payment_status = 'Paid' THEN i.total_amount ELSE 0 END), 0) as paid_amount,
+                COALESCE(SUM(CASE WHEN i.payment_status = 'Unpaid' THEN i.total_amount ELSE 0 END), 0) as unpaid_amount
             ")
             ->first();
 
-        return view('hrm.invoices.index', compact('summary'));
+        return [
+            'total_invoices'   => (int) $s->total_invoices,
+            'total_before_vat' => number_format($s->total_before_vat, 2),
+            'total_vat'        => number_format($s->total_vat, 2),
+            'total_with_vat'   => number_format($s->total_with_vat, 2),
+            'paid_amount'      => number_format($s->paid_amount, 2),
+            'unpaid_amount'    => number_format($s->unpaid_amount, 2),
+        ];
     }
 
     /**
