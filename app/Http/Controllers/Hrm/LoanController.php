@@ -133,6 +133,45 @@ class LoanController extends Controller
         return view('hrm.employee_loan.create', compact('employees'));
     }
 
+    public function employeeInfo(Request $request)
+    {
+        $q = DB::table('staff')->where('status', 1);
+
+        if ($request->filled('employee_id')) {
+            $q->where('id', $request->employee_id);
+        } elseif ($request->filled('phone')) {
+            $q->where('phone', trim($request->phone));
+        } else {
+            return response()->json(['message' => 'Invalid'], 422);
+        }
+
+        $staff = $q->first();
+        if (!$staff) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        $loans = DB::table('hrm_employee_loan')->where('employee_id', $staff->id);
+        $last  = (clone $loans)->orderByDesc('id')->first();
+
+        $loanSum   = (clone $loans)->sum('loan_amount');
+        $recovered = (clone $loans)->sum('installment_amount');
+        $advPaid   = DB::table('hrm_payments')
+            ->where('status', 'Advance')
+            ->where('employee_id', $staff->id)
+            ->sum('payment_amount');
+
+        return response()->json([
+            'id'               => $staff->id,
+            'name'             => $staff->name,
+            'phone'            => $staff->phone,
+            'national_id'      => $staff->national_id ?? null,
+            'code'             => $staff->code,
+            'prev_date'        => $last->loan_date ?? null,
+            'prev_amount'      => $last->loan_amount ?? 0,
+            'prev_outstanding' => ($loanSum + $advPaid) - $recovered,
+        ]);
+    }
+
 
     public function store(Request $request)
     {
@@ -148,6 +187,8 @@ class LoanController extends Controller
             'status'         => 'required|in:Pending,Approved,Paid',
             'remarks'        => 'nullable|string',
         ]);
+
+        
         if($request->employee_id){
             $prev_total_instll=DB::table('hrm_employee_loan')->where('employee_id',$request->employee_id)->sum('total_installments');
             $total_instll_amount= ($prev_total_instll+$request->installment_amount);
@@ -168,9 +209,15 @@ class LoanController extends Controller
             'updated_at'    => now(),
         ]);
 
-        return redirect()
-            ->route('admin.employee-loan.index')
-            ->withSuccessMessage('Employee loan added successfully.');
+        if ($request->save_and_print == 1) {
+                return redirect()->route('admin.advance.loan.report', ['employee_id' => $request->employee_id]);
+            }
+
+            return redirect()
+                ->route('admin.employee-loan.index')
+                ->withSuccessMessage('Employee loan added successfully.');
+
+                
     }
 
     public function edit($id)

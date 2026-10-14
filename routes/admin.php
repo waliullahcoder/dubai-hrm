@@ -173,6 +173,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/employee-increment',IncrementController::class);
     Route::resource('/employee-loan',LoanController::class);
     Route::get('/advance-loan-report',[LoanController::class,'advanceLoanReport'])->name('advance.loan.report');
+    Route::get('employee-loan-info', [LoanController::class, 'employeeInfo'])
+    ->name('employee-loan.employee-info');
+
     Route::resource('/employee-overtime',OverTimeController::class);
     Route::resource('/expense',ExpenseController::class);
     Route::get('/staff-expense-approval',[ExpenseController::class,'expenseApproval'])->name('expense.approval');
@@ -203,6 +206,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     //invoice
     Route::resource('/invoices',InvoiceController::class);
     Route::get('invoices/export', [InvoiceController::class, 'export'])->name('invoices.export');
+    
     
 
 });
