@@ -187,6 +187,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/termination',TerminationController::class);
     Route::resource('/appraisal',AppraisalController::class);
     Route::resource('/staff-payment', StaffPaymentController::class);
+    Route::get('staff-payment/{id}/slip', [StaffPaymentController::class, 'slip'])->name('staff-payment.slip');
     
     //Reports
     Route::get('/payment-report',[HrmReportController::class,'paymentReport'])->name('payment.report');

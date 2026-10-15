@@ -102,49 +102,92 @@ class StaffPaymentController extends Controller
         return view('hrm.staff-payment.index');
     }
 
-  public function create()
+    public function create()
     {
         $coas = DB::table('coa_setups')
             ->where('parent_id', 4)
             ->orderBy('head_name')
             ->get();
-        $staffs = DB::table('staff')
-                 ->get();
 
-        return view('hrm.staff-payment.create', compact('coas','staffs'));
+        $staffs = DB::table('staff')->orderBy('name')->get();
+
+        // Employee wise outstanding advance = total Advance given - total deducted so far
+        $advances = DB::table('hrm_payments')
+            ->select(
+                'employee_id',
+                DB::raw("SUM(CASE WHEN status = 'Advance' THEN payment_amount ELSE 0 END) - SUM(COALESCE(advance_deduction,0)) AS outstanding")
+            )
+            ->groupBy('employee_id')
+            ->pluck('outstanding', 'employee_id');
+
+        return view('hrm.staff-payment.create', compact('coas', 'staffs', 'advances'));
     }
-
 
     public function store(Request $request)
     {
         $request->validate([
-            'payment_head_id'    => 'required',
-            'payment_month'  => 'required|integer|between:1,12',
-            'payment_year'   => 'required|digits:4',
-            'payment_amount'    => 'required|numeric|min:0',
+            'payment_head_id'   => 'required',
+            'employee_id'       => 'required',
+            'payment_month'     => 'required|integer|between:1,12',
+            'payment_year'      => 'required|digits:4',
+            'hours'             => 'required|numeric|min:0',
+            'hour_rate'         => 'required|numeric|min:0',
+            'transport_amount'  => 'nullable|numeric|min:0',
+            'advance_deduction' => 'nullable|numeric|min:0',
             'payment_date'      => 'required|date',
-            'status'         => 'nullable|string',
-            'remarks'        => 'nullable|string',
+            'remarks'           => 'nullable|string',
         ]);
-        DB::table('hrm_payments')->insert([
+
+        // Server side calculation (JS er upor bharosha na kore)
+        $basic     = $request->hours * $request->hour_rate;
+        $transport = (float) $request->transport_amount;
+        $gross     = $basic + $transport;
+
+        $outstanding = (float) DB::table('hrm_payments')
+            ->where('employee_id', $request->employee_id)
+            ->selectRaw("SUM(CASE WHEN status = 'Advance' THEN payment_amount ELSE 0 END) - SUM(COALESCE(advance_deduction,0)) AS o")
+            ->value('o');
+
+        $deduction = min((float) $request->advance_deduction, max($outstanding, 0), $gross);
+        $net       = $gross - $deduction;
+
+        $id = DB::table('hrm_payments')->insertGetId([
             'payment_head_id'   => $request->payment_head_id,
-            'employee_id'   => $request->employee_id,
-            'payment_month' => $request->payment_month,
-            'payment_year'  => $request->payment_year,
-            'hours'   => $request->hours,
-            'hour_rate'   => $request->hour_rate,
-            'payment_amount'        => $request->payment_amount,
-            'payment_date'  => $request->payment_date,
-            'remarks'       => $request->remarks,
-            'status'        => $request->status,
-            'created_by'    => auth()->id(),
-            'created_at'    => now(),
-            'updated_at'    => now(),
+            'employee_id'       => $request->employee_id,
+            'payment_month'     => $request->payment_month,
+            'payment_year'      => $request->payment_year,
+            'hours'             => $request->hours,
+            'hour_rate'         => $request->hour_rate,
+            'transport_amount'  => $transport,
+            'gross_amount'      => $gross,
+            'advance_deduction' => $deduction,
+            'payment_amount'    => $net,          // Net payable
+            'payment_date'      => $request->payment_date,
+            'remarks'           => $request->remarks,
+            'status'            => 'Payment',
+            'created_by'        => auth()->id(),
+            'created_at'        => now(),
+            'updated_at'        => now(),
         ]);
+
+        if ($request->print == 1) {
+            return redirect()->route('admin.staff-payment.slip', $id);
+        }
 
         return redirect()
             ->route('admin.staff-payment.index')
             ->withSuccessMessage('Payment added successfully.');
+    }
+
+    public function slip($id)
+    {
+        $payment = DB::table('hrm_payments')
+            ->join('staff', 'staff.id', '=', 'hrm_payments.employee_id')
+            ->select('hrm_payments.*', 'staff.name', 'staff.address')
+            ->where('hrm_payments.id', $id)
+            ->first();
+
+        return view('hrm.staff-payment.slip', compact('payment'));
     }
 
     public function edit($id)
