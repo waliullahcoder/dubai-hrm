@@ -128,7 +128,7 @@ if (! function_exists('bn_number')) {
                     <div class="custom-info-card card-sales">
                         <div class="card-metrics">
                             <span class="metric-title">Proposal Value</span>
-                            <span class="metric-value">৳ {{$total_proposal_value}}</span>
+                            <span class="metric-value">AED {{$total_proposal_value}}</span>
                         </div>
                         <div class="card-icon-box">
                             <i class="fal fa-receipt"></i>
@@ -140,7 +140,7 @@ if (! function_exists('bn_number')) {
                     <div class="custom-info-card card-cash">
                         <div class="card-metrics">
                             <span class="metric-title">Expected Value</span>
-                            <span class="metric-value">৳ {{$total_expected_value}}</span>
+                            <span class="metric-value">AED {{$total_expected_value}}</span>
                         </div>
                         <div class="card-icon-box">
                             <i class="fas fa-dollar-sign"></i>
@@ -152,7 +152,7 @@ if (! function_exists('bn_number')) {
                     <div class="custom-info-card card-due">
                         <div class="card-metrics">
                             <span class="metric-title">Confirmed Value</span>
-                            <span class="metric-value">৳ {{$total_confirmed_value}}</span>
+                            <span class="metric-value">AED {{$total_confirmed_value}}</span>
                         </div>
                         <div class="card-icon-box">
                             <i class="fal fa-money-bill-alt"></i>
@@ -195,7 +195,7 @@ if (! function_exists('bn_number')) {
                     <div class="custom-info-card card-due">
                         <div class="card-metrics">
                             <span class="metric-title">Sales Pipeline</span>
-                            <span class="metric-value">৳ {{$total_confirmed_value}}</span>
+                            <span class="metric-value">AED {{$total_confirmed_value}}</span>
                         </div>
                         <div class="card-icon-box">
                             <i class="fal fa-receipt"></i>

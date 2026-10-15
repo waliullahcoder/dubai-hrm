@@ -216,6 +216,7 @@
 
 @push('js')
 
+
 <script>
 $(document).on('change', '#check_in, #check_out', function () {
 
@@ -225,35 +226,59 @@ $(document).on('change', '#check_in, #check_out', function () {
     if (inTime && outTime) {
 
         // Office Time
-        let officeIn = new Date("2000-01-01 09:00");
-        let officeOut = new Date("2000-01-01 18:00");
+        let officeIn = new Date("2000-01-01T09:00:00");
+        let officeOut = new Date("2000-01-01T18:00:00");
 
-        let checkIn = new Date("2000-01-01 " + inTime);
-        let checkOut = new Date("2000-01-01 " + outTime);
+        let checkIn = new Date("2000-01-01T" + inTime);
+        let checkOut = new Date("2000-01-01T" + outTime);
 
-        // Worked Hours
-        let workedMinutes = (checkOut - checkIn) / 1000 / 60;
-        $('#worked_hours').val((workedMinutes / 60).toFixed(2));
+        // If checkout is earlier than or equal to check-in,
+        // consider checkout as the next day
+        if (checkOut <= checkIn) {
+            checkOut.setDate(checkOut.getDate() + 1);
+        }
+
+        // Worked Hours (Never Negative)
+        let workedMinutes = Math.max(
+            0,
+            (checkOut - checkIn) / 1000 / 60
+        );
+
+        $('#worked_hours').val(
+            (workedMinutes / 60).toFixed(2)
+        );
 
         // Late Minutes
         let lateMinutes = 0;
+
         if (checkIn > officeIn) {
-            lateMinutes = Math.floor((checkIn - officeIn) / 1000 / 60);
+            lateMinutes = Math.floor(
+                (checkIn - officeIn) / 1000 / 60
+            );
         }
-        $('#late_minutes').val(lateMinutes);
+
+        $('#late_minutes').val(Math.max(0, lateMinutes));
 
         // Overtime Minutes
         let overtimeMinutes = 0;
-        if (checkOut > officeOut) {
-            overtimeMinutes = Math.floor((checkOut - officeOut) / 1000 / 60);
-        }
-        $('#overtime_minutes').val(overtimeMinutes);
 
+        if (checkOut > officeOut) {
+            overtimeMinutes = Math.floor(
+                (checkOut - officeOut) / 1000 / 60
+            );
+        }
+
+        $('#overtime_minutes').val(Math.max(0, overtimeMinutes));
+
+    } else {
+        $('#worked_hours').val('');
+        $('#late_minutes').val('');
+        $('#overtime_minutes').val('');
     }
 
 });
-
 </script>
+
 
 @endpush
 

@@ -205,71 +205,104 @@
 
 @push('js')
 
+
 <script>
-function calculateAttendance(){
+$(document).ready(function () {
 
-    let inTime=$('#check_in').val();
-    let outTime=$('#check_out').val();
+    function calculateAttendance() {
 
-    if(inTime && outTime){
+        let inTime = $('#check_in').val();
+        let outTime = $('#check_out').val();
 
-        let officeIn=new Date("2000-01-01 09:00");
-        let officeOut=new Date("2000-01-01 18:00");
+        if (inTime && outTime) {
 
-        let checkIn=new Date("2000-01-01 "+inTime);
-        let checkOut=new Date("2000-01-01 "+outTime);
+            // Office Time
+            let officeIn = new Date('2000-01-01T09:00:00');
+            let officeOut = new Date('2000-01-01T18:00:00');
 
-        let workedMinutes=(checkOut-checkIn)/1000/60;
+            let checkIn = new Date('2000-01-01T' + inTime);
+            let checkOut = new Date('2000-01-01T' + outTime);
 
-        $('#worked_hours').val((workedMinutes/60).toFixed(2));
+            // Checkout next day হলে
+            if (checkOut <= checkIn) {
+                checkOut.setDate(checkOut.getDate() + 1);
+            }
 
-        let late=0;
+            // Worked Hours
+            let workedMinutes = Math.max(
+                0,
+                (checkOut - checkIn) / 60000
+            );
 
-        if(checkIn>officeIn){
-            late=Math.floor((checkIn-officeIn)/1000/60);
+            $('#worked_hours').val(
+                (workedMinutes / 60).toFixed(2)
+            );
+
+            // Late Minutes
+            let lateMinutes = 0;
+
+            if (checkIn > officeIn) {
+                lateMinutes = Math.floor(
+                    (checkIn - officeIn) / 60000
+                );
+            }
+
+            $('#late_minutes').val(Math.max(0, lateMinutes));
+
+            // Overtime Minutes
+            let overtimeMinutes = 0;
+
+            if (checkOut > officeOut) {
+                overtimeMinutes = Math.floor(
+                    (checkOut - officeOut) / 60000
+                );
+            }
+
+            $('#overtime_minutes').val(
+                Math.max(0, overtimeMinutes)
+            );
+
+        } else {
+            $('#worked_hours').val('');
+            $('#late_minutes').val('');
+            $('#overtime_minutes').val('');
         }
 
-        $('#late_minutes').val(late);
-
-        let ot=0;
-
-        if(checkOut>officeOut){
-            ot=Math.floor((checkOut-officeOut)/1000/60);
-        }
-
-        $('#overtime_minutes').val(ot);
-
+        // Amount calculation
+        calculateAmount();
     }
 
-}
+    function calculateAmount() {
 
-$(document).on('change','#check_in,#check_out',calculateAttendance);
+        let workedHours =
+            parseFloat($('#worked_hours').val()) || 0;
 
-calculateAttendance();
+        let hourRate =
+            parseFloat($('#hour_rate').val()) || 0;
 
+        let amount = Math.max(0, workedHours * hourRate);
+
+        $('#amount').val(amount.toFixed(2));
+    }
+
+    // Edit page load এবং time পরিবর্তন
+    $(document).on(
+        'change input',
+        '#check_in, #check_out',
+        calculateAttendance
+    );
+
+    // Hour rate পরিবর্তন
+    $(document).on(
+        'input change',
+        '#hour_rate',
+        calculateAmount
+    );
+
+    // Edit page-এ আগের data নিয়েও হিসাব হবে
+    calculateAttendance();
+
+});
 </script>
 
-                    <script>
-                    $(document).ready(function () {
-
-                        function calculateAmount() {
-
-                            let workedHours = parseFloat($('#worked_hours').val()) || 0;
-                            let hourRate = parseFloat($('#hour_rate').val()) || 0;
-
-                            let amount = workedHours * hourRate;
-
-                            $('#amount').val(amount.toFixed(2));
-                        }
-
-                        // Rate change হলে calculate
-                        $('#hour_rate').on('input keyup change', function () {
-                            calculateAmount();
-                        });
-
-                        // Page load হওয়ার সময়ও calculate
-                        calculateAmount();
-
-                    });
-                    </script>
 @endpush

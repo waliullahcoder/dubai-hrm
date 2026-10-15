@@ -274,6 +274,13 @@
         border-radius: 12px;
         font-size: 14px;
     }
+
+    .appicon{
+        width:20%;
+        border-radius:10px;
+        margin:5px;
+    }
+
     </style>
 </head>
 
@@ -307,7 +314,11 @@
 
             <h2>Welcome Back</h2>
             <h3>Staff Login</h3>
-            <p class="subtitle">Sign in to access your account.</p>
+
+            <p class="subtitle">
+                <a href="{{ asset('/frontend/mobile/latest.apk')}}"><img class="appicon" src="{{ asset('/frontend/mobile/android.jpg')}}"></a>
+                <a class="appicon" href="https://hrm.technoparkbd.com/" target="_blank"><img  class="appicon" src="{{ asset('/frontend/mobile/apple.jpg')}}"></a>
+            </p>
 
             <form method="POST" action="{{ route('admin.login') }}">
                 @csrf

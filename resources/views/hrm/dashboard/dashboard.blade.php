@@ -468,7 +468,7 @@
                     </div>
 
                     <div class="card-value">
-                        ৳{{ number_format($total_earning, 2) }}
+                        AED {{ number_format($total_earning, 2) }}
                     </div>
 
                 </div>
@@ -493,7 +493,7 @@
                     </div>
 
                     <div class="card-value">
-                        ৳{{ number_format($advance_payments, 2) }}
+                        AED {{ number_format($advance_payments, 2) }}
                     </div>
 
                 </div>
@@ -519,7 +519,7 @@
                     </div>
 
                     <div class="card-value">
-                        ৳{{ number_format($total_payments, 2) }}
+                        AED {{ number_format($total_payments, 2) }}
                     </div>
 
                 </div>
@@ -545,7 +545,7 @@
                     </div>
 
                     <div class="card-value">
-                        ৳{{ number_format($total_expense, 2) }}
+                        AED {{ number_format($total_expense, 2) }}
                     </div>
 
                 </div>
@@ -571,7 +571,7 @@
                     </div>
 
                     <div class="card-value">
-                        ৳{{ number_format($total_outstanding, 2) }}
+                        AED {{ number_format($total_outstanding, 2) }}
                     </div>
 
                 </div>
@@ -742,7 +742,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             let value = context.raw || 0;
 
                             return context.dataset.label +
-                                ': ৳' +
+                                ': AED ' +
                                 Number(value).toLocaleString(
                                     'en-BD',
                                     {
@@ -769,7 +769,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         callback: function(value) {
 
-                            return '৳' +
+                            return 'AED ' +
                                 Number(value).toLocaleString('en-BD');
 
                         }

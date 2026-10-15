@@ -93,7 +93,7 @@ if (! function_exists('bn_number')) {
                             <div class="custom-info-card card-sales">
                                 <div class="card-metrics">
                                     <span class="metric-title">{{__('messages.total_sale')}}</span>
-                                    <span class="metric-value">৳ {{ app()->getLocale() == 'bn'
+                                    <span class="metric-value">AED {{ app()->getLocale() == 'bn'
                                         ? bn_number(number_format((float)($info['total_sales'] ?? 0), 2))
                                         : number_format((float)($info['total_sales'] ?? 0), 2)
                                     }}</span>
@@ -108,7 +108,7 @@ if (! function_exists('bn_number')) {
                             <div class="custom-info-card card-cash">
                                 <div class="card-metrics">
                                     <span class="metric-title">{{__('messages.cash_in')}}</span>
-                                    <span class="metric-value">৳ {{ app()->getLocale() == 'bn'
+                                    <span class="metric-value">AED {{ app()->getLocale() == 'bn'
                                         ? bn_number(number_format((float)($info['cash_in'] ?? 0), 2))
                                         : number_format((float)($info['cash_in'] ?? 0), 2)
                                     }}</span>
@@ -123,7 +123,7 @@ if (! function_exists('bn_number')) {
                             <div class="custom-info-card card-due">
                                 <div class="card-metrics">
                                     <span class="metric-title">{{__('messages.due')}}</span>
-                                    <span class="metric-value">৳ {{ app()->getLocale() == 'bn'
+                                    <span class="metric-value">AED {{ app()->getLocale() == 'bn'
                                         ? bn_number(number_format((float)($info['due'] ?? 0), 2))
                                         : number_format((float)($info['due'] ?? 0), 2)
                                     }}</span>
@@ -161,7 +161,7 @@ if (! function_exists('bn_number')) {
                                 <div class="card-metrics">
                                     <span class="metric-title">{{__('messages.stock_value')}}</span>
                                     <span class="metric-value">
-                                        ৳ {{ app()->getLocale() == 'bn'
+                                        AED {{ app()->getLocale() == 'bn'
                                         ? bn_number(number_format((float)($info['stock_value'] ?? 0), 2))
                                         : number_format((float)($info['stock_value'] ?? 0), 2)
                                     }}</span>
@@ -176,7 +176,7 @@ if (! function_exists('bn_number')) {
                             <div class="custom-info-card card-due">
                                 <div class="card-metrics">
                                     <span class="metric-title">{{__('messages.payment_due')}}</span>
-                                    <span class="metric-value">৳ {{ app()->getLocale() == 'bn'
+                                    <span class="metric-value">AED {{ app()->getLocale() == 'bn'
                                         ? bn_number(number_format((float)($info['payment_due'] ?? 0), 2))
                                         : number_format((float)($info['payment_due'] ?? 0), 2)
                                     }}</span>
@@ -191,7 +191,7 @@ if (! function_exists('bn_number')) {
                             <div class="custom-info-card card-customer">
                                 <div class="card-metrics">
                                     <span class="metric-title">{{__('messages.outstanding')}}</span>
-                                    <span class="metric-value">৳ {{ app()->getLocale() == 'bn'
+                                    <span class="metric-value">AED {{ app()->getLocale() == 'bn'
                                         ? bn_number(number_format((float)($info['outstanding'] ?? 0), 2))
                                         : number_format((float)($info['outstanding'] ?? 0), 2)
                                     }}</span>
