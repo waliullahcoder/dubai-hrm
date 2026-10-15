@@ -7,6 +7,8 @@ use App\Models\CoaSetup;
 use App\Models\coa_setups;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Staff;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
@@ -102,6 +104,7 @@ class StaffPaymentController extends Controller
         return view('hrm.staff-payment.index');
     }
 
+   
     public function create()
     {
         $coas = DB::table('coa_setups')
@@ -181,13 +184,30 @@ class StaffPaymentController extends Controller
 
     public function slip($id)
     {
-        $payment = DB::table('hrm_payments')
-            ->join('staff', 'staff.id', '=', 'hrm_payments.employee_id')
-            ->select('hrm_payments.*', 'staff.name', 'staff.address')
-            ->where('hrm_payments.id', $id)
-            ->first();
+        // use App\Models\Staff; use App\Models\User; use App\Models\Category; (tomar namespace onujayi)
+        $payment = DB::table('hrm_payments')->where('id', $id)->first();
 
-        return view('hrm.staff-payment.slip', compact('payment'));
+        $staff      = Staff::find($payment->employee_id);
+        $user       = $staff->user_id ? User::find($staff->user_id) : null;
+        $department = $staff->department_id ? Category::find($staff->department_id) : null;
+
+        // Oi mashe koy din kaj korse
+        $workingDays = DB::table('hrm_employee_attendances')
+            ->where('employee_id', $staff->id)
+            ->whereNotNull('check_out')
+            ->whereYear('attendance_date', $payment->payment_year)
+            ->whereMonth('attendance_date', $payment->payment_month)
+            ->count();
+
+        // Ei payment-er por advance-er baki balance
+        $remainingAdvance = (float) DB::table('hrm_payments')
+            ->where('employee_id', $staff->id)
+            ->selectRaw("SUM(CASE WHEN status = 'Advance' THEN payment_amount ELSE 0 END) - SUM(COALESCE(advance_deduction,0)) AS o")
+            ->value('o');
+
+        return view('hrm.staff-payment.slip', compact(
+            'payment', 'staff', 'user', 'department', 'workingDays', 'remainingAdvance'
+        ));
     }
 
     public function edit($id)
