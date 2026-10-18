@@ -114,7 +114,29 @@ class StaffPaymentController extends Controller
 
         $staffs = DB::table('staff')->orderBy('name')->get();
 
-        // Employee wise outstanding advance = total Advance given - total deducted so far
+        // 1) Working hours = hrm_employee_attendances.worked_hours (employee wise total)
+        $workedHours = DB::table('hrm_employee_attendances')
+            ->select('employee_id', DB::raw('SUM(COALESCE(worked_hours,0)) AS total_hours'))
+            ->groupBy('employee_id')
+            ->pluck('total_hours', 'employee_id');
+
+        // 2) Transport = hrm_expense.expense_amount where expense_head_id = 313 (employee wise)
+        $transports = DB::table('hrm_expense')
+            ->where('expense_head_id', 313)
+            ->select('employee_id', DB::raw('SUM(COALESCE(expense_amount,0)) AS total_transport'))
+            ->groupBy('employee_id')
+            ->pluck('total_transport', 'employee_id');
+
+        // 3a) Loan outstanding = loan_amount - total_installments (employee wise)
+        $loans = DB::table('hrm_employee_loan')
+            ->select(
+                'employee_id',
+                DB::raw('SUM(COALESCE(loan_amount,0)) - SUM(COALESCE(total_installments,0)) AS loan_outstanding')
+            )
+            ->groupBy('employee_id')
+            ->pluck('loan_outstanding', 'employee_id');
+
+        // 3b) Advance outstanding = total Advance given - total deducted so far
         $advances = DB::table('hrm_payments')
             ->select(
                 'employee_id',
@@ -123,7 +145,9 @@ class StaffPaymentController extends Controller
             ->groupBy('employee_id')
             ->pluck('outstanding', 'employee_id');
 
-        return view('hrm.staff-payment.create', compact('coas', 'staffs', 'advances'));
+        return view('hrm.staff-payment.create', compact(
+            'coas', 'staffs', 'workedHours', 'transports', 'loans', 'advances'
+        ));
     }
 
     public function store(Request $request)

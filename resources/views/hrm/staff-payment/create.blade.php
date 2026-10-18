@@ -2,7 +2,10 @@
 
 @section('content')
 @php
-    $staffJson = $staffs->map(function ($s) use ($advances) {
+    $staffJson = $staffs->map(function ($s) use ($workedHours, $transports, $loans, $advances) {
+        $loanOut    = (float) ($loans[$s->id] ?? 0);
+        $advanceOut = (float) ($advances[$s->id] ?? 0);
+
         return [
             'id'          => $s->id,
             'name'        => $s->name,
@@ -11,7 +14,10 @@
             'department'  => $s->department ?? $s->address ?? '',
             'photo'       => !empty($s->photo) ? asset('storage/' . $s->photo) : '',
             'status'      => $s->status ?? 'Active',
-            'outstanding' => (float) ($advances[$s->id] ?? 0),
+            'hours'       => round((float) ($workedHours[$s->id] ?? 0), 2),
+            'rate'        => round((float) ($s->basic_salary ?? 0), 2),
+            'transport'   => round((float) ($transports[$s->id] ?? 0), 2),
+            'outstanding' => round(max($loanOut + $advanceOut, 0), 2),
         ];
     })->values();
 @endphp
@@ -239,6 +245,8 @@
     function selectStaff(s) {
         current = s;
         $('employee_id').value = s.id;
+
+        // Employee card
         $('empName').textContent = s.name;
         $('empCode').textContent = s.code;
         $('empMobile').textContent = s.mobile || '-';
@@ -248,7 +256,14 @@
         $('empPhoto').outerHTML = s.photo
             ? '<img id="empPhoto" src="' + s.photo + '" alt="">'
             : '<div class="sp-ph" id="empPhoto"><i class="fas fa-user"></i></div>';
-        $('outstanding').value = fmt(s.outstanding);
+
+        // Auto populate salary fields
+        $('hours').value      = s.hours;       // hrm_employee_attendances.worked_hour (total)
+        $('hour_rate').value  = s.rate;        // staff.basic_salary
+        $('transport').value  = s.transport;   // hrm_expense (expense_head_id = 313)
+        $('outstanding').value = fmt(s.outstanding); // loan (loan_amount - total_installments) + advance
+        $('deduction').value  = 0;
+
         $('searchName').value = s.name;
         $('searchMobile').value = s.mobile;
         $('resName').classList.add('d-none');
