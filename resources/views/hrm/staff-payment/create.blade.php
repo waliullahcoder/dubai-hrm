@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="col-lg-3">
-                <a href="{{ route('admin.staff.create') }}" class="btn btn-primary w-100"><i class="fas fa-plus"></i> Add New Employee</a>
+                <a href="{{ route('admin.employee.create') }}" class="btn btn-primary w-100"><i class="fas fa-plus"></i> Add New Employee</a>
             </div>
         </div>
     </div>
