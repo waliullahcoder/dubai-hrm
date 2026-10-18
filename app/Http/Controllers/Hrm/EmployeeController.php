@@ -13,6 +13,7 @@ use App\Models\Hotel;
 use App\Services\ActionButtons\ActionButtons;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
@@ -66,6 +67,7 @@ class EmployeeController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    
     public function create()
     {
         if (request()->ajax()) {
@@ -75,10 +77,27 @@ class EmployeeController extends Controller
 
         $title = 'Add New Staff/Employee';
         $companies = Company::orderBy('name')->get();
-        $hotels = Hotel::orderBy('id','desc')->where('status','Active')->get();
-        $departments = Category::orderBy('id','desc')->get();
-        $branches = Branch::where('company_id', Auth::user()->company_id)->orderBy('name')->get();
-        return view('hrm.employee.create', compact('title', 'companies','departments', 'branches','hotels'));
+        $hotels = Hotel::orderBy('id', 'desc')->where('status', 'Active')->get();
+        $nextCode = $this->nextEmployeeCode();
+
+        return view('hrm.employee.create', compact('title', 'companies', 'hotels', 'nextCode'));
+    }
+
+    /**
+     * Next auto employee id, e.g. EMP-001
+     */
+    private function nextEmployeeCode(): string
+    {
+        $next = (int) Staff::max('id') + 1;
+        $code = 'EMP-' . str_pad($next, 3, '0', STR_PAD_LEFT);
+
+        // make sure it is not already used
+        while (Staff::where('code', $code)->exists()) {
+            $next++;
+            $code = 'EMP-' . str_pad($next, 3, '0', STR_PAD_LEFT);
+        }
+
+        return $code;
     }
 
     /**
@@ -87,63 +106,62 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'branch_id' => 'required',
-            'code' => 'required',
-            'name' => 'required',
-            'joining_date' => 'required',
+            'name'         => 'required',
+            'phone'        => 'required|unique:users,phone',
+            'basic_salary' => 'required|numeric|min:0',
+            'address'      => 'required',
+            'hotel_id'     => 'nullable',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-         if (!is_null($request->phone)) {
-            $request->validate([
-                'phone' => 'unique:users,phone',
-            ]);
-        }
-
         DB::transaction(function () use ($request) {
+            $companyId = $request->company_id ?? Auth::user()->company_id;
+            $code      = $request->code ?: $this->nextEmployeeCode();
+
+            // Photo -> public/backend/images/avatar/profile-xxxx.jpeg
+            // saved in users.image as: backend/images/avatar/profile-xxxx.jpeg
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $file     = $request->file('image');
+                $fileName = 'profile-' . Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('backend/images/avatar'), $fileName);
+                $imagePath = 'backend/images/avatar/' . $fileName;
+            }
+
             $user = User::create([
-                'company_id' => $request->company_id ?? Auth::user()->company_id,
-                'role' => 1,
-                'role_status' => 4,
-                'name' => $request->name,
-                'user_name' => $request->phone,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'status' => 1,
-                'password' => Hash::make($request->phone),
+                'company_id' => $companyId,
+                'role'       => 1,
+                'role_status'=> 4,
+                'name'       => $request->name,
+                'user_name'  => $request->phone,
+                'phone'      => $request->phone,
+                'image'      => $imagePath,
+                'status'     => 1,
+                'password'   => Hash::make($request->phone),
                 'created_by' => Auth::user()->id,
             ]);
 
             Staff::create([
-            'company_id' => $request->company_id ?? Auth::user()->company_id,
-            'branch_id' => $request->branch_id,
-            'department_id' => $request->department_id,
-            'hotel_id' => $request->hotel_id,
-            'user_id' => $user->id,
-            'code' => $request->code,
-            'name' => $request->name,
-            'currency_code' => $request->currency_code,
-            'short_name' => $request->short_name,
-            'designation' => $request->designation,
-            'joining_date' => date('Y-m-d', strtotime($request->joining_date)),
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'national_id' => $request->national_id,
-            'ac_no' => $request->ac_no,
-            'ac_branch' => $request->ac_branch,
-            'address' => $request->address,
-            'basic_salary' => $request->basic_salary,
-            'house_rent' => $request->house_rent,
-            'medical_allowance' => $request->medical_allowance,
-            'others' => $request->others,
-            'deducted' => $request->deducted,
-            'increment_percent' => $request->increment_percent,
-            'increment_amount' => $request->increment_amount,
-            'total_salary' => $request->total_salary,
-            'type' => 'active',
-            'created_by' => Auth::user()->id,
+                'company_id'    => $companyId,
+                'branch_id'     => $request->branch_id ?? Auth::user()->branch_id ?? 1,
+                'department_id' => null,
+                'hotel_id'      => $request->hotel_id ?: null,   // Outlet (optional)
+                'user_id'       => $user->id,
+                'code'          => $code,
+                'name'          => $request->name,
+                'short_name'    => $request->name,
+                'currency_code' => 'AED',
+                'joining_date'  => date('Y-m-d'),
+                'phone'         => $request->phone,
+                'national_id'   => $request->national_id,        // Emirates ID
+                'address'       => $request->address,
+                'basic_salary'  => $request->basic_salary,       // Hourly rate
+                'total_salary'  => $request->basic_salary,
+                'type'          => 'active',
+                'created_by'    => Auth::user()->id,
             ]);
 
-             $role = Role::findByName('staff');
+            $role = Role::findByName('staff');
             $user->assignRole($role);
         });
 
