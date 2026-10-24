@@ -165,7 +165,7 @@ $staff = \App\Models\Staff::where('user_id', auth()->id())->first();
 
                                 <th>SL</th>
 
-                                <th>Employee Code</th>
+                                <th>Employee ID</th>
 
                                 <th>Employee Name</th>
 
@@ -647,7 +647,7 @@ $(function () {
 
                                 <th>SL</th>
 
-                                <th>Employee Code</th>
+                                <th>Employee ID</th>
 
                                 <th>Employee Name</th>
 

@@ -182,6 +182,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('transport',  [ExpenseController::class, 'transport'])->name('transport.index');
     Route::post('transport', [ExpenseController::class, 'transportStore'])->name('transport.store');
     Route::resource('/hotel',HotelController::class);
+    Route::get('/hotels/{hotel}/departments', [AdminController::class, 'getDepartments'])->name('hotel.departments');
     Route::resource('/documents',DocumentController::class);
     Route::resource('/resignation',ResignationController::class);
     Route::resource('/termination',TerminationController::class);

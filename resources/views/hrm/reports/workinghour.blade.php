@@ -156,7 +156,7 @@
 
                                 <th>SL</th>
                                 <th>Hotel</th>
-                                <th>Employee Code</th>
+                                <th>Employee ID</th>
 
                                 <th>Employee Name</th>
 

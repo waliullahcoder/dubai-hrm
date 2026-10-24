@@ -72,13 +72,15 @@ $todayAttendancecheck = DB::table('hrm_employee_attendances')
                         <label for="type" class="form-label"><b><i class="fad fa-house"></i> Department <span class="text-danger">*</span></b></label>
                         <div class="custom-select">
                     <select name="department_id" id="department_id" class="select form-select" data-placeholder="Select Department" required>
-                            
-                            @foreach ($departments as $department)
-                                <option value="{{ $department->id }}"
-                                    {{ old('department_id') && old('department_id') == $department->id ? 'selected' : '' }}>
-                                    {{ $department->name }}</option>
-                            @endforeach
-                        </select>            
+                        <option value="">Select Department</option>
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}"
+                                data-hotel="{{ $department->parent_id }}"
+                                {{ old('department_id') == $department->id ? 'selected' : '' }}>
+                                {{ $department->name }}
+                            </option>
+                        @endforeach
+                    </select>        
                     </div>
                     </div>
                     <br>
@@ -724,4 +726,52 @@ $(document).on('click', '.ampm-toggle button', function () {
 
     });
 </script>
+
+
+<script>
+    $(document).ready(function () {
+    // Shob department option copy kore rakhi
+    const allDepartments = $('#department_id option[data-hotel]').clone();
+
+    function filterDepartments() {
+        const hotelId = $('#hotel_id').val();
+        const $dept = $('#department_id');
+
+        $dept.find('option[data-hotel]').remove();
+
+        allDepartments.each(function () {
+            if ($(this).data('hotel') == hotelId) {
+                $dept.append($(this).clone());
+            }
+        });
+
+        $dept.val('').trigger('change'); // select2 thakle eta dorkar
+    }
+
+    $('#hotel_id').on('change', filterDepartments);
+    filterDepartments(); // page load e first hotel er jonno
+});
+
+
+$('#hotel_id').on('change', function () {
+    const hotelId = $(this).val();
+    const $dept = $('#department_id');
+
+    $dept.html('<option value="">Loading...</option>');
+
+        $.get(`/admin/hotels/${hotelId}/departments`, function (data) {
+            let options = '<option value="">Select Department</option>';
+
+            data.forEach(d => {
+                options += `<option value="${d.id}">${d.name}</option>`;
+            });
+
+            $dept.html(options).trigger('change');
+        });
+});
+
+$('#hotel_id').trigger('change'); // page load e
+</script>
+
+
 @endpush

@@ -58,13 +58,18 @@ class AdminController extends Controller
         }
     }
 
+    public function getDepartments($hotelId)
+    {
+        $departments = Category::where('parent_id', $hotelId)->get(['id', 'name']);
+        return response()->json($departments);
+    }
+
     public function dashboard()
     {
-
         if( Auth::user()->role_status==4){
-           $hotels= Hotel::where('status', 'Active')->get();
-           $departments= Category::get();
-           return view('hrm.dashboard.staff-dashboard', compact('hotels','departments'));
+            $hotels = Hotel::where('status', 'Active')->get();
+            $departments = Category::select('id', 'name', 'parent_id')->get();
+           return view('hrm.dashboard.staff-dashboard', compact('hotels', 'departments'));
         }else{
 
        $staffs= DB::table('staff')->get();
