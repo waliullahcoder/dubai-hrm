@@ -2,10 +2,8 @@
 
 @section('content')
 @php
-    $staffJson = $staffs->map(function ($s) use ($workedHours, $transports, $loans, $advances) {
-        $loanOut    = (float) ($loans[$s->id] ?? 0);
-        $advanceOut = (float) ($advances[$s->id] ?? 0);
-
+    // Shob data ekhon staff table theke ashche
+    $staffJson = $staffs->map(function ($s) {
         return [
             'id'          => $s->id,
             'name'        => $s->name,
@@ -14,10 +12,10 @@
             'department'  => $s->department ?? $s->address ?? '',
             'photo'       => !empty($s->photo) ? asset('storage/' . $s->photo) : '',
             'status'      => $s->status ?? 'Active',
-            'hours'       => round((float) ($workedHours[$s->id] ?? 0), 2),
-            'rate'        => round((float) ($s->basic_salary ?? 0), 2),
-            'transport'   => round((float) ($transports[$s->id] ?? 0), 2),
-            'outstanding' => round(max($loanOut + $advanceOut, 0), 2),
+            'hours'       => round((float) ($s->worked_hours ?? 0), 2),      // staff.worked_hours
+            'rate'        => round((float) ($s->basic_salary ?? 0), 2),      // staff.basic_salary
+            'transport'   => round((float) ($s->others ?? 0), 2),            // staff.others
+            'outstanding' => round(max((float) ($s->deducted ?? 0), 0), 2),  // staff.deducted (previous/remaining advance)
         ];
     })->values();
 @endphp
@@ -162,7 +160,7 @@
 
             <div class="sp-card">
                 <h6 class="sp-title mb-3"><i class="fas fa-coins text-warning"></i> Advance Deduction</h6>
-                <div class="row g-3 align-items-end">
+                <div class="row g-3 align-items-start">
                     <div class="col-md-4">
                         <label class="form-label">Previous Outstanding (AED)</label>
                         <input type="text" id="outstanding" class="form-control" value="0.00" readonly>
@@ -173,6 +171,7 @@
                             <span class="input-group-text"><i class="fas fa-wallet"></i></span>
                             <input type="number" step="0.01" min="0" name="advance_deduction" id="deduction" class="form-control calc" value="0">
                         </div>
+                        <small id="dedWarn" class="text-danger d-none"></small>
                     </div>
                     <div class="col-md-4">
                         <div class="sp-remain">
@@ -257,12 +256,12 @@
             ? '<img id="empPhoto" src="' + s.photo + '" alt="">'
             : '<div class="sp-ph" id="empPhoto"><i class="fas fa-user"></i></div>';
 
-        // Auto populate salary fields
-        $('hours').value      = s.hours;       // hrm_employee_attendances.worked_hour (total)
-        $('hour_rate').value  = s.rate;        // staff.basic_salary
-        $('transport').value  = s.transport;   // hrm_expense (expense_head_id = 313)
-        $('outstanding').value = fmt(s.outstanding); // loan (loan_amount - total_installments) + advance
-        $('deduction').value  = 0;
+        // Auto populate (shob staff table theke)
+        $('hours').value       = s.hours;            // staff.worked_hours
+        $('hour_rate').value   = s.rate;             // staff.basic_salary
+        $('transport').value   = s.transport;        // staff.others
+        $('outstanding').value = fmt(s.outstanding); // staff.deducted
+        $('deduction').value   = 0;
 
         $('searchName').value = s.name;
         $('searchMobile').value = s.mobile;
@@ -291,9 +290,23 @@
         const transport = num($('transport').value);
         const outstanding = current ? current.outstanding : 0;
         const basic = hours * rate, gross = basic + transport;
+
+        // Deduction remaining advance ba Net Payable (gross) er beshi hote parbe na
+        const maxDed = Math.max(Math.min(outstanding, gross), 0);
         let ded = num($('deduction').value);
-        if (ded > outstanding) { ded = outstanding; $('deduction').value = ded.toFixed(2); }
-        if (ded > gross) { ded = gross; $('deduction').value = ded.toFixed(2); }
+        let warn = '';
+
+        if (ded > maxDed) {
+            warn = ded > outstanding
+                ? 'Deduction cannot exceed remaining advance (' + fmt(outstanding) + ')'
+                : 'Deduction cannot exceed gross salary (' + fmt(gross) + ')';
+            ded = maxDed;
+            $('deduction').value = ded.toFixed(2);
+        }
+        $('deduction').max = maxDed.toFixed(2);
+        $('dedWarn').textContent = warn;
+        $('dedWarn').classList.toggle('d-none', !warn);
+
         const net = gross - ded;
 
         $('sHours').textContent = fmt(hours);
@@ -324,11 +337,13 @@
         ['empCode', 'empMobile', 'empDept'].forEach(i => $(i).textContent = '-');
         $('empStatus').classList.add('d-none');
         $('outstanding').value = '0.00';
+        $('dedWarn').classList.add('d-none');
         calc();
     };
 
     function validate() {
         if (!$('employee_id').value) { alert('Please search and select an employee first.'); return false; }
+        calc(); // submit er age abar clamp kore nei
         return $('payForm').reportValidity();
     }
 
