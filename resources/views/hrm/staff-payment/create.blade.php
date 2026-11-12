@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    // Shob data ekhon staff table theke ashche
+    // Shob data staff table theke ashche
     $staffJson = $staffs->map(function ($s) {
         return [
             'id'          => $s->id,
@@ -15,7 +15,7 @@
             'hours'       => round((float) ($s->worked_hours ?? 0), 2),      // staff.worked_hours
             'rate'        => round((float) ($s->basic_salary ?? 0), 2),      // staff.basic_salary
             'transport'   => round((float) ($s->others ?? 0), 2),            // staff.others
-            'outstanding' => round(max((float) ($s->deducted ?? 0), 0), 2),  // staff.deducted (previous/remaining advance)
+            'outstanding' => round(max((float) ($s->deducted ?? 0), 0), 2),  // staff.deducted (previous deduction)
         ];
     })->values();
 @endphp
@@ -162,7 +162,7 @@
                 <h6 class="sp-title mb-3"><i class="fas fa-coins text-warning"></i> Advance Deduction</h6>
                 <div class="row g-3 align-items-start">
                     <div class="col-md-4">
-                        <label class="form-label">Previous Outstanding (AED)</label>
+                        <label class="form-label">Previous Deduction (AED)</label>
                         <input type="text" id="outstanding" class="form-control" value="0.00" readonly>
                     </div>
                     <div class="col-md-4">
@@ -175,7 +175,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="sp-remain">
-                            <small>Remaining Advance (AED)</small>
+                            <small>Total Deduction (AED)</small>
                             <strong id="remaining">0.00</strong>
                         </div>
                     </div>
@@ -260,7 +260,7 @@
         $('hours').value       = s.hours;            // staff.worked_hours
         $('hour_rate').value   = s.rate;             // staff.basic_salary
         $('transport').value   = s.transport;        // staff.others
-        $('outstanding').value = fmt(s.outstanding); // staff.deducted
+        $('outstanding').value = fmt(s.outstanding); // staff.deducted (previous deduction)
         $('deduction').value   = 0;
 
         $('searchName').value = s.name;
@@ -288,18 +288,16 @@
     function calc() {
         const hours = num($('hours').value), rate = num($('hour_rate').value);
         const transport = num($('transport').value);
-        const outstanding = current ? current.outstanding : 0;
+        const previous = current ? current.outstanding : 0;   // previous deduction
         const basic = hours * rate, gross = basic + transport;
 
-        // Deduction remaining advance ba Net Payable (gross) er beshi hote parbe na
-        const maxDed = Math.max(Math.min(outstanding, gross), 0);
+        // Deduction gross salary (Net Payable) er beshi hote parbe na
+        const maxDed = Math.max(gross, 0);
         let ded = num($('deduction').value);
         let warn = '';
 
         if (ded > maxDed) {
-            warn = ded > outstanding
-                ? 'Deduction cannot exceed remaining advance (' + fmt(outstanding) + ')'
-                : 'Deduction cannot exceed gross salary (' + fmt(gross) + ')';
+            warn = 'Deduction cannot exceed gross salary (' + fmt(gross) + ')';
             ded = maxDed;
             $('deduction').value = ded.toFixed(2);
         }
@@ -316,7 +314,7 @@
         $('sGross').textContent = fmt(gross);
         $('sDeduct').textContent = fmt(ded);
         $('sNet').textContent = fmt(net);
-        $('remaining').textContent = fmt(outstanding - ded);
+        $('remaining').textContent = fmt(previous + ded);   // previous + new deduction
         $('payment_amount').value = net.toFixed(2);
     }
 
