@@ -673,6 +673,7 @@ public function attendanceDashboard(Request $request)
             
            foreach ($request->employee_id as $key => $employeeId) {
                 $staff= Staff::find($employeeId);
+                $worked_hours = Auth::user()->role_status==4 ? $workedHours : $request->worked_hours;
                 DB::table('hrm_employee_attendances')->insert([
                     'employee_id'       => $employeeId,
                     'hotel_id'       => $staff->hotel_id,
@@ -690,12 +691,18 @@ public function attendanceDashboard(Request $request)
                     'check_out_distance'          =>  Auth::user()->role_status==1 ? $distance : NULL,
                     'late_minutes'      => Auth::user()->role_status==4 ? $lateMinutes : $request->late_minutes,
                     'overtime_minutes'  => Auth::user()->role_status==4 ? $overtimeMinutes : $request->overtime_minutes,
-                    'worked_hours'      => Auth::user()->role_status==4 ? $workedHours : $request->worked_hours,
+                    'worked_hours'      => $worked_hours,
                     'attendance_status' => $request->attendance_status,
                     'remarks'           => $request->remarks,
                     'created_by'        => auth()->id(),
                     'created_at'        => now(),
                 ]);
+                $nettotalhours = $staff->worked_hours + $worked_hours;
+                $nettotalsalry = $staff->basic_salary + $staff->basic_salary * $worked_hours;
+                 $staff->update([
+                    'worked_hours' => $nettotalhours,
+                    'total_salary' => $nettotalsalry
+                 ]);
                 }
 
                 if(Auth::user()->role_status==4){

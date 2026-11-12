@@ -298,9 +298,9 @@
         </div>
 
         <div class="col-lg-2 col-sm-3">
-            <label for="house_rent" class="form-label"><b>House Rent</b></label>
-            <input type="number" class="form-control" id="house_rent" name="house_rent"
-                value="{{ old('house_rent', $data->house_rent) }}">
+            <label for="worked_hours" class="form-label"><b>Worked Hours</b></label>
+            <input type="number" class="form-control" id="worked_hours" name="worked_hours"
+                value="{{ old('worked_hours', $data->worked_hours) }}">
         </div>
 
         <div class="col-lg-2 col-sm-3">
@@ -315,11 +315,7 @@
                 value="{{ old('others', $data->others) }}">
         </div>
 
-        <div class="col-lg-2 col-sm-3">
-            <label for="deducted" class="form-label"><b>Provident / Deducted</b></label>
-            <input type="number" class="form-control" id="deducted" name="deducted"
-                value="{{ old('deducted', $data->deducted) }}">
-        </div>
+        
 
         <div class="col-lg-2 col-sm-3">
             <label for="increment_percent" class="form-label"><b>Increment %</b></label>
@@ -334,9 +330,20 @@
         </div>
 
         <div class="col-lg-2 col-sm-3">
-            <label for="total_salary" class="form-label"><b>Total Salary</b></label>
+            <label for="deducted" class="form-label"><b>Advance Deducted/Paid</b></label>
+            <input type="number" class="form-control" id="deducted" name="deducted"
+                value="{{ old('deducted', $data->deducted) }}">
+        </div>
+
+        <div class="col-lg-2 col-sm-3">
+            <label for="total_salary" class="form-label"><b>Total Amount</b></label>
             <input type="number" class="form-control" id="total_salary" name="total_salary"
                 value="{{ old('total_salary', $data->total_salary) }}" readonly>
+        </div>
+         <div class="col-lg-2 col-sm-3">
+            <label for="pending_amount" class="form-label"><b>Payable Amount</b></label>
+            <input type="number" class="form-control" id="pending_amount" name="pending_amount"
+                value="{{ old('pending_amount', $data->pending_amount) }}" readonly>
         </div>
 
 
