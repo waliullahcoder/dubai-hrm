@@ -175,6 +175,7 @@ class LoanController extends Controller
 
     public function store(Request $request)
     {
+        //dd("ddd", $request->all());
         $request->validate([
             'employee_id'    => 'required|exists:staff,id',
             'loan_type'      => 'required',
@@ -189,9 +190,20 @@ class LoanController extends Controller
         ]);
 
         
+
         if($request->employee_id){
             $prev_total_instll=DB::table('hrm_employee_loan')->where('employee_id',$request->employee_id)->sum('total_installments');
             $total_instll_amount= ($prev_total_instll+$request->installment_amount);
+
+             $staff = Staff::find($request->employee_id);
+            if ($staff) {
+                  $total_loan_amount = DB::table('hrm_employee_loan')->where('employee_id',$request->employee_id)->sum('loan_amount') + $request->loan_amount;
+                $paid = $staff->deducted + $total_loan_amount;
+
+                $staff->update([
+                    'deducted'       => $paid
+                ]);
+            }
         }
         DB::table('hrm_employee_loan')->insert([
             'employee_id'   => $request->employee_id,

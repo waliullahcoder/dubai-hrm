@@ -251,7 +251,7 @@
     </div>
     <div>
       <div class="wlabel">Total Hours</div>
-      <div class="wvalue">{{$data['attendance']->sum('worked_hours')}}</div>
+      <div class="wvalue">{{$staff->worked_hours}}</div>
     </div>
     <div>
       <div class="wlabel">Current Hourly Rate</div>
@@ -269,19 +269,19 @@
     </tr>
     <tr>
       <td>Total Working Hours</td>
-      <td class="num">{{$data['attendance']->sum('worked_hours')}}</td>
+      <td class="num">{{$staff->worked_hours}}</td>
       <td class="num">{{$staff->basic_salary}}</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['attendance']->sum('amount'), 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) ($staff->worked_hours*$staff->basic_salary), 2, '.', ',') }}</td>
     </tr>
     <tr>
       <td>Transport / Other</td>
       <td class="num">-</td>
       <td class="num">-</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['expenseAmount'], 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $staff->others, 2, '.', ',') }}</td>
     </tr>
     <tr class="total">
       <td colspan="3">Total Earnings</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['attendance']->sum('amount')+$data['expenseAmount'], 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $staff->total_salary, 2, '.', ',') }}</td>
     </tr>
     
   </table>
@@ -295,26 +295,26 @@
    
     <tr>
       <td>Advance Loan</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['loans']->sum('loan_amount')+$data['advanceAmount'], 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $staff->deducted, 2, '.', ',') }}</td>
     </tr>
     <tr>
       <td>Other Deduction</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['paymentAmount'], 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) 0, 2, '.', ',') }}</td>
     </tr>
     <tr class="total-deduction">
       <td>Total Deductions</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['loans']->sum('loan_amount')+$data['advanceAmount']+$data['paymentAmount'], 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) 0, 2, '.', ',') }}</td>
     </tr>
      <tr>
       <td>Advance Recovery</td>
-      <td class="num">{{$staff->currency_code}} {{ number_format((float) $data['loans']->sum('total_installments'), 2, '.', ',') }}</td>
+      <td class="num">{{$staff->currency_code}} {{ number_format((float) $staff->deducted, 2, '.', ',') }}</td>
     </tr>
   </table>
 
   <div class="section-header final">FINAL PAYABLE AMOUNT</div>
   <div class="final-box">
     <div class="flabel">Final Payable</div>
-    <div class="fvalue">{{$staff->currency_code}} {{ number_format((float) $data['attendance']->sum('amount')+$data['expenseAmount']+$data['loans']->sum('total_installments')-($data['loans']->sum('loan_amount')+$data['advanceAmount']+$data['paymentAmount']), 2, '.', ',') }}</div>
+    <div class="fvalue">{{$staff->currency_code}} {{ number_format((float) ($staff->total_salary-$staff->deducted), 2, '.', ',') }}</div>
   </div>
 
   <div class="remarks">

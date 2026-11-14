@@ -152,6 +152,7 @@ class StaffPaymentController extends Controller
 
     public function store(Request $request)
     {
+      
         $request->validate([
             'payment_head_id'   => 'required',
             'employee_id'       => 'required',
@@ -164,6 +165,20 @@ class StaffPaymentController extends Controller
             'payment_date'      => 'required|date',
             'remarks'           => 'nullable|string',
         ]);
+
+          $staff = Staff::find($request->employee_id);
+            if ($staff) {
+
+                $paid = $staff->deducted + $request->advance_deduction;
+
+                $staff->update([
+                    'worked_hours'   => $request->hours,
+                    'others'         => $request->transport_amount,
+                    'deducted'       => $paid,
+                    'total_salary'   => $paid + $request->payment_amount,
+                    'pending_amount' => $request->payment_amount,
+                ]);
+            }
 
         // Server side calculation (JS er upor bharosha na kore)
         $basic     = $request->hours * $request->hour_rate;

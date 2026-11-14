@@ -6,6 +6,7 @@ use App\Models\ClientCategory;
 use App\Models\CoaSetup;
 use App\Models\coa_setups;
 use App\Models\User;
+use App\Models\Staff;
 use App\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Services\ActionButtons\ActionButtons;
@@ -323,6 +324,10 @@ class ExpenseController extends Controller
 
         DB::transaction(function () use ($rows, $staff, $today) {
             foreach ($rows as $r) {
+               $trans_amount = $staff->others + $r['amount'];
+                  $staff->update([
+                     'others' => $trans_amount
+                  ]);
                 DB::table('hrm_expense')->insert([
                     'expense_head_id' => $r['head'],
                     'employee_id'     => $staff->id,

@@ -212,7 +212,7 @@
                 <div class="row-item hl hl-basic"><span>Basic Salary (AED)</span><span id="sBasic">0.00</span></div>
                 <div class="row-item"><span>Transport (AED)</span><span id="sTransport">0.00</span></div>
                 <div class="row-item hl hl-gross"><span>Gross Salary (AED)</span><span id="sGross">0.00</span></div>
-                <div class="row-item"><span>Advance Deduction (AED)</span><span id="sDeduct">0.00</span></div>
+                <div class="row-item"><span>Total Deduction (AED)</span><span id="sDeduct">0.00</span></div>
                 <div class="row-item hl hl-net"><span><i class="fas fa-wallet"></i> Net Payable Amount (AED)</span><span id="sNet">0.00</span></div>
             </div>
             <input type="hidden" name="payment_amount" id="payment_amount" value="0">
@@ -291,13 +291,13 @@
         const previous = current ? current.outstanding : 0;   // previous deduction
         const basic = hours * rate, gross = basic + transport;
 
-        // Deduction gross salary (Net Payable) er beshi hote parbe na
-        const maxDed = Math.max(gross, 0);
+        // Previous + notun deduction gross er beshi hote parbe na
+        const maxDed = Math.max(gross - previous, 0);
         let ded = num($('deduction').value);
         let warn = '';
 
         if (ded > maxDed) {
-            warn = 'Deduction cannot exceed gross salary (' + fmt(gross) + ')';
+            warn = 'Total deduction cannot exceed gross salary (' + fmt(gross) + ')';
             ded = maxDed;
             $('deduction').value = ded.toFixed(2);
         }
@@ -305,16 +305,17 @@
         $('dedWarn').textContent = warn;
         $('dedWarn').classList.toggle('d-none', !warn);
 
-        const net = gross - ded;
+        const totalDed = previous + ded;
+        const net = Math.max(gross - totalDed, 0);   // Gross - Total Deduction
 
         $('sHours').textContent = fmt(hours);
         $('sRate').textContent = fmt(rate);
         $('sBasic').textContent = fmt(basic);
         $('sTransport').textContent = fmt(transport);
         $('sGross').textContent = fmt(gross);
-        $('sDeduct').textContent = fmt(ded);
+        $('sDeduct').textContent = fmt(totalDed);    // summary te total deduction
         $('sNet').textContent = fmt(net);
-        $('remaining').textContent = fmt(previous + ded);   // previous + new deduction
+        $('remaining').textContent = fmt(totalDed);  // Total Deduction card
         $('payment_amount').value = net.toFixed(2);
     }
 
@@ -365,7 +366,7 @@
             + row('Basic Salary (AED)', $('sBasic').textContent)
             + row('Transport (AED)', $('sTransport').textContent)
             + row('Gross Salary (AED)', $('sGross').textContent)
-            + row('Advance Deduction (AED)', $('sDeduct').textContent)
+            + row('Total Deduction (AED)', $('sDeduct').textContent)
             + '<tr class="t"><td>Net Payable (AED)</td><td style="text-align:right">' + $('sNet').textContent + '</td></tr>'
             + '</table><p>' + ($('remarks').value || '') + '</p></body></html>');
         w.document.close();

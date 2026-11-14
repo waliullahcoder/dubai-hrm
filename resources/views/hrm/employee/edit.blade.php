@@ -326,7 +326,7 @@
         <div class="col-lg-2 col-sm-3">
             <label for="increment_amount" class="form-label"><b>Increment Amount</b></label>
             <input type="number" class="form-control" id="increment_amount" name="increment_amount"
-                value="{{ old('increment_amount', $data->increment_amount) }}" readonly>
+                value="{{ old('increment_amount', $data->increment_amount) }}">
         </div>
 
         <div class="col-lg-2 col-sm-3">
@@ -338,12 +338,12 @@
         <div class="col-lg-2 col-sm-3">
             <label for="total_salary" class="form-label"><b>Total Amount</b></label>
             <input type="number" class="form-control" id="total_salary" name="total_salary"
-                value="{{ old('total_salary', $data->total_salary) }}" readonly>
+                value="{{ old('total_salary', $data->total_salary) }}">
         </div>
          <div class="col-lg-2 col-sm-3">
             <label for="pending_amount" class="form-label"><b>Payable Amount</b></label>
             <input type="number" class="form-control" id="pending_amount" name="pending_amount"
-                value="{{ old('pending_amount', $data->pending_amount) }}" readonly>
+                value="{{ old('pending_amount', $data->pending_amount) }}">
         </div>
 
 

@@ -263,7 +263,7 @@ class EmployeeController extends Controller
                 'ac_branch' => $request->ac_branch,
                 'address' => $request->address,
                 'basic_salary' => $request->basic_salary,
-                'house_rent' => $request->house_rent,
+                'worked_hours' => $request->worked_hours,
                 'medical_allowance' => $request->medical_allowance,
                 'others' => $request->others,
                 'deducted' => $request->deducted,
